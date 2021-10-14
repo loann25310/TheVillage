@@ -6,7 +6,9 @@
    "scripts": {
       "test": "echo \"Error: no test specified\" && exit 1",
       "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
-      "start": "ts-node src/index.ts"
+      "start": "ts-node src/index.ts",
+      "build": "webpack --mode production --progress",
+      "dev": "webpack watch --mode development --progress"
    },
    "repository": {
       "type": "git",
@@ -22,15 +24,22 @@
    },
    "homepage": "https://github.com/loann25310/ptut_s3_s4#readme",
    "dependencies": {
-      "ts-node": "^10.3.0",
-      "typeorm": "0.2.38",
-      "typescript": "^4.4.4",
+      "css-loader": "^6.4.0",
+      "express": "^4.17.1",
+      "mysql": "^2.14.1",
+      "node-color-log": "^6.0.0",
       "reflect-metadata": "^0.1.10",
-      "mysql": "^2.14.1"
+      "sass-loader": "^12.2.0",
+      "style-loader": "^3.3.0",
+      "ts-loader": "^9.2.6",
+      "ts-node": "^10.3.0",
+      "typeorm": "0.2.38"
    },
    "devDependencies": {
-      "ts-node": "3.3.0",
+      "@types/express": "^4.17.13",
       "@types/node": "^8.0.29",
-      "typescript": "3.3.3333"
+      "typescript": "^4.4.4",
+      "webpack": "^5.58.2",
+      "webpack-cli": "^4.9.0"
    }
 }
