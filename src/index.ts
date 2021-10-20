@@ -7,6 +7,9 @@ import * as express from "express";
 import {Express, Router} from "express";
 import {Route} from "./routes/Menu";
 import {Config} from "./entity/Config";
+import * as nunjucks from "nunjucks";
+import * as cookieParser from "cookie-parser";
+import * as bodyParser from "body-parser";
 
 logger.info("Starting The Village");
 
@@ -20,6 +23,17 @@ createConnection().then(async connection => {
 
     logger.info("Creating Web Server...");
     const app: Express = express();
+    app.use(express.json());
+    app.use(express.static(__dirname + '/../public'));
+    const env = nunjucks.configure(__dirname + '/templates/', {
+        autoescape: false,
+        express: app,
+        watch: (config.env === 'debug')
+    });
+    app.set('views', __dirname + '/templates');
+    app.set('view engine', 'twig');
+    app.use(cookieParser());
+    app.use(bodyParser.urlencoded({ extended: true }));
     logger.info("Web Server created !");
 
     logger.info("Loading routes...");
