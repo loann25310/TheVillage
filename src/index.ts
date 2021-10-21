@@ -18,7 +18,18 @@ const config = JSON.parse(readFileSync(resolvePath(__dirname, '../config.json'),
 logger.info("Configuration loaded !");
 
 logger.info("Connecting to database...");
-createConnection().then(async connection => {
+createConnection({
+    type: "mysql",
+    host: "localhost",
+    port: 3306,
+    username: "PTUT",
+    password: "PTUT",
+    database: "PTUT",
+    entities: [
+        __dirname + "/entity/*.js"
+    ],
+    synchronize: true
+}).then(async connection => {
     logger.info("Connected to database !");
 
     logger.info("Creating Web Server...");
