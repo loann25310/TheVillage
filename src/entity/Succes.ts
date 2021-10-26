@@ -13,5 +13,5 @@ export class Succes {
     Description: string;
 
     @Column()
-    NombreAAtteindre: number
+    NombreAAtteindre: number;
 }

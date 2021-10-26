@@ -1,5 +1,4 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
-import {SkinPossede} from "./SkinPossede.js";
 
 @Entity()
 export class Skin{
@@ -8,14 +7,11 @@ export class Skin{
     id :number;
 
     @Column()
-    Lien :string
+    Lien :string;
 
     @Column()
-    Description :string
+    Description :string;
 
     @Column()
-    Prix :number
-
-    @OneToMany(type => SkinPossede, SkinPossede => SkinPossede.Skin)
-    Joueurs :SkinPossede;
+    Prix :number;
 }

@@ -1,7 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
-import {SuccesUser} from "./SuccesUser";
-import {SkinPossede} from "./SkinPossede";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToMany} from "typeorm";
 import {Skin} from "./Skin";
+import {Succes} from "./Succes";
 
 @Entity()
 export class User {
@@ -36,10 +35,10 @@ export class User {
     @Column()
     NbPartiesJouees :number;
 
-    @OneToMany(type => SuccesUser, succesUser => succesUser.User)
-    Succes :SuccesUser;
+    @ManyToMany(() => Succes)
+    Succes :Succes[];
 
-    @OneToMany(type => SkinPossede, skinPossede => skinPossede.User)
-    Skins : SkinPossede;
+    @ManyToMany(() => Skin)
+    Skins : Skin[];
 }
 
