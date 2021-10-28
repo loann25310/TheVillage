@@ -1,0 +1,14 @@
+{% extends "body.twig" %}
+
+{% block title %}Chargement{% endblock %}
+
+{% block body %}
+    <div class="chargement">
+        <img src="/img/loup-garou.gif" alt="loup-garou"> Chargement <span class="points"></span>
+        <div id="progressbar"></div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/dist/chargement.js"></script>
+{% endblock %}

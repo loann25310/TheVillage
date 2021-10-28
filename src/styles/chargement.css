@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url("/public/img/spooky.png");
+  background-color: #313131;
+  background-size: cover;
+}
+
+.chargement {
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  color: #A11000;
+  text-shadow: 1px 1px 0 #000;
+  font-size: 48px;
+  margin: 15% 0px;
+  text-align: center;
+}
+
+img {
+  vertical-align: bottom;
+  width: 15%;
+  height: 15%;
+  max-height: 100px;
+  max-width: 100px;
+}
+
+#progressbar {
+  height: 50px;
+  width: 30%;
+  min-width: 200px;
+  margin: 10px 35%;
+  background: #313131;
+  border-radius: 20px;
+}

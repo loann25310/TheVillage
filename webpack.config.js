@@ -4,6 +4,7 @@ const path = require('path');
 module.exports = {
     entry: {
         app: './src/scripts/app.ts',
+        chargement: './src/scripts/chargement.js',
     },
     output: {
         path: path.resolve(__dirname, 'public/dist'),
@@ -11,6 +12,11 @@ module.exports = {
     },
     module: {
         rules: [
+            { test: /\.ts$/, use: 'ts-loader' },
+            {
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
+                type: 'asset/resource',
+            },
             {
                 test: /\.s[ac]ss$/i,
                 use: [
@@ -23,7 +29,6 @@ module.exports = {
                 ],
             },
             { test: /\.css$/, use: ['style-loader','css-loader'] },
-            { test: /\.ts$/, use: 'ts-loader' }
         ]
     },
     resolve: {
