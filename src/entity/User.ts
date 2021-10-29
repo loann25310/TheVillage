@@ -12,6 +12,9 @@ export class User {
     Pseudo: string;
 
     @Column()
+    Password :string;
+
+    @Column()
     Nom: string;
 
     @Column()
