@@ -1,0 +1,25 @@
+{% extends "body.twig" %}
+
+{% block title %}Log in{% endblock %}
+
+{% block body %}
+
+    <form method="post" action="/auth/loginRequest">
+        <label>Pseudo
+            <input type="text"  name="username" placeholder="Pseudo">
+        </label>
+        <label>
+            Mot de passe
+            <input type="password" name="password" placeholder="Mot de passe">
+        </label>
+
+        <input type="submit">
+
+    </form>
+        {% if data is defined %}
+            <div>
+                {{ data }}
+            </div>
+        {% endif %}
+
+{% endblock %}

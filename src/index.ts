@@ -1,15 +1,20 @@
 import "reflect-metadata";
-import {createConnection} from "typeorm";
+import {createConnection, getRepository} from "typeorm";
 import logger = require("node-color-log");
 import {readdirSync, readFileSync} from "fs";
 import {resolve as resolvePath, extname} from "path";
 import * as express from "express";
 import {Express, Router} from "express";
-import {Route} from "./routes/Menu";
 import {Config} from "./entity/Config";
 import * as nunjucks from "nunjucks";
 import * as cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
+const session = require("express-session");
+const passport = require("passport");
+import {User} from "./entity/User";
+const LocalStrategy = require("passport-local").Strategy;
+const bcrypt = require('bcrypt');
+
 
 logger.info("Starting The Village");
 
@@ -43,6 +48,43 @@ createConnection().then(async connection => {
         logger.debug(` - Loading : ${file}`);
         require(resolvePath(__dirname, 'routes/', file)).Route(router);
     }
+    app.use(session({secret: "azerty"}));
+    app.use(passport.initialize());
+    app.use(passport.session())
+
+    passport.use(new LocalStrategy(
+        async function (username, password, done){
+            let userRepo = getRepository(User);
+            let user = await userRepo.find({where : {Pseudo : username}});
+            if (user.length === 0){
+                console.log("mauvais pseudo");
+                return done(null, false, {message: "Mauvais pseudo. Veuillez réessayer ou créer un compte."});
+            }
+            else if (! await bcrypt.compare(password, user[0].Password)){
+                bcrypt.hash("mdp", 10, function(err, hash) {
+                    if (err){
+                        logger.error(err.message)
+                    }
+
+                    console.log(hash)
+                });
+                console.log("maucais mdp")
+                return done(null, false, {message: "Mauvais mot de passe. Veuillez réessayer"});
+            }else
+                return done(null, user[0]);
+        }
+    ))
+
+    passport.serializeUser(function(user, done) {
+        done(null, user.id);
+    });
+
+    passport.deserializeUser(async function(id, done) {
+        let userRepo = getRepository(User);
+        let user = await userRepo.findOne(id);
+        return user === undefined ? done("User is undefined") : done(null, user);
+    });
+
     app.use(router);
     logger.info("Routes loaded !");
 

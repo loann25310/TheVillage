@@ -1,0 +1,29 @@
+{% extends "body.twig" %}
+
+{% block title %}Log in{% endblock %}
+
+{% block body %}
+
+    <form method="get">
+        <label>Pseudo
+            <input type="text"  name="pseudo">
+        </label>
+        <label>Nom
+            <input type="text" name="nom">
+        </label>
+        <label>Prénom
+            <input type="text" name="prenom">
+        </label>
+        <label>Adresse mail
+            <input type="text" name="mail">
+        </label>
+        <label>
+            Date de naissance
+            <input type="date" name="ddn">
+        </label>
+
+        <input type="submit">
+
+    </form>
+
+{% endblock %}
