@@ -14,6 +14,8 @@ const passport = require("passport");
 import {User} from "./entity/User";
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require('bcrypt');
+//pour hash le mdp
+const saltRounds = 10;
 
 
 logger.info("Starting The Village");
@@ -48,44 +50,39 @@ createConnection().then(async connection => {
         logger.debug(` - Loading : ${file}`);
         require(resolvePath(__dirname, 'routes/', file)).Route(router);
     }
-    app.use(session({secret: "azerty"}));
+    app.use(session({
+        secret: "azerty",
+        resave: false,
+        saveUninitialized: true
+    }));
     app.use(passport.initialize());
     app.use(passport.session())
+
+    app.use(router);
 
     passport.use(new LocalStrategy(
         async function (username, password, done){
             let userRepo = getRepository(User);
             let user = await userRepo.find({where : {Pseudo : username}});
             if (user.length === 0){
-                console.log("mauvais pseudo");
-                return done(null, false, {message: "Mauvais pseudo. Veuillez réessayer ou créer un compte."});
+                return done(null, false);
             }
             else if (! await bcrypt.compare(password, user[0].Password)){
-                bcrypt.hash("mdp", 10, function(err, hash) {
-                    if (err){
-                        logger.error(err.message)
-                    }
-
-                    console.log(hash)
-                });
-                console.log("maucais mdp")
-                return done(null, false, {message: "Mauvais mot de passe. Veuillez réessayer"});
+                return done(null, false);
             }else
                 return done(null, user[0]);
         }
     ))
-
     passport.serializeUser(function(user, done) {
         done(null, user.id);
-    });
 
+    });
     passport.deserializeUser(async function(id, done) {
         let userRepo = getRepository(User);
         let user = await userRepo.findOne(id);
         return user === undefined ? done("User is undefined") : done(null, user);
-    });
 
-    app.use(router);
+    });
     logger.info("Routes loaded !");
 
     logger.info("Starting http server...");

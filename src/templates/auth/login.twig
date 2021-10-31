@@ -16,9 +16,9 @@
         <input type="submit">
 
     </form>
-        {% if data is defined %}
+        {% if failed == 1 %}
             <div>
-                {{ data }}
+                 Mauvais pseudo ou mot de passe. Réessayez ou créez un compte
             </div>
         {% endif %}
 
