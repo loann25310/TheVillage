@@ -1,7 +1,6 @@
 import {Router} from "express";
 import {getRepository} from "typeorm";
 import {User} from "../entity/User";
-import {log} from "util";
 import * as console from "console";
 const passport = require("passport");
 const bcrypt = require('bcrypt');
@@ -12,16 +11,15 @@ const saltRounds = 10;
 export function Route(router: Router) {
 
     router.get('/auth', (req, res) => {
-        if (req.session['passport']){
+        if (req.session['passport'] && req.session["passport"].user){
             return res.redirect('/');
         }
         res.render('auth/login', {failed: req.query.failed});
     });
 
     router.get('/logout', (req, res) => {
-        if (req.session["passport"])
-            req.session["passport"] = undefined;
-        return res.redirect("/auth");
+        req.logout();
+        return res.redirect("/");
     })
 
     router.get('/auth/inscription', (req, res) => {

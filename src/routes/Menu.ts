@@ -4,9 +4,11 @@ export function Route(router: Router) {
 
     router.get('/', (req, res) => {
 
-        if (!req.session["passport"]){
+        console.log(req.session)
+        if (!(req.session["passport"]) || Object.keys(req.session["passport"]).length === 0){
             return res.redirect('/auth');
         }else {
+            console.log(req.session["passport"])
             res.render('main/menu');
         }
     });
