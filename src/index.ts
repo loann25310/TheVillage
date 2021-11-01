@@ -64,13 +64,12 @@ createConnection().then(async connection => {
         async function (username, password, done){
             let userRepo = getRepository(User);
             let user = await userRepo.find({where : {Pseudo : username}});
-            if (user.length === 0){
-                return done(null, false);
+            for (let i = 0; i < user.length; i++){
+                if (await bcrypt.compare(password, user[i].Password))
+                    return done(null, user[i])
             }
-            else if (! await bcrypt.compare(password, user[0].Password)){
-                return done(null, false);
-            }else
-                return done(null, user[0]);
+            return done(null, false);
+
         }
     ))
     passport.serializeUser(function(user, done) {

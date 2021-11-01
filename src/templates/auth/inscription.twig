@@ -2,28 +2,58 @@
 
 {% block title %}Log in{% endblock %}
 
+{% block stylesheets %}
+
+    <style rel="stylesheet">
+        input{
+            margin: 10px;
+        }
+    </style>
+
+{% endblock %}
+
 {% block body %}
 
-    <form method="get">
+    <form method="post" action="/auth/verifInscription" id="form">
         <label>Pseudo
-            <input type="text"  name="pseudo">
-        </label>
-        <label>Nom
-            <input type="text" name="nom">
-        </label>
+            <input type="text" id="pseudo" name="pseudo" placeholder="Michel123">
+        </label><br>
         <label>Prénom
-            <input type="text" name="prenom">
-        </label>
+            <input type="text" id="prenom" name="prenom" placeholder="Michel">
+        </label><br>
+        <label>Nom
+            <input type="text"  id="nom" name="nom" placeholder="Dupont">
+        </label><br>
         <label>Adresse mail
-            <input type="text" name="mail">
-        </label>
+            <input type="text" id="email" name="mail" placeholder="xyz@exemple.com">
+        </label><br>
         <label>
             Date de naissance
-            <input type="date" name="ddn">
+            <input type="date" id="ddn" name="ddn">
+        </label><br>
+        <label>
+            Mot de passe
+            <input type="password" id="password" name="password">
+        </label><br>
+        <span id="password_verif"></span><br>
+        <label>
+            Mot de passe (vérification)
+            <input type="password" id="password2" name="password2">
         </label>
 
-        <input type="submit">
-
     </form>
+
+    {%  if erreur == 1 %}
+
+    <div>
+        Une erreur est intervenue, veuillez réessayer.
+    </div>
+
+    {%  endif %}
+{% endblock %}
+
+{% block javascripts %}
+
+    <script src="/dist/inscription.js"></script>
 
 {% endblock %}
