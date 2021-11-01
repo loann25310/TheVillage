@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import {createConnection} from "typeorm";
-import logger = require("node-color-log");
+import * as logger from "node-color-log";
 import {readdirSync, readFileSync} from "fs";
 import {resolve as resolvePath, extname} from "path";
 import * as express from "express";
@@ -10,6 +10,8 @@ import {Config} from "./entity/Config";
 import * as nunjucks from "nunjucks";
 import * as cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
+import * as http from "http";
+import { Server } from "socket.io";
 
 logger.info("Starting The Village");
 
@@ -23,6 +25,7 @@ createConnection().then(async connection => {
 
     logger.info("Creating Web Server...");
     const app: Express = express();
+    const httpServer = http.createServer(app);
     app.use(express.json());
     app.use(express.static(__dirname + '/../public'));
     const env = nunjucks.configure(__dirname + '/templates/', {
@@ -34,6 +37,7 @@ createConnection().then(async connection => {
     app.set('view engine', 'twig');
     app.use(cookieParser());
     app.use(bodyParser.urlencoded({ extended: true }));
+    const io = new Server(httpServer);
     logger.info("Web Server created !");
 
     logger.info("Loading routes...");
@@ -41,13 +45,14 @@ createConnection().then(async connection => {
     for (const file of readdirSync(resolvePath(__dirname, 'routes/'))) {
         if(extname(file) !== '.ts') continue;
         logger.debug(` - Loading : ${file}`);
-        require(resolvePath(__dirname, 'routes/', file)).Route(router);
+        require(resolvePath(__dirname, 'routes/', file)).Route(router, io);
     }
     app.use(router);
     logger.info("Routes loaded !");
 
+
     logger.info("Starting http server...");
-    app.listen(config.server.port, config.server.host, () => {
+    httpServer.listen(config.server.port, config.server.host, () => {
         logger.info(`Http server listen on http://${config.server.host}:${config.server.port}`);
     });
 
