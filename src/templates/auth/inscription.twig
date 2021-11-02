@@ -16,20 +16,20 @@
 
     <form method="post" action="/auth/verifInscription" id="form">
         <label>Pseudo
-            <input type="text" id="pseudo" name="pseudo" placeholder="Michel123">
+            <input type="text" id="pseudo" name="pseudo" placeholder="Michel123" {% if pseudo is defined %} value="{{ pseudo }}" {% endif %}>
         </label><br>
         <label>Prénom
-            <input type="text" id="prenom" name="prenom" placeholder="Michel">
+            <input type="text" id="prenom" name="prenom" placeholder="Michel" {% if prenom is defined %} value="{{ pseudo }}" {% endif %}>
         </label><br>
         <label>Nom
-            <input type="text"  id="nom" name="nom" placeholder="Dupont">
+            <input type="text"  id="nom" name="nom" placeholder="Dupont" {% if nom is defined %} value="{{ nom }}" {% endif %}>
         </label><br>
-        <label>Adresse mail
-            <input type="text" id="email" name="mail" placeholder="xyz@exemple.com">
+        <label>Adresse mail (elle servira pour l'authentification)
+            <input type="text" id="email" name="mail" placeholder="xyz@exemple.com" {% if mail is defined %} value="{{ mail }}" {% endif %}>
         </label><br>
         <label>
             Date de naissance
-            <input type="date" id="ddn" name="ddn">
+            <input type="date" id="ddn" name="ddn" {% if ddn is defined %} value="{{ ddn }}" {% endif %}>
         </label><br>
         <label>
             Mot de passe
@@ -45,9 +45,15 @@
 
     {%  if erreur == 1 %}
 
-    <div>
-        Une erreur est intervenue, veuillez réessayer.
-    </div>
+        <div style="color: red">
+            Une erreur est intervenue, veuillez réessayer.
+        </div>
+    {% endif %}
+    {% if erreur == 2 %}
+
+        <div style="color: red">
+            Adresse mail déjà liée à un autre compte.
+        </div>
 
     {%  endif %}
 {% endblock %}

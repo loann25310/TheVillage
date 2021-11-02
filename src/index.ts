@@ -17,6 +17,10 @@ const bcrypt = require('bcrypt');
 //pour hash le mdp
 const saltRounds = 10;
 
+let urlWithoutAuth :string[] = [
+    "/", //autorise seulement la route /
+    "/auth *", //autorise toutes les routes commençant par /auth
+];
 
 logger.info("Starting The Village");
 
@@ -58,12 +62,34 @@ createConnection().then(async connection => {
     app.use(passport.initialize());
     app.use(passport.session())
 
+    app.use((req, res, next) => {
+        if (!req.session["passport"]?.user){
+        for (let i = 0; i < urlWithoutAuth.length; i++) {
+            if (urlWithoutAuth[i].split(" ").length === 1) {
+                if (req["_parsedOriginalUrl"].pathname === urlWithoutAuth[i]) {
+                    return next();
+                }
+            }
+            if (urlWithoutAuth[i].split(" ")[1] === "*") {
+                if (req["_parsedOriginalUrl"].pathname.startsWith(urlWithoutAuth[i].split(" ")[0])) {
+                    return next();
+                }
+            }
+        }
+        res.redirect("/auth")
+    }
+        else next();
+    })
+
     app.use(router);
 
-    passport.use(new LocalStrategy(
-        async function (username, password, done){
+    passport.use(new LocalStrategy({
+            usernameField: 'mail'
+        },
+        async function (mail, password, done){
+            console.log("coucou")
             let userRepo = getRepository(User);
-            let user = await userRepo.find({where : {Pseudo : username}});
+            let user = await userRepo.find({where : {AdresseMail : mail}});
             for (let i = 0; i < user.length; i++){
                 if (await bcrypt.compare(password, user[i].Password))
                     return done(null, user[i])

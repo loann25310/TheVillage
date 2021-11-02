@@ -3,14 +3,9 @@ import {Router} from "express";
 export function Route(router: Router) {
 
     router.get('/', (req, res) => {
-
         console.log(req.session)
-        if (!(req.session["passport"]) || Object.keys(req.session["passport"]).length === 0){
-            return res.redirect('/auth');
-        }else {
-            console.log(req.session["passport"])
-            res.render('main/menu');
-        }
+        res.render('main/menu', {connected: req.session["passport"]?.user});
+
     });
 
     router.get('/loading', (req, res) => {

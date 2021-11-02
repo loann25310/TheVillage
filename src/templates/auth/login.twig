@@ -5,8 +5,8 @@
 {% block body %}
 
     <form method="post" action="/auth/loginRequest">
-        <label>Pseudo
-            <input type="text"  name="username" placeholder="Pseudo">
+        <label>Adresse mail
+            <input type="text"  name="mail" placeholder="xyz@exemple.com" {% if mail is defined %} value="{{ mail }} {% endif %}">
         </label>
         <label>
             Mot de passe
@@ -18,7 +18,7 @@
     </form>
         {% if failed == 1 %}
             <div>
-                 Mauvais pseudo ou mot de passe. Réessayez ou créez un compte
+                 Mauvaise adresse mail ou mot de passe. Réessayez ou créez un compte
             </div>
         {% endif %}
     <a href="/auth/inscription">Créer un compte</a>

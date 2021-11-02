@@ -20,8 +20,8 @@ password.oninput = function (){
     if (!(/^(.*[A-Z].*)$/g.test(password.value)))
         erreurs.push("une lettre majuscule");
 
-    if (!(/^(.*[!@#$&*].*)$/g.test(password.value)))
-        erreurs.push("un caratère spécial");
+    if (!(/^(.*[!@#$&*+°()=-].*)$/g.test(password.value)))
+        erreurs.push("un caratère spécial ( ! @ # $ & * + ° ( ) = - )");
 
     if (!(/^(.*[0-9].*)$/g.test(password.value)))
         erreurs.push("un chiffre");
@@ -64,7 +64,7 @@ document.oninput = function () {
 
     if (
         document.getElementById("pseudo").value.length > 0 &&
-        document.getElementById("prenom").value.length > 2 &&
+        document.getElementById("prenom").value.length > 0 &&
         document.getElementById("nom").value.length > 0 &&
         email_regex.test(document.getElementById("email").value) &&
         document.getElementById("ddn").value.length === 10 &&

@@ -4,5 +4,9 @@
 
 {% block body %}
     123 456 : {{ variable }}
-    <a href="/logout">Se déconnecter</a>
+    {% if connected is defined %}
+         <a href="/logout">Se déconnecter</a>
+    {% else %}
+        <a href="/auth">Se connecter</a>
+    {% endif %}
 {% endblock %}
