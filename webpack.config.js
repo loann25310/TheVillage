@@ -6,6 +6,7 @@ module.exports = {
         app: './src/scripts/app.ts',
         chargement: './src/scripts/chargement.js',
         inscription: './src/scripts/inscription.js'
+        game: './src/scripts/game.ts',
     },
     output: {
         path: path.resolve(__dirname, 'public/dist'),
