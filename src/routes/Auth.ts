@@ -1,7 +1,6 @@
 import {Router} from "express";
 import {getRepository} from "typeorm";
 import {User} from "../entity/User";
-import logger from "node-color-log";
 import * as console from "console";
 import {RecuperationEmail} from "../entity/RecuperationEmail";
 const passport = require("passport");
@@ -48,26 +47,26 @@ export function Route(router: Router) {
             }
 
             const repo = getRepository(User)
-            let u = await repo.find({AdresseMail: req.body.mail})
+            let u = await repo.find({adresseMail: req.body.mail})
             if (u.length !== 0){
                 return res.redirect(`/auth/inscription?erreur=2&pseudo=${req.body.pseudo}&prenom=${req.body.prenom}&nom=${req.body.nom}&mail=${req.body.mail}&ddn=${req.body.ddn}`)
             }
             let user = new User();
-            user.Pseudo = req.body.pseudo;
-            user.Password = hash;
-            user.Nom = req.body.nom;
-            user.Prenom = req.body.prenom;
-            user.AdresseMail = req.body.mail;
-            user.DateDeNaissance = req.body.ddn;
-            user.Niveau = 1;
-            user.Argent = 0;
-            user.NbPartiesGagnees = 0;
-            user.NbPartiesJouees = 0;
-            user.Succes = []
-            user.Skins = []
+            user.pseudo = req.body.pseudo;
+            user.password = hash;
+            user.nom = req.body.nom;
+            user.prenom = req.body.prenom;
+            user.adresseMail = req.body.mail;
+            user.dateDeNaissance = req.body.ddn;
+            user.niveau = 1;
+            user.argent = 0;
+            user.nbPartiesGagnees = 0;
+            user.nbPartiesJouees = 0;
+            user.succes = []
+            user.skins = []
             repo.save(user).then((r) => {
                 console.log(JSON.stringify(r));
-                return res.redirect("/auth?mail=" + user.AdresseMail);
+                return res.redirect("/auth?mail=" + user.adresseMail);
             });
 
         })
@@ -79,7 +78,7 @@ export function Route(router: Router) {
 
     router.post("/auth/envoyerMail", async (req, res) => {
         let repo = getRepository(User);
-        let user = await repo.find({where: {AdresseMail: req.body.mail}})
+        let user = await repo.find({where: {adresseMail: req.body.mail}})
         if (user.length === 0){
             return res.redirect("/auth/getPassword?erreur = 1")
         }

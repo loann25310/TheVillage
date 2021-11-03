@@ -7,11 +7,11 @@ export class Succes {
     id: number;
 
     @Column()
-    Nom: string;
+    nom: string;
 
     @Column()
-    Description: string;
+    description: string;
 
     @Column()
-    NombreAAtteindre: number;
+    nombreAAtteindre: number;
 }

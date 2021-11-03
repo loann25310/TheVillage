@@ -9,39 +9,39 @@ export class User {
     id: number;
 
     @Column()
-    Pseudo: string;
+    pseudo: string;
 
     @Column()
-    Password :string;
+    password :string;
 
     @Column()
-    Nom: string;
+    nom: string;
 
     @Column()
-    Prenom: string;
+    prenom: string;
 
     @Column()
-    AdresseMail: string;
+    adresseMail: string;
 
     @Column("date")
-    DateDeNaissance :string;
+    dateDeNaissance :string;
 
     @Column()
-    Niveau :number;
+    niveau :number;
 
     @Column()
-    Argent :number;
+    argent :number;
 
     @Column()
-    NbPartiesGagnees :number;
+    nbPartiesGagnees :number;
 
     @Column()
-    NbPartiesJouees :number;
+    nbPartiesJouees :number;
 
     @ManyToMany(() => Succes)
-    Succes :Succes[];
+    succes :Succes[];
 
     @ManyToMany(() => Skin)
-    Skins : Skin[];
+    skins : Skin[];
 }
 

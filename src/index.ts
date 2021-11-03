@@ -97,9 +97,9 @@ createConnection().then(async connection => {
         async function (mail, password, done){
             console.log("coucou")
             let userRepo = getRepository(User);
-            let user = await userRepo.find({where : {AdresseMail : mail}});
+            let user = await userRepo.find({where : {adresseMail : mail}});
             for (let i = 0; i < user.length; i++){
-                if (await bcrypt.compare(password, user[i].Password))
+                if (await bcrypt.compare(password, user[i].password))
                     return done(null, user[i])
             }
             return done(null, false);
