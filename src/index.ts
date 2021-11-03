@@ -17,9 +17,17 @@ const bcrypt = require('bcrypt');
 //pour hash le mdp
 const saltRounds = 10;
 
+/**
+ * Pour autoriser une route sans être authentifié :
+ * ajouter le nom de la route toute seule ,
+ * ou ajouter le nom de la route avec ` *` à la fin pour autoriser **TOUTES** les routes commençant par ça. (exemple : `/auth *`)
+ *
+ * __Rappel__ :
+ * Si vous devez passer par une route post pour traiter une requête et rediriger l'utilisateur, il faut **aussi** l'autoriser à accéder à cette route
+ */
 let urlWithoutAuth :string[] = [
-    "/", //autorise seulement la route /
-    "/auth *", //autorise toutes les routes commençant par /auth
+    "/",
+    "/auth *",
 ];
 
 logger.info("Starting The Village");

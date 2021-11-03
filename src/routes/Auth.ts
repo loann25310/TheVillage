@@ -3,6 +3,7 @@ import {getRepository} from "typeorm";
 import {User} from "../entity/User";
 import logger from "node-color-log";
 import * as console from "console";
+import {RecuperationEmail} from "../entity/RecuperationEmail";
 const passport = require("passport");
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
@@ -83,7 +84,25 @@ export function Route(router: Router) {
             return res.redirect("/auth/getPassword?erreur = 1")
         }
 
-        let code = "AXBCD"
+        function get_code() {
+            let code: string = "";
+            for (let i = 0; i < 6; i++) {
+                code += ("" + Math.random() * 10)
+            }
+            return code;
+        }
+
+        const code_repo = getRepository(RecuperationEmail)
+        let code = get_code();
+        while ((await code_repo.find({where: {code: code}})).length !== 0){
+            code = get_code();
+            console.log("new code needed")
+        }
+
+        let c = new RecuperationEmail();
+        c.code = code;
+        c.email = req.body.mail;
+        await code_repo.save(c);
 
         const transporter = nodemailer.createTransport({
             service: "gmail",
@@ -107,7 +126,7 @@ export function Route(router: Router) {
             }
             else if (info) {
                 console.log(`Email sent to ${req.body.mail} : ${info.response}`);
-                return res.redirect("/auth")
+                return res.redirect("/auth/")
             }
         })
     })
