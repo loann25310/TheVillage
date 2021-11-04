@@ -100,7 +100,7 @@ export function Route(router: Router) {
         }
 
         console.log("envoi du mail")
-        await envoyerMail(user[0], req.body.mail, (err, info) => {
+        await envoyerMail(req, user[0], req.body.mail, (err, info) => {
             console.log("mail envoyé ?")
             if (err)
                 res.redirect("/auth/getPassword?erreur=1")

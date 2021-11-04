@@ -3,7 +3,7 @@ import {User} from "../entity/User";
 import {RecuperationEmail} from "../entity/RecuperationEmail";
 const nodemailer = require("nodemailer")
 
-export async function envoyerMail(user :User, mail: string, callback){
+export async function envoyerMail(req, user :User, mail: string, callback){
     async function get_code() {
         let code: string = "";
         for (let i = 0; i < 6; i++) {
@@ -37,8 +37,8 @@ export async function envoyerMail(user :User, mail: string, callback){
     const mailOptions = {
         from: "the.village.dont.trust.anyone@gmail.com",
         to: mail,
-        subject: "Récupération de mot de passe",
-        text: "voici le code nécessaire à la récupération de votre mot de passe : " + code
+        subject: `Code : [${code}]`,
+        text: `Voici le code nécessaire à la récupération de votre mot de passe : ${code}.\n Connectez vous via ce lien : ${req.protocol + '://' + req.get('host')}/auth/changePassword?mail=${mail}&code=${code}`
     };
 
     transporter.sendMail(mailOptions, (err, info) => {
