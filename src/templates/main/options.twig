@@ -1,0 +1,16 @@
+{% extends "body.twig" %}
+
+{% block title %}
+    Options
+{% endblock %}
+
+{% block body %}
+    <button class="retour" type="button">Retour</button>
+
+    <button class="changement_information" type="button">changer le pseudo</button>
+    <button class="changement_information" type="button">changer l'adresse mail</button>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/dist/options.js" type="text/javascript"></script>
+{% endblock %}
