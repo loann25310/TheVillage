@@ -3,25 +3,34 @@
 {% block title %}Log in{% endblock %}
 
 {% block body %}
-
+    <div class="authentification">
     <form method="post" action="/auth/loginRequest">
-        <label>Adresse mail
-            <input type="text"  name="mail" placeholder="xyz@exemple.com" {% if mail is defined %} value="{{ mail }} {% endif %}">
-        </label>
-        <label>
-            Mot de passe
+        <h1>Connexion</h1>
+        <label>Adresse mail<br>
+            <input type="text"  name="mail" placeholder="Adresse mail" {% if mail is defined %} value="{{ mail }} {% endif %}">
+        </label><br>
+        <br><label>
+            Mot de passe<br>
             <input type="password" name="password" placeholder="Mot de passe">
-        </label>
-
-        <input type="submit">
+        </label><br>
+        <br>
+        <input type="submit" value="Valider">
 
     </form>
+        <br>
         {% if failed == 1 %}
-            <div>
-                 Mauvaise adresse mail ou mot de passe. Réessayez ou créez un compte
+            <div class="erreur">
+                 Mauvaise adresse mail ou mot de passe. Réessayez ou créez un compte.
             </div>
         {% endif %}
-    <a href="/auth/inscription">Créer un compte</a><br>
-    <span>Vous avez oublié votre mot de passe ?</span> <a href="/auth/getPassword">Récupérer mon mot de passe</a>
+    <a href="/auth/inscription">Créer un compte</a>
+    <a href="/auth/getPassword">Récupérer mon mot de passe</a>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script src="/dist/login.js"></script>
 
 {% endblock %}

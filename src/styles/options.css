@@ -1,10 +1,69 @@
 body {
-    background-color: #313131;
+    background-color: #280000;
+    font-size: 25px;
+    color: white;
+}
+
+h1 {
+    margin-top: 50px;
+    margin-bottom: 5px;
+    font-size: 32px;
+    font-weight: bold;
 }
 
 .retour {
-    background-color: black;
-    size:auto;
-    color: white;
-    border-radius: 20%;
+    border-radius: 20px;
+    padding: 10px 15px;
+    font-size: 15px;
+}
+
+.retour:hover {
+    background-color: #a4a4a4;
+}
+
+.color-green {
+    color: green;
+}
+
+.color-red {
+    color: red;
+}
+
+.color-blue {
+    color: deepskyblue;
+}
+
+.changement_information {
+    background-color: #a40202;
+    border: solid;
+    border-radius: 25px;
+    padding: 0.5% 1.5%;
+    margin-top: 5px;
+    font-size: 20px;
+}
+
+.changement_information:hover {
+    background-color: #ff0000;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+#son {
+    height: 50px;
+    width: 50px;
+    background-color: #fff;
+    border-radius: 20px;
+    font-size: 24px;
+}
+
+#son:hover {
+    background-color: #d3d3d3;
+}
+
+.grid {
+    display: grid;
+    align-items: center;
+    justify-items: center;
 }

@@ -1,0 +1,46 @@
+body {
+    background-color: #280000;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+}
+
+input {
+    height: 36px;
+    width: 200px;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+h1 {
+    margin: 0 0 15px 0;
+}
+
+label {
+    font-size: 18px;
+}
+
+.authentification {
+    align-items: center;
+    justify-items: center;
+    text-align: center;
+    background-color: white;
+    display: grid;
+    width: 400px;
+    margin-top: 3%;
+    padding: 30px 30px;
+}
+
+.erreur {
+    color: #ff0000;
+    font-weight: bold;
+}
+
+a {
+    color: #4b4b4b;
+    font-weight: bold;
+}
+
+a:hover {
+    color: black;
+}

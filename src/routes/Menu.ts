@@ -1,4 +1,6 @@
 import {Router} from "express";
+import {User} from "../entity/User";
+import {getRepository} from "typeorm";
 
 export function Route(router: Router) {
 
@@ -12,4 +14,28 @@ export function Route(router: Router) {
         res.render('main/chargement');
     });
 
+    router.get('/options', (req, res) => {
+        console.log(req.user);
+        res.render('main/options', {
+            user: req.user
+        });
+    });
+
+    router.put('/options/pseudo', async (req, res) => {
+       let user = req.user as User;
+       user.Pseudo = req.body.pseudo;
+       await getRepository(User).save(user);
+       res.send({
+           result: "ok"
+       });
+   });
+
+    router.put('/options/email', async (req, res) => {
+        let user = req.user as User;
+        user.AdresseMail = req.body.email;
+        await getRepository(User).save(user);
+        res.send({
+            result: "ok"
+        });
+    });
 }

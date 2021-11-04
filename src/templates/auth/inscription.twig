@@ -3,7 +3,6 @@
 {% block title %}Log in{% endblock %}
 
 {% block stylesheets %}
-
     <style rel="stylesheet">
         input{
             margin: 10px;
@@ -13,49 +12,55 @@
 {% endblock %}
 
 {% block body %}
+    <div class="authentification">
+        <form method="post" action="/auth/verifInscription" id="form">
+            <h1>Inscription</h1>
 
-    <form method="post" action="/auth/verifInscription" id="form">
-        <label>Pseudo
-            <input type="text" id="pseudo" name="pseudo" placeholder="Michel123" {% if pseudo is defined %} value="{{ pseudo }}" {% endif %}>
-        </label><br>
-        <label>Prénom
-            <input type="text" id="prenom" name="prenom" placeholder="Michel" {% if prenom is defined %} value="{{ pseudo }}" {% endif %}>
-        </label><br>
-        <label>Nom
-            <input type="text"  id="nom" name="nom" placeholder="Dupont" {% if nom is defined %} value="{{ nom }}" {% endif %}>
-        </label><br>
-        <label>Adresse mail (elle servira pour l'authentification)
-            <input type="text" id="email" name="mail" placeholder="xyz@exemple.com" {% if mail is defined %} value="{{ mail }}" {% endif %}>
-        </label><br>
-        <label>
-            Date de naissance
-            <input type="date" id="ddn" name="ddn" {% if ddn is defined %} value="{{ ddn }}" {% endif %}>
-        </label><br>
-        <label>
-            Mot de passe
-            <input type="password" id="password" name="password">
-        </label><br>
-        <span id="password_verif"></span><br>
-        <label>
-            Mot de passe (vérification)
-            <input type="password" id="password2" name="password2">
-        </label>
+            <label>Pseudo<br>
+                <input type="text" id="pseudo" name="pseudo" placeholder="Pseudo" {% if pseudo is defined %} value="{{ pseudo }}" {% endif %}>
+            </label><br>
 
-    </form>
+            <label>Prénom<br>
+                <input type="text" id="prenom" name="prenom" placeholder="Prénom" {% if prenom is defined %} value="{{ pseudo }}" {% endif %}>
+            </label><br>
 
-    {%  if erreur == 1 %}
+            <label>Nom<br>
+                <input type="text"  id="nom" name="nom" placeholder="Nom" {% if nom is defined %} value="{{ nom }}" {% endif %}>
+            </label><br>
 
-        <div style="color: red">
-            Une erreur est intervenue, veuillez réessayer.
-        </div>
-    {% endif %}
-    {% if erreur == 2 %}
+            <label>Adresse mail<br>
+                <input type="text" id="email" name="mail" placeholder="Adresse mail" {% if mail is defined %} value="{{ mail }}" {% endif %}>
+            </label><br>
 
-        <div style="color: red">
-            Adresse mail déjà liée à un autre compte.
-        </div>
+            <label>Date de naissance<br>
+                <input type="date" id="ddn" name="ddn" {% if ddn is defined %} value="{{ ddn }}" {% endif %}>
+            </label><br>
+
+            <label>Mot de passe<br>
+                <input type="password" id="password" name="password" placeholder="Mot de passe">
+            </label><br>
+
+            <label>Confirmer mot de passe<br>
+                <input type="password" id="password2" name="password2" placeholder="Confirmer mot de passe">
+            </label>
+
+        </form>
+        <span id="password_verif"></span>
+
+        {%  if erreur == 1 %}
+
+            <div class="erreur">
+                Une erreur est intervenue, veuillez réessayer.
+            </div>
+        {% endif %}
+        {% if erreur == 2 %}
+
+            <div class="erreur">
+                Adresse mail déjà liée à un autre compte.
+            </div>
 
     {%  endif %}
+    </div>
 {% endblock %}
 
 {% block javascripts %}

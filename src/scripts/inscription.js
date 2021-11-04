@@ -1,3 +1,5 @@
+import "../styles/authentification.css";
+
 let password = document.getElementById("password");
 let password2 = document.getElementById("password2");
 
@@ -74,6 +76,7 @@ document.oninput = function () {
         let valider = document.createElement("input")
         valider.type = "submit"
         valider.id = "valider"
+        valider.value = "Valider"
         document.getElementById("form").appendChild(valider)
     }
 }

@@ -5,10 +5,23 @@
 {% endblock %}
 
 {% block body %}
-    <button class="retour" type="button">Retour</button>
+    <p><button class="retour" type="button">< Retour</button></p>
+    <div class="grid">
+        <button id="son">
+            <i class="fas fa-volume-up color-green"></i>
+        </button>
 
-    <button class="changement_information" type="button">changer le pseudo</button>
-    <button class="changement_information" type="button">changer l'adresse mail</button>
+        <h1>Pseudo</h1>
+            <span id="pseudo">{{ user.Pseudo }}</span>
+            <button id="changeusername" class="changement_information" type="button">changer le pseudo</button>
+
+        <h1>Adresse mail</h1>
+            <span id="email"> {{ user.AdresseMail }}</span>
+            <button id="changeemail" class="changement_information" type="button">changer l'adresse mail</button>
+
+        <h1>Mot de passe</h1>
+    <button id="changepassword" class="changement_information" type="button">changer le mot de passe</button>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
