@@ -1,0 +1,34 @@
+{% extends "body.twig" %}
+
+{% block title %}Game{% endblock %}
+
+{% block body %}
+  <style>
+    body {
+      margin: 0;
+    }
+    canvas {
+      position: absolute;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+    }
+
+    .debug {
+      font-family: 'Roboto', sans-serif;
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.6);
+      padding: 6px 15px;
+      z-index: 500;
+    }
+  </style>
+  <div class="debug">
+    <p>Origine : <span class="origine"></span></p>
+    <p>Coordonnées : <span class="coordinate"></span></p>
+  </div>
+  <canvas id="mainCanvas" width="100%" height="100%"></canvas>
+{% endblock %}
+
+{% block javascripts %}
+  <script src="/dist/game.js"></script>
+{% endblock %}
