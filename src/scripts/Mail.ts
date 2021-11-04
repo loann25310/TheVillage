@@ -19,6 +19,8 @@ export async function envoyerMail(user :User, mail: string, callback){
     const code_repo = getRepository(RecuperationEmail)
     let code = await get_code();
 
+    await code_repo.delete({email: mail})
+
     let c = new RecuperationEmail();
     c.code = code;
     c.email = mail

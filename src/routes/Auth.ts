@@ -2,7 +2,7 @@ import {Router} from "express";
 import {getRepository} from "typeorm";
 import {User} from "../entity/User";
 import * as console from "console";
-import {envoyerMail} from "../scripts/Auth";
+import {envoyerMail} from "../scripts/Mail";
 import {verifMdp} from "../scripts/VerifMdp"
 import {RecuperationEmail} from "../entity/RecuperationEmail";
 const passport = require("passport");
