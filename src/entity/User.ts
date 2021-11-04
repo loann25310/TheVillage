@@ -15,12 +15,6 @@ export class User {
     password :string;
 
     @Column()
-    nom: string;
-
-    @Column()
-    prenom: string;
-
-    @Column()
     adresseMail: string;
 
     @Column("date")

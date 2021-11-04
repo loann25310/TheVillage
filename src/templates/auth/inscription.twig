@@ -18,12 +18,6 @@
         <label>Pseudo
             <input type="text" id="pseudo" name="pseudo" placeholder="Michel123" {% if pseudo is defined %} value="{{ pseudo }}" {% endif %}>
         </label><br>
-        <label>Prénom
-            <input type="text" id="prenom" name="prenom" placeholder="Michel" {% if prenom is defined %} value="{{ pseudo }}" {% endif %}>
-        </label><br>
-        <label>Nom
-            <input type="text"  id="nom" name="nom" placeholder="Dupont" {% if nom is defined %} value="{{ nom }}" {% endif %}>
-        </label><br>
         <label>Adresse mail (elle servira pour l'authentification)
             <input type="text" id="email" name="mail" placeholder="xyz@exemple.com" {% if mail is defined %} value="{{ mail }}" {% endif %}>
         </label><br>

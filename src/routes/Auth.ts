@@ -31,8 +31,6 @@ export function Route(router: Router) {
         }
         res.render('auth/inscription', {
             erreur: req.query.erreur,
-            prenom: req.query.prenom,
-            nom: req.query.nom,
             pseudo: req.query.pseudo,
             mail: req.query.mail,
             ddn: req.query.ddn,
@@ -47,12 +45,10 @@ export function Route(router: Router) {
             verifMdp(_.password) !== "" ||
             _.password !== _.password2 ||
             _.pseudo.length === 0 ||
-            _.prenom.length === 0 ||
-            _.nom.length === 0 ||
             !(email_regex.test(_.mail)) ||
             _.ddn.length !== 10
         ) {
-            return res.redirect(`/auth/inscription?missed=1&pseudo=${req.body.pseudo}&prenom=${req.body.prenom}&nom=${req.body.nom}&mail=${req.body.mail}&ddn=${req.body.ddn}`)
+            return res.redirect(`/auth/inscription?missed=1&pseudo=${req.body.pseudo}&mail=${req.body.mail}&ddn=${req.body.ddn}`)
         }
 
         bcrypt.hash(req.body.password, saltRounds, async (err, hash) =>{
@@ -65,13 +61,11 @@ export function Route(router: Router) {
             const repo = getRepository(User)
             let u = await repo.find({adresseMail: req.body.mail})
             if (u.length !== 0){
-                return res.redirect(`/auth/inscription?erreur=2&pseudo=${req.body.pseudo}&prenom=${req.body.prenom}&nom=${req.body.nom}&mail=${req.body.mail}&ddn=${req.body.ddn}`)
+                return res.redirect(`/auth/inscription?erreur=2&pseudo=${req.body.pseudo}&mail=${req.body.mail}&ddn=${req.body.ddn}`)
             }
             let user = new User();
             user.pseudo = req.body.pseudo;
             user.password = hash;
-            user.nom = req.body.nom;
-            user.prenom = req.body.prenom;
             user.adresseMail = req.body.mail;
             user.dateDeNaissance = req.body.ddn;
             user.niveau = 1;
