@@ -5,7 +5,8 @@ module.exports = {
     entry: {
         app: './src/scripts/app.ts',
         chargement: './src/scripts/chargement.js',
-        inscription: './src/scripts/inscription.js'
+        inscription: './src/scripts/inscription.js',
+        verifCode: "./src/scripts/verifCode.ts"
     },
     output: {
         path: path.resolve(__dirname, 'public/dist'),
