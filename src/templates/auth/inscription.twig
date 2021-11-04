@@ -40,7 +40,7 @@
             Mot de passe (vérification)
             <input type="password" id="password2" name="password2">
         </label>
-
+        <input type="submit" value="valider">
     </form>
 
     {%  if erreur == 1 %}
@@ -56,6 +56,14 @@
         </div>
 
     {%  endif %}
+
+    {% if missed is defined %}
+
+        <div style="color: red">
+            Vérifiez que tous les champs soient remplis comme il faut.
+        </div>
+
+    {% endif %}
 {% endblock %}
 
 {% block javascripts %}
