@@ -31,6 +31,7 @@ const saltRounds = 10;
 let urlWithoutAuth :string[] = [
     "/",
     "/auth *",
+    "/credits *"
 ];
 
 logger.info("Starting The Village");

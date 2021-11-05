@@ -1,4 +1,5 @@
 import {Router} from "express";
+import {getLibs} from "../scripts/libs";
 
 export function Route(router: Router) {
 
@@ -12,4 +13,9 @@ export function Route(router: Router) {
         res.render('main/chargement');
     });
 
+    router.get("/credits", async(req, res) => {
+        let libs = await getLibs();
+        console.log({lib: JSON.stringify(libs)})
+        res.render("main/credits", {lib: JSON.stringify(libs)})
+    })
 }

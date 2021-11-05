@@ -1,0 +1,58 @@
+html, body{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+body{
+    background-image: url("/public/img/spooky.png");
+    background-size: cover;
+
+}
+#container{
+    top:0;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background-color: #000000A0;
+    align-items: center;
+    child-align: middle;
+}
+
+h1{
+    width: 100%;
+    text-align: center;
+}
+
+.up{
+    position: absolute;
+    bottom: 0;
+    color: white;
+    animation: goUp linear;
+    animation-duration: 7.2s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes goUp {
+    from{
+        top: 100%;
+        display: flex;
+    }
+    to{
+        top: -25%;
+        display: none;
+    }
+}
+div{
+    font-size: 1.2em;
+    text-align: center;
+    width: 100%;
+}
+
+#lib{
+    display: none;
+}
+
+small{
+    font-size: 0.7em !important;
+}
