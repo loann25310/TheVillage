@@ -10,7 +10,6 @@ export async function getLibs(){
     }
 
     for (const lib in libs){
-        console.log(lib)
         try {
             let file = await fs.readFileSync(`${__dirname}/../../node_modules/${lib}/LICENSE`, {
                 encoding: 'utf-8',
@@ -35,6 +34,5 @@ export async function getLibs(){
         }
 
     }
-    console.log("l : " + JSON.stringify(l))
     return l;
 }

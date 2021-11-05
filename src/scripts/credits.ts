@@ -5,7 +5,6 @@ let index = 0,
     index_2 = 0,
     wait = 0,
     lib = JSON.parse($("#lib").text())
-console.log(JSON.stringify(lib))
 
 const display = [
     {
