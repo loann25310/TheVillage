@@ -7,7 +7,8 @@ module.exports = {
         chargement: './src/scripts/chargement.js',
         inscription: './src/scripts/inscription.ts',
         verifCode: "./src/scripts/verifCode.ts",
-        game: './src/scripts/game.ts'
+        game: './src/scripts/game.ts',
+        credits: "./src/scripts/credits.ts"
     },
     output: {
         path: path.resolve(__dirname, 'public/dist'),
