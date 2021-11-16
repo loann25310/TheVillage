@@ -32,6 +32,9 @@ export class User {
     @Column()
     nbPartiesJouees :number;
 
+    @Column()
+    partie: number;
+
     @ManyToMany(() => Succes)
     succes :Succes[];
 
