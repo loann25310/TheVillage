@@ -5,7 +5,7 @@ module.exports = {
     entry: {
         app: './src/scripts/app.ts',
         chargement: './src/scripts/chargement.js',
-        inscription: './src/scripts/inscription.js',
+        inscription: './src/scripts/inscription.ts',
         game: './src/scripts/game.ts',
         lobby_client: './src/scripts/lobby_client.ts',
         verifCode: "./src/scripts/verifCode.ts",

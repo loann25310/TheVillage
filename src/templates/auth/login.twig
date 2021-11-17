@@ -6,7 +6,7 @@
 
     <form method="post" action="/auth/loginRequest">
         <label>Adresse mail
-            <input type="text"  name="mail" placeholder="xyz@exemple.com" {% if mail is defined %} value="{{ mail }} {% endif %}">
+            <input type="text"  name="mail" placeholder="xyz@exemple.com" {% if mail is defined %} value="{{ mail }}{% endif %}">
         </label>
         <label>
             Mot de passe

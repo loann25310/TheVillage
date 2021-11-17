@@ -20,19 +20,29 @@ export class User {
     @Column("date")
     dateDeNaissance :string;
 
-    @Column()
+    @Column({
+        default: 1
+    })
     niveau :number;
 
-    @Column()
+    @Column({
+        default: 0
+    })
     argent :number;
 
-    @Column()
+    @Column({
+        default: 0
+    })
     nbPartiesGagnees :number;
 
-    @Column()
+    @Column({
+        default: 0
+    })
     nbPartiesJouees :number;
 
-    @Column()
+    @Column({
+        default: 0
+    })
     partie: number;
 
     @ManyToMany(() => Succes)

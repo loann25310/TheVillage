@@ -13,13 +13,13 @@
         #messages { list-style-type: none; margin: 0; padding: 0; }
         #messages > li { padding: 0.5rem 1rem; }
         #messages > li:nth-child(odd) { background: #efefef; }
-    </style>
-    <h1 id="connection">Hey</h1>
+        .invisible {display: none;}
+</style>
+    <h1 id="connection">{{ user.pseudo }}</h1>
     <ul id="messages"></ul>
-    <form id="form" action="">
-        <input id="input" autocomplete="off" /><button>Send</button>
-    </form>
-    <p id="id" style="display: none">{{ user.id }}</p>
+    <div id="form"><label for="input"></label><input id="input" autocomplete="off"><button id="sendMessage">Send</button></div>
+    <p id="id" class="invisible">{{ user.id }}</p>
+    <p id="roomName" class="invisible"></p>
 
 {% endblock %}
 

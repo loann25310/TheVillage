@@ -18,7 +18,8 @@ export function Route(router: Router) {
         if (req.session['passport'] && req.session["passport"].user){
             return res.redirect('/');
         }
-        res.render('auth/login', {failed: req.query.failed, mail: req.query.mail});
+        let mail = req.query.mail;
+        res.render('auth/login', {failed: req.query.failed, mail: mail});
     });
 
     router.get('/logout', (req, res) => {
@@ -69,17 +70,13 @@ export function Route(router: Router) {
             user.password = hash;
             user.adresseMail = req.body.mail;
             user.dateDeNaissance = req.body.ddn;
-            user.niveau = 1;
-            user.argent = 0;
-            user.nbPartiesGagnees = 0;
-            user.nbPartiesJouees = 0;
             user.succes = []
             user.skins = []
+            user.partie = 0;
             repo.save(user).then((r) => {
                 console.log(JSON.stringify(r));
                 return res.redirect("/auth?mail=" + user.adresseMail);
             });
-
         })
     })
 
