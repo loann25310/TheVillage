@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <p><button class="retour" type="button">< Retour</button></p>
+    <button class="retour" id="retour" type="button">< Retour</button>
     <div class="grid">
         <button id="son">
             <i class="fas fa-volume-up color-green"></i>
@@ -16,7 +16,7 @@
             <button id="changeusername" class="changement_information" type="button">changer le pseudo</button>
 
         <h1>Adresse mail</h1>
-            <span id="email"> {{ user.AdresseMail }}</span>
+            <span id="email">{{ user.AdresseMail }}</span>
             <button id="changeemail" class="changement_information" type="button">changer l'adresse mail</button>
 
         <h1>Mot de passe</h1>

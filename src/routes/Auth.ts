@@ -137,4 +137,11 @@ export function Route(router: Router) {
         successRedirect: '/',
         failureRedirect: '/auth?failed=1'
     }));
+
+
+    router.get('/auth/getPassword', (req, res) => {
+        console.log("test Auth");
+        let email = req.query.email;
+        res.render('/auth/getPassword', {email: email});
+    });
 }

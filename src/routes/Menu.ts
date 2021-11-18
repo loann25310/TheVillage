@@ -15,7 +15,6 @@ export function Route(router: Router) {
     });
 
     router.get('/options', (req, res) => {
-        console.log(req.user);
         res.render('main/options', {
             user: req.user
         });
@@ -38,4 +37,11 @@ export function Route(router: Router) {
             result: "ok"
         });
     });
+
+    router.get('/profil', (req, res) => {
+        res.render('main/profil', {
+            user: req.user
+        });
+    });
+
 }

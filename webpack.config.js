@@ -7,7 +7,9 @@ module.exports = {
         chargement: './src/scripts/chargement.js',
         inscription: './src/scripts/inscription.js',
         login: './src/scripts/login.js',
-        options: './src/scripts/options.ts'
+        options: './src/scripts/options.ts',
+        profil: './src/scripts/profil.ts',
+        getPassword: './src/scripts/getPassword.ts'
     },
     output: {
         path: path.resolve(__dirname, 'public/dist'),

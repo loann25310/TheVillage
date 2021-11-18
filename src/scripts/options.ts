@@ -5,6 +5,17 @@ import '@fortawesome/fontawesome-free/js/fontawesome'
 import '@fortawesome/fontawesome-free/js/solid'
 import '@fortawesome/fontawesome-free/js/regular'
 import '@fortawesome/fontawesome-free/js/brands'
+import {getRepository} from "typeorm";
+import {User} from "../entity/User";
+
+//let session = require('express-session');
+let bcrypt = require('bcryptjs');
+
+let email = $("#email").text();
+
+$("#retour").click(() => {
+    history.back();
+});
 
 $("#son").click(function(){
     let icon = $(this).children();
@@ -18,7 +29,7 @@ $("#son").click(function(){
 });
 
 $("#changepassword").click(() => {
-    window.location.href = "../auth/getPassword";
+    window.location.href = "../auth/getPassword?email="+$("#email").text();
 });
 
 $("#changeusername").click(async () => {
@@ -44,17 +55,38 @@ $("#changeemail").click(async () => {
     let result = await Swal.fire({
         title: 'Modifier votre adresse mail',
         input: "email",
+        inputLabel: 'Adresse mail',
+        inputPlaceholder: 'Nouvelle adresse mail',
         confirmButtonText: "<i class=\"fas fa-save color-blue\"></i> Sauvegarder",
         showCancelButton: true,
         cancelButtonText: "<i class=\"fas fa-times color-red\"></i> Annuler"
     });
-    if(!result.isConfirmed) return;
-    await $.ajax({
-        url: "/options/email",
-        method: "PUT",
-        data: {
-            email: result.value
-        }
+    if (!result.isConfirmed) return;
+    let resultPassword = await Swal.fire({
+        title: 'Entrez votre mot de passe',
+        input: "password",
+        inputLabel: 'Mot de passe',
+        inputPlaceholder: 'Entrez votre mot de passe',
+        confirmButtonText: "<i class=\"fas fa-save color-blue\"></i> Valider",
+        showCancelButton: true,
+        cancelButtonText: "<i class=\"fas fa-times color-red\"></i> Annuler"
     });
-    $("#email").text(result.value);
-});
+    if (!resultPassword.isConfirmed) return;
+
+    else {
+        let userRepo = getRepository(User);
+        let user = await userRepo.find({where : {AdresseMail : email}});
+        for (let i = 0; i < user.length; i++) {
+            if (await bcrypt.compare(resultPassword, user[i].Password)) {
+                await $.ajax({
+                    url: "/options/email",
+                    method: "PUT",
+                    data: {
+                        email: result.value
+                    }
+                });
+                $("#email").text(result.value);
+            }
+        }
+    }
+})

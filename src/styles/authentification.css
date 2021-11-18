@@ -1,8 +1,12 @@
 body {
     background-color: #280000;
+}
+
+.grid {
     display: grid;
     justify-items: center;
     align-items: center;
+    margin-top: 3%;
 }
 
 input {
@@ -43,4 +47,14 @@ a {
 
 a:hover {
     color: black;
+}
+
+.retour {
+    border-radius: 20px;
+    padding: 10px 15px;
+    font-size: 15px;
+}
+
+button:hover {
+    cursor: pointer;
 }

@@ -3,28 +3,30 @@
 {% block title %}Log in{% endblock %}
 
 {% block body %}
-    <div class="authentification">
-    <form method="post" action="/auth/loginRequest">
-        <h1>Connexion</h1>
-        <label>Adresse mail<br>
-            <input type="text"  name="mail" placeholder="Adresse mail" {% if mail is defined %} value="{{ mail }} {% endif %}">
-        </label><br>
-        <br><label>
-            Mot de passe<br>
-            <input type="password" name="password" placeholder="Mot de passe">
-        </label><br>
-        <br>
-        <input type="submit" value="Valider">
+    <div class="grid">
+        <div class="authentification">
+        <form method="post" action="/auth/loginRequest">
+            <h1>Connexion</h1>
+            <label>Adresse mail<br>
+                <input type="text"  name="mail" placeholder="Adresse mail" {% if mail is defined %} value="{{ mail }} {% endif %}">
+            </label><br>
+            <br><label>
+                Mot de passe<br>
+                <input type="password" name="password" placeholder="Mot de passe">
+            </label><br>
+            <br>
+            <input type="submit" value="Valider">
 
-    </form>
-        <br>
-        {% if failed == 1 %}
-            <div class="erreur">
-                 Mauvaise adresse mail ou mot de passe. Réessayez ou créez un compte.
-            </div>
-        {% endif %}
-    <a href="/auth/inscription">Créer un compte</a>
-    <a href="/auth/getPassword">Récupérer mon mot de passe</a>
+        </form>
+            <br>
+            {% if failed == 1 %}
+                <div class="erreur">
+                     Mauvaise adresse mail ou mot de passe. Réessayez ou créez un compte.
+                </div>
+            {% endif %}
+        <a href="/auth/inscription">Créer un compte</a>
+        <a href="/auth/getPassword">Récupérer mon mot de passe</a>
+        </div>
     </div>
 
 {% endblock %}
