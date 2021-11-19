@@ -1,13 +1,24 @@
 {% extends "body.twig" %}
 
-{% block title %}Test{% endblock %}
+{% block title %}The Village{% endblock %}
 
 {% block body %}
-    123 456 : {{ variable }}
-    {% if connected is defined %}
+    {% if user is defined %}
          <a href="/logout">Se déconnecter</a>
-         <a href="/lobby">Jouer</a>
+        <button id="findRoom">Jouer</button>
+
+        <p style="display: none" id="userid">{{ user.id }}</p>
+
     {% else %}
         <a href="/auth">Se connecter</a>
+    {% endif %}
+
+{% endblock %}
+
+{% block javascripts %}
+    {% if user is defined %}
+
+        <script src="/dist/menu_jouer.js"></script>
+
     {% endif %}
 {% endblock %}

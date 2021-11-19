@@ -42,3 +42,7 @@ socket.on('chat_message', (msg) => {
     messages.appendChild(item);
     window.scrollTo(0, document.body.scrollHeight);
 });
+
+socket.on("already_in_room", (roomId) => {
+    console.log("player already joined room " + roomId)
+})

@@ -9,6 +9,13 @@ export async function findRoom(socket, userId) {
     //Si l'user est déjà dans une partie, il la rejoint à nouveau
     let game = await partieRepository.findOne({where: {id: user.partie}})
 
+    if (game !== undefined && game.players.includes(userId)){
+        socket.emit("already_in_room", game.id);
+        console.log("YAS")
+        return;
+    }
+    else console.log(user.partie)
+
     if (game !== undefined && game?.status !== PartieStatus.ENDED && game.players.length < Partie.nbJoueursMax){
         if (!socket.rooms.includes(game.name)){
             socket.join(game.name);

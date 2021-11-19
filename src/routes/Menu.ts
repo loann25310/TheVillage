@@ -4,7 +4,7 @@ import {getLibs} from "../scripts/libs";
 export function Route(router: Router) {
 
     router.get('/', (req, res) => {
-        res.render('main/menu', {connected: req.session["passport"]?.user});
+        res.render('main/menu', {user: req.session["passport"]?.user});
 
     });
 

@@ -15,31 +15,31 @@ const display = [
         values: [""]
     }, {
         titre: "Tuteur",
-        values: ["Jérôme Hildenbrand"]
+        values: ["Jérôme HILDENBRAND"]
     }, {
         titre:  "Chef de projet",
         values: [
-            'Loann Lagarde'
+            'Loann LAGARDE'
         ]
     }, {
         titre: "Membres du projet",
         values: [
-            "Philippe Faisandier",
-            "Thibaut Magnin",
-            "Yohann Marchand",
-            "Noé Mention"
+            "Philippe FAISANDIER",
+            "Thibaut MAGNIN",
+            "Yohann MARCHAND",
+            "Noé MENTION"
         ]
     }, {
         titre: "Graphismes",
-        values: ["Yohann Marchand"]
+        values: ["Yohann MARCHAND"]
     }, {
         titre: "Développeurs",
         values: [
-            "Philippe Faisandier",
-            'Loann Lagarde',
-            "Thibaut Magnin",
-            "Yohann Marchand",
-            "Noé Mention"
+            "Philippe FAISANDIER",
+            'Loann LAGARDE',
+            "Thibaut MAGNIN",
+            "Yohann MARCHAND",
+            "Noé MENTION"
         ]
     }, lib
 ]
@@ -57,14 +57,14 @@ function getNext(){
     if (index === 0 && index_2 === 0){
         titre(display[index].titre)
         index_2 ++
-        wait = 6
+        wait = 3
     } else if (display[index].values.length > index_2) {
         texte(display[index].values[index_2])
         index_2++;
         if (index_2 >= display[index].values.length)
-            wait = 3
+            wait = 1
     } else if (display.length > index + 1){
-        wait = 2
+        wait = 1
         index_2 = 0;
         index ++
         titre(display[index].titre)
@@ -81,7 +81,7 @@ function titre(string :string){
     }).text(string).appendTo("#container")
     setTimeout(() => {
         h1.remove();
-    }, 7000)
+    }, 10000)
 }
 
 function texte(string :string){
@@ -90,5 +90,5 @@ function texte(string :string){
     }).html(string).appendTo("#container")
     setTimeout(() => {
         div.remove();
-    }, 8000)
+    }, 10000)
 }

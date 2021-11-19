@@ -9,33 +9,15 @@ let userRepo = getRepository(User);
 let partieRepo = getRepository(Partie);
 
 
-async function getOdysee(){
-
-    let i  = await userRepo.findOne({pseudo:"Odysee"});
-    //console.log(i.pseudo);
-    return i.pseudo;
-
-}
-function get2DigitsMinutes(d){
-    let minutes = d.getMinutes()
-    if(d.getMinutes() < 10){
-        minutes = "0" + minutes
-    }
-    return minutes;
-}
-
 export function Route(router: Router, io: SocketIOServer) {
-    router.get('/lobby', (req, res) => {
-        res.render('lobby/lobby',{
-            user: req.user
-        });
+    router.get('/lobby/:room', (req, res) => {
+        res.render("lobby/lobby", {roomId: req.params.room});
     });
 
     io.on("connection", async (socket) =>{
         socket.on("ask_room", async (userId) =>{
             socket.data.userId = userId;
-            console.log("ask room server")
-            await findRoom(socket, userId);
+            let roomId = await findRoom(socket, userId);
         })
 
         socket.on("chat_message", (msg, room) =>{

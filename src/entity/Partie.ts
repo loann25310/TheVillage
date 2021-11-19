@@ -31,13 +31,15 @@ export class Partie {
     @Column({
         type: "simple-json",
     })
-    players: number[] = [];
+    players: number[];
 
     async getPlayers(): Promise<User[]> {
         return await getRepository(User).findByIds(this.players);
     }
 
     addPlayer(userId: number){
+        if (!this.players)
+            this.players = [];
         this.players.push(userId);
     }
 

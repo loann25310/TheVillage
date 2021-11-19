@@ -9,6 +9,8 @@ module.exports = {
         game: './src/scripts/game.ts',
         lobby_client: './src/scripts/lobby_client.ts',
         verifCode: "./src/scripts/verifCode.ts",
+        credits: "./src/scripts/credits.ts",
+        menu_jouer: "./src/scripts/menu_jouer.ts"
     },
     output: {
         path: path.resolve(__dirname, 'public/dist'),
