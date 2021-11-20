@@ -23,7 +23,8 @@ export async function getAvailableRoom(uid) :Promise<number>{
             }
         }
     }
-    let games = await gameRepo.find({where: {status: PartieStatus.WAIT_USERS}});
+    let games = await gameRepo.find({where: {status: `${PartieStatus.WAIT_USERS}`}});
+    console.log("" + JSON.stringify(games))
     for (let i = 0; i < games.length; i++) {
         // Si la partie n'est pas pleine (et n'a pas commencé)
         if (games[i].players.length < Partie.nbJoueursMax)
@@ -48,7 +49,6 @@ export async function joinRoom(uid, gameId) :Promise<boolean>{
     //Si la partie s'est remplie entre le dernier test et maintenant,
     //le joueur ne peut pas rejoindre, on le renvoie au menu
     if (!room.addPlayer(uid)) {
-        console.log("add Player went wrong")
         return false;
     }
     let p = await userRepo.findOne(uid);

@@ -3,7 +3,7 @@ import {getRepository} from "typeorm";
 import {User} from "../entity/User";
 import {Server} from "socket.io";
 import {getAvailableRoom, joinRoom} from "../scripts/lobby_server";
-import {Partie} from "../entity/Partie";
+import {Partie, PartieStatus} from "../entity/Partie";
 
 let userRepo = getRepository(User);
 let partieRepo = getRepository(Partie);
