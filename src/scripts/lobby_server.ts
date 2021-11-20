@@ -21,6 +21,11 @@ export async function getAvailableRoom(uid) :Promise<number>{
                 //si sa dernière partie n'a pas encore commencé, il la rejoint à nouveau
                 return lastGame.id;
             }
+            //checks that the user is not already playing (if so, return)
+            for (let i = 0; i < lastGame.players.length; i++){
+                if (lastGame.players[i] === user.id)
+                    return
+            }
         }
     }
     let games = await gameRepo.find({where: {status: `${PartieStatus.WAIT_USERS}`}});
