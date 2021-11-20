@@ -2,65 +2,75 @@ import {Partie, PartieStatus} from "../entity/Partie";
 import {getRepository} from "typeorm";
 import {User} from "../entity/User";
 
-let partieRepository = getRepository(Partie);
+let gameRepo = getRepository(Partie);
+let userRepo = getRepository(User);
 
-export async function findRoom(socket, userId) {
-    let user = await getRepository(User).findOne({where: {id: userId}});
-    //Si l'user est déjà dans une partie, il la rejoint à nouveau
-    let game = await partieRepository.findOne({where: {id: user.partie}})
-
-    if (game !== undefined && game.players.includes(userId)){
-        socket.emit("already_in_room", game.id);
-        console.log("YAS")
-        return;
-    }
-    else console.log(user.partie)
-
-    if (game !== undefined && game?.status !== PartieStatus.ENDED && game.players.length < Partie.nbJoueursMax){
-        if (!socket.rooms.includes(game.name)){
-            socket.join(game.name);
-            socket.emit("join_room", game.id);
-        }
-        socket.emit("join_room", game.id);
-        return;
-    }
-    let parties = await partieRepository.find();
-    for (let i = 0; i < parties.length; i++) {
-        let p = parties[i];
-        if (p.status === PartieStatus.WAIT_USERS && p.players.length < Partie.nbJoueursMax) {
-            p.addPlayer(userId);
-            // Si la partie est remplie, elle commence
-            if (p.players.length === Partie.nbJoueursMax){
-                p.status = PartieStatus.STARTING;
-            }
-            await partieRepository.save(p);
-            socket.join(p.name);
-            socket.emit("join_room", p.name);
-            console.log("user connected")
-            return
-        }
-    }
-    //Aucune partie de dispo : création de partie
-
-    let p = new Partie();
-    p.name = "";
-    p.addPlayer(userId);
-    let userRepo = getRepository(User);
-    let u = await userRepo.findOne({where: {id: userId}});
-    u.partie = p.id;
-    await userRepo.save(u);
-    p.status = PartieStatus.WAIT_USERS;
-    await partieRepository.save(p);
-    p.name = `PARTIE_${p.id}`;
-    await partieRepository.save(p);
-    socket.join(p.name);
-    socket.emit("join_room", p.name);
-    console.log("player connected")
+export async function countPlayers(gameId) {
+    let game = await gameRepo.findOne({where: {id: gameId}});
+    return game?.players?.length;
 }
 
+export async function getAvailableRoom(uid) :Promise<number>{
+    let user = await userRepo.findOne({where: {id: uid}});
+    //si l'utilisateur est trouvé :
+    if (user) {
+        let lastGame = await gameRepo.findOne({where: {id: user.partie}});
+        //Si sa dernière partie existe :
+        if (lastGame) {
+            if (lastGame.status === PartieStatus.WAIT_USERS && lastGame.players.length < Partie.nbJoueursMax) {
+                //si sa dernière partie n'a pas encore commencé, il la rejoint à nouveau
+                return lastGame.id;
+            }
+        }
+    }
+    let games = await gameRepo.find({where: {status: PartieStatus.WAIT_USERS}});
+    for (let i = 0; i < games.length; i++) {
+        // Si la partie n'est pas pleine (et n'a pas commencé)
+        if (games[i].players.length < Partie.nbJoueursMax)
+            return games[i].id;
+    }
+    //Aucune partie n'est libre, on en créée une
 
-export async function countPlayers(partyNumber) {
-    let parties = await partieRepository.find({where: {id: partyNumber}});
-    let party = parties[0];
-    return party.players.length;
+    let newGame = new Partie();
+    newGame.players = [];
+    await gameRepo.save(newGame);
+    return newGame.id
+}
+
+export async function joinRoom(uid, gameId) :Promise<boolean>{
+    let room = await gameRepo.findOne(gameId);
+    if (!room) return false;
+    if ((room.status !== PartieStatus.WAIT_USERS && room.status !== PartieStatus.CREATING) || room.players.length >= Partie.nbJoueursMax) {
+        console.log(room.status);
+        return false;
+    }
+    let players = await room.getPlayers();
+    //Si la partie s'est remplie entre le dernier test et maintenant,
+    //le joueur ne peut pas rejoindre, on le renvoie au menu
+    if (!room.addPlayer(uid)) {
+        console.log("add Player went wrong")
+        return false;
+    }
+    let p = await userRepo.findOne(uid);
+    p.partie = room.id;
+    await userRepo.save(p);
+    //todo: start the game if Partie.status = STARTING
+    room.status = room.players.length >= Partie.nbJoueursMax ? PartieStatus.STARTING : PartieStatus.WAIT_USERS;
+    await gameRepo.save(room);
+
+    return true;
+}
+
+export async function disconnect(socketId) {
+    let u = await userRepo.findOne({where: {socketId: socketId}});
+    if (!u){
+        return;
+    }
+    let room = await gameRepo.findOne(u.partie);
+    if (room) {
+        let index = room.players.indexOf(u.id);
+        if (index !== -1){
+            room.players.splice(index, 1);
+        }
+    }
 }

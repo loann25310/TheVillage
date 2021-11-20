@@ -1,47 +1,43 @@
 import {Router} from "express";
 import {getRepository} from "typeorm";
 import {User} from "../entity/User";
-import {Server as SocketIOServer, Socket} from "socket.io";
-import {findRoom} from "../scripts/lobby_server";
+import {Server} from "socket.io";
+import {getAvailableRoom, joinRoom} from "../scripts/lobby_server";
 import {Partie} from "../entity/Partie";
 
 let userRepo = getRepository(User);
 let partieRepo = getRepository(Partie);
 
 
-export function Route(router: Router, io: SocketIOServer) {
-    router.get('/lobby/:room', (req, res) => {
-        res.render("lobby/lobby", {roomId: req.params.room});
+export function Route(router: Router, io: Server) {
+    router.get('/lobby/:room', async (req, res) => {
+        let uid = req.session["passport"]?.user;
+        if (uid) {
+            let u = await userRepo.findOne(uid)
+            let roomId = req.params.room
+            if (await joinRoom(uid, roomId))
+                return res.render("lobby/lobby", {roomId: req.params.room, user: u});
+        }else console.log("user is undefined")
+        res.redirect("/?roomfull=1")
     });
 
     io.on("connection", async (socket) =>{
         socket.on("ask_room", async (userId) =>{
-            socket.data.userId = userId;
-            let roomId = await findRoom(socket, userId);
-        })
+            let u = await userRepo.findOne(userId)
+            console.log(`${userId} wants a room !`);
+            socket.emit("room_found", await getAvailableRoom(userId));
+        });
 
         socket.on("chat_message", (msg, room) =>{
-            console.log(room, msg)
+            console.log(room, msg, socket)
             io.to(room).emit("chat_message", msg)
-        })
+        });
 
-        socket.on('disconnecting', async () => {
-            let it = socket.rooms.values();
-            let user = await userRepo.findOne({where: {id: socket.data.userId}});
-            let room;
-            while ( !(room = it.next()).done ) {
-                let roomName = room.value;
-                if (roomName.startsWith("PARTIE")){
-                    let partie = await partieRepo.findOne({where: {name: roomName}})
-                    if (partie !== undefined && partie.players.includes(user.id)) {
-                        let index = partie.players.indexOf(user.id);
-                        // removes the player from the game
-                        partie.players.splice(index, 1);
-                        await partieRepo.save(partie);
-                    }
-                }
-            }
+        socket.on("new_guy", (uid, room) => {
+            socket.join(`${room}`)
+            console.log("it's me mario " + room)
+            io.to(room).emit("new_player", uid, socket.id);
+            socket.emit("new_player", uid, socket.id);
         })
     })
 }
-

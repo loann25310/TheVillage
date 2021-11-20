@@ -1,6 +1,7 @@
 import {Column, Entity, getRepository, PrimaryGeneratedColumn} from "typeorm";
 
 import {User} from "./User";
+import {deserializeUser} from "passport";
 
 export enum PartieStatus {
     CREATING,
@@ -18,9 +19,6 @@ export class Partie {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    name: string;
-
     @Column({
         type: "enum",
         enum: PartieStatus,
@@ -37,10 +35,14 @@ export class Partie {
         return await getRepository(User).findByIds(this.players);
     }
 
-    addPlayer(userId: number){
+    addPlayer(userId: number) :boolean{
         if (!this.players)
             this.players = [];
-        this.players.push(userId);
+        if (this.players.length >= Partie.nbJoueursMax)
+            return false;
+        if (!this.players.includes(userId))
+            this.players.push(userId);
+        return true;
     }
 
 }

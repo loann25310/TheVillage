@@ -24,25 +24,21 @@ document.addEventListener("keydown", (e)=>{
 })
 sendMsg.onclick = sendMessage;
 
-socket.on("connect", () => {
-    console.log("connect client");
-    socket.emit("ask_room", uid);
-});
-
-socket.on("join_room", async (room_name)=>{
-    console.log(`player joined room : ${room_name}`);
-    document.getElementById("roomName").innerText = room_name;
-    connections.innerText += ""
-})
-
 socket.on('chat_message', (msg) => {
-    console.log(msg)
+    console.log("Message reçu : " + msg)
     let item = document.createElement('li');
     item.textContent = msg;
     messages.appendChild(item);
     window.scrollTo(0, document.body.scrollHeight);
 });
 
-socket.on("already_in_room", (roomId) => {
-    console.log("player already joined room " + roomId)
+socket.on("new_player", function (id, sockId){
+    console.log("mama mia")
+    if (uid === id && sockId !== socket.id)
+        window.location.replace("/?fdp=1");
 })
+
+document.body.onload = ()=>{
+    console.log('trolololololol')
+    socket.emit("new_guy", uid, getRoomName())
+}
