@@ -9,11 +9,11 @@ let sendMsg = $("#sendMessage")
 let input = $("#input");
 
 
-let roomName = document.getElementById("roomName").innerText;
+let roomName = $('#roomName').text();
 
 
 function sendMessage() {
-    if (input.val()) {
+    if (input.val() && `${input.val()}`.trim() !== "") {
         socket.emit('chat_message', pseudo, input.val(), roomName);
         input.val("");
     }
@@ -30,7 +30,8 @@ socket.on('chat_message', (pseudo, msg) => {
 });
 
 socket.on("new_player", function (id, sockId){
-    //Si le joueur est déjà connecté et joue, il est déconnecté
+    //Si le joueur est déjà connecté et joue, il est renvoyé à l'accueil
+    //(il joue avec le dernier appareil connecté
     if (uid === id && sockId !== socket.id)
         window.location.replace("/?otherDevice=1");
 })
