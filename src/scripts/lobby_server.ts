@@ -6,15 +6,15 @@ let gameRepo = getRepository(Partie);
 let userRepo = getRepository(User);
 
 export async function countPlayers(gameId) {
-    let game = await gameRepo.findOne({where: {id: gameId}});
+    let game = await gameRepo.findOne(gameId);
     return game?.players?.length;
 }
 
 export async function getAvailableRoom(uid) :Promise<number>{
-    let user = await userRepo.findOne({where: {id: uid}});
+    let user = await userRepo.findOne(uid);
     //si l'utilisateur est trouvé :
     if (user) {
-        let lastGame = await gameRepo.findOne({where: {id: user.partie}});
+        let lastGame = await gameRepo.findOne(user.partie);
         //Si sa dernière partie existe :
         if (lastGame) {
             if (lastGame.status === PartieStatus.WAIT_USERS && lastGame.players.length < Partie.nbJoueursMax) {
@@ -29,7 +29,6 @@ export async function getAvailableRoom(uid) :Promise<number>{
         }
     }
     let games = await gameRepo.find({where: {status: `${PartieStatus.WAIT_USERS}`}});
-    console.log("" + JSON.stringify(games))
     for (let i = 0; i < games.length; i++) {
         // Si la partie n'est pas pleine (et n'a pas commencé)
         if (games[i].players.length < Partie.nbJoueursMax)
@@ -47,7 +46,6 @@ export async function joinRoom(uid, gameId) :Promise<boolean>{
     let room = await gameRepo.findOne(gameId);
     if (!room) return false;
     if ((room.status !== PartieStatus.WAIT_USERS && room.status !== PartieStatus.CREATING) || room.players.length >= Partie.nbJoueursMax) {
-        console.log(room.status);
         return false;
     }
     let players = await room.getPlayers();
@@ -66,16 +64,20 @@ export async function joinRoom(uid, gameId) :Promise<boolean>{
     return true;
 }
 
-export async function disconnect(socketId) {
-    let u = await userRepo.findOne({where: {socketId: socketId}});
-    if (!u){
-        return;
-    }
-    let room = await gameRepo.findOne(u.partie);
-    if (room) {
-        let index = room.players.indexOf(u.id);
-        if (index !== -1){
-            room.players.splice(index, 1);
+export function disconnect(uid) {
+    if (!uid)
+        return
+    userRepo.findOne(uid).then(u=>{
+        if (!u){
+            return;
         }
-    }
+        gameRepo.findOne(u.partie).then(room => {
+            if (room) {
+                let index = room.players.indexOf(u.id);
+                if (index !== -1){
+                    room.players.splice(index, 1);
+                }
+            }
+        })
+    })
 }
