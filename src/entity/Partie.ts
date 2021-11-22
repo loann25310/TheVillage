@@ -34,7 +34,7 @@ export class Partie {
     @Column({
         type: "simple-json",
     })
-    players_playing: number[];
+    players_playing: number[] = [];
 
     async getPlayers(): Promise<User[]> {
         return await getRepository(User).findByIds(this.players);

@@ -74,7 +74,6 @@ export function Route(router: Router) {
             user.skins = []
             user.partie = 0;
             repo.save(user).then((r) => {
-                console.log(JSON.stringify(r));
                 return res.redirect("/auth?mail=" + user.adresseMail);
             });
         })
@@ -91,9 +90,7 @@ export function Route(router: Router) {
             return res.redirect("/auth/getPassword?erreur=1")
         }
 
-        console.log("envoi du mail")
         await envoyerMail(req, user[0], req.body.mail, (err, info) => {
-            console.log("mail envoyé ?")
             if (err)
                 res.redirect("/auth/getPassword?erreur=1")
             else
@@ -113,7 +110,6 @@ export function Route(router: Router) {
         }
 
         if (verifMdp(req.body.password) !== "" || req.body.password2 !== req.body.password) {
-            console.log(verifMdp(req.body.password), req.body.password, req.body.password2)
             return res.redirect(`/auth/changePassword?wrongPassword=1&mail=${req.body.mail}&code=${req.body.code}`)
         }
         let userRepo = getRepository(User);
