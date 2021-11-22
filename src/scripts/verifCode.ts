@@ -1,8 +1,8 @@
 import * as $ from "jquery";
 import {verifMdp} from "./VerifMdp";
 
-let password = $("#password")
-let password2 = $("#password2")
+let password = $("#password");
+let password2 = $("#password2");
 
 password.on("input", verif)
 
