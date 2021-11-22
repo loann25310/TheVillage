@@ -8,9 +8,6 @@ import '@fortawesome/fontawesome-free/js/brands'
 import {getRepository} from "typeorm";
 import {User} from "../entity/User";
 
-//let session = require('express-session');
-let bcrypt = require('bcryptjs');
-
 let email = $("#email").text();
 
 $("#retour").click(() => {
@@ -74,7 +71,8 @@ $("#changeemail").click(async () => {
     if (!resultPassword.isConfirmed) return;
 
     else {
-        let userRepo = getRepository(User);
+        // TODO: Unbroken this code. Make verification on server side
+        /* let userRepo = getRepository(User);
         let user = await userRepo.find({where : {AdresseMail : email}});
         for (let i = 0; i < user.length; i++) {
             if (await bcrypt.compare(resultPassword, user[i].Password)) {
@@ -87,6 +85,6 @@ $("#changeemail").click(async () => {
                 });
                 $("#email").text(result.value);
             }
-        }
+        } */
     }
 })
