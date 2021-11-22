@@ -45,7 +45,7 @@ export async function getAvailableRoom(uid) :Promise<number>{
 export async function joinRoom(uid, gameId) :Promise<boolean>{
     let room = await gameRepo.findOne(gameId);
     if (!room) return false;
-    if ((room.status !== PartieStatus.WAIT_USERS && room.status !== PartieStatus.CREATING) || room.players.length >= Partie.nbJoueursMax) {
+    if ((room.status !== PartieStatus.WAIT_USERS && room.status !== PartieStatus.CREATING && room.status !== PartieStatus.ENDED) || room.players.length >= Partie.nbJoueursMax) {
         return false;
     }
     let players = await room.getPlayers();
@@ -72,7 +72,7 @@ export function disconnect(uid) {
             return;
         }
         gameRepo.findOne(u.partie).then(room => {
-            if (room) {
+            if (room && PartieStatus.WAIT_USERS === room.status) {
                 let index = room.players.indexOf(u.id);
                 if (index !== -1){
                     room.players.splice(index, 1);
