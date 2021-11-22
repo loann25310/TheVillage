@@ -17,12 +17,16 @@ export async function getAvailableRoom(uid) :Promise<number>{
         let lastGame = await gameRepo.findOne(user.partie);
         //Si sa dernière partie existe :
         if (lastGame) {
-            //if (lastGame.status === PartieStatus.WAIT_USERS && lastGame.players.length < Partie.nbJoueursMax) {
-            for (let i = 0; i < lastGame.players.length; i++){
-                if (lastGame.players[i] === user.id)
-                //si sa dernière partie n'a pas encore commencé, il la rejoint à nouveau
-                    return lastGame.id;
+            if (lastGame.status === PartieStatus.STARTED){
+                //si le joueur ne fais pas parti des joueurs de la partie
+                if (!lastGame.players_playing.includes(user.id))
+                    return
+                //si le joueur est déjà en train de jouer
+                if (lastGame.players.includes(user.id))
+                    return
             }
+            if (lastGame.players.length < Partie.nbJoueursMax)
+                return lastGame.id;
             //checks that the user is not already playing (if so, return)
             for (let i = 0; i < lastGame.players.length; i++){
                 if (lastGame.players[i] === user.id)
@@ -60,6 +64,8 @@ export async function joinRoom(uid, gameId) :Promise<boolean>{
     await userRepo.save(p);
     //todo: start the game if Partie.status = STARTING
     room.status = room.players.length >= Partie.nbJoueursMax ? PartieStatus.STARTING : PartieStatus.WAIT_USERS;
+    if (room.status === PartieStatus.STARTING)
+        room.start();
     await gameRepo.save(room);
 
     return true;

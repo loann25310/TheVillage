@@ -31,6 +31,11 @@ export class Partie {
     })
     players: number[];
 
+    @Column({
+        type: "simple-json",
+    })
+    players_playing: number[];
+
     async getPlayers(): Promise<User[]> {
         return await getRepository(User).findByIds(this.players);
     }
@@ -43,6 +48,14 @@ export class Partie {
         if (!this.players.includes(userId))
             this.players.push(userId);
         return true;
+    }
+
+    start(){
+        this.players_playing = this.players;
+        // add stuff here if needed
+        this.status = PartieStatus.STARTED;
+        //The game is updated (in db) right after this function.
+        //It only has to be called in lobby_server.ts > joinRoom();
     }
 
 }
