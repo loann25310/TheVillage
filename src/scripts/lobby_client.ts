@@ -3,7 +3,7 @@ import {io} from "socket.io-client";
 const socket = io();
 
 let uid: number = +$("#id").text();
-let messages = document.getElementById('messages');
+let messages = $('#messages');
 let pseudo = $('#pseudo').text();
 let sendMsg = $("#sendMessage")
 let input = $("#input");
@@ -41,7 +41,7 @@ document.body.onload = ()=>{
 }
 
 function create_message(pseudo, msg) {
-    let item = document.createElement('li');
-    item.textContent = `${pseudo} : ${msg}`;
-    messages.appendChild(item);
+    let item = $('<li>');
+    item.text(`${pseudo} : ${msg}`);
+    messages.append(item);
 }

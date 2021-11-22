@@ -17,9 +17,11 @@ export async function getAvailableRoom(uid) :Promise<number>{
         let lastGame = await gameRepo.findOne(user.partie);
         //Si sa dernière partie existe :
         if (lastGame) {
-            if (lastGame.status === PartieStatus.WAIT_USERS && lastGame.players.length < Partie.nbJoueursMax) {
+            //if (lastGame.status === PartieStatus.WAIT_USERS && lastGame.players.length < Partie.nbJoueursMax) {
+            for (let i = 0; i < lastGame.players.length; i++){
+                if (lastGame.players[i] === user.id)
                 //si sa dernière partie n'a pas encore commencé, il la rejoint à nouveau
-                return lastGame.id;
+                    return lastGame.id;
             }
             //checks that the user is not already playing (if so, return)
             for (let i = 0; i < lastGame.players.length; i++){
@@ -48,7 +50,6 @@ export async function joinRoom(uid, gameId) :Promise<boolean>{
     if ((room.status !== PartieStatus.WAIT_USERS && room.status !== PartieStatus.CREATING && room.status !== PartieStatus.ENDED) || room.players.length >= Partie.nbJoueursMax) {
         return false;
     }
-    let players = await room.getPlayers();
     //Si la partie s'est remplie entre le dernier test et maintenant,
     //le joueur ne peut pas rejoindre, on le renvoie au menu
     if (!room.addPlayer(uid)) {
@@ -72,7 +73,7 @@ export function disconnect(uid) {
             return;
         }
         gameRepo.findOne(u.partie).then(room => {
-            if (room && PartieStatus.WAIT_USERS === room.status) {
+            if (room && PartieStatus.STARTING !== room.status) {
                 let index = room.players.indexOf(u.id);
                 if (index !== -1){
                     room.players.splice(index, 1);
