@@ -1,6 +1,7 @@
 import "../styles/lobby.css"
 import {io} from "socket.io-client";
 
+
 const socket = io();
 
 
@@ -36,9 +37,13 @@ socket.on("new_player", function (id, sockId){
     if (uid === id && sockId !== socket.id)
         window.location.replace("/?otherDevice=1");
 })
+socket.on("nbPlayers", function (nbPlayers){
+    $('#nbJoueurs').text("HEYYY");
+})
 
 document.body.onload = ()=>{
     socket.emit("new_guy", uid, roomName)
+
 }
 
 function create_message(pseudo, msg) {

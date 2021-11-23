@@ -2,9 +2,11 @@ import {Router} from "express";
 import {getRepository} from "typeorm";
 import {User} from "../entity/User";
 import {Server} from "socket.io";
-import {disconnect, getAvailableRoom, joinRoom} from "../scripts/lobby_server";
+import {Partie} from "../entity/Partie";
+import {countPlayers, disconnect, getAvailableRoom, joinRoom} from "../scripts/lobby_server";
 
 let userRepo = getRepository(User);
+
 
 
 export function Route(router: Router, io: Server) {
@@ -13,8 +15,16 @@ export function Route(router: Router, io: Server) {
         if (uid) {
             let u = await userRepo.findOne(uid)
             let roomId = req.params.room
-            if (await joinRoom(uid, roomId))
-                return res.render("lobby/lobby", {roomId: req.params.room, user: u});
+            if (await joinRoom(uid, roomId)) {
+                let players = await countPlayers(roomId)
+                let players2 = players.toString();
+                players2 = players + "/" +Partie.nbJoueursMax;
+                return res.render("lobby/lobby", {
+                    roomId: req.params.room,
+                    user: u,
+                    nbPlayers: players2
+                });
+            }
         }
         res.redirect("/?roomfull=1")
     });
