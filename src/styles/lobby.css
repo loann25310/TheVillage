@@ -1,0 +1,105 @@
+html, body{
+    width: 100%;
+    height: 100%;
+}
+body {
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 20% 30% 50%;
+
+}
+
+#profile {
+    grid-column-start: 1;
+    grid-row-start: 1;
+    grid-column-end: 2;
+    grid-row-end: 2;
+}
+
+#game_settings {
+    grid-column-start: 1;
+    grid-row-start: 2;
+    grid-column-end: 2;
+    grid-row-end: 4;
+    background-color: yellow;
+}
+
+#form {
+    background: rgba(0, 0, 0, 0.15);
+    padding: 0.25rem;
+    width: 100%;
+    height: 3rem;
+    box-sizing: border-box;
+    backdrop-filter: blur(10px);
+}
+
+label {
+    width: 100%;
+    height: 100%;
+}
+
+input[type="text"]{
+    border: none;
+    padding: 0 1rem;
+    flex-grow: 1;
+    border-radius: 2rem;
+    margin: 0.25rem;
+    width: 100%;
+}
+
+input[type="text"]:focus {
+    outline: none;
+}
+
+#form > button {
+    background: #333;
+    border: none;
+    padding: 0 1rem;
+    margin: 0.25rem;
+    border-radius: 3px;
+    outline: none;
+    color: #fff;
+}
+
+#messages {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    border: 1px black solid;
+    height: 100%;
+    width: 100%;
+    overflow: scroll;
+    overflow-x: hidden;
+    overflow-wrap: break-word;
+}
+
+#chat{
+    grid-column-start: 2;
+    grid-row-start: 3;
+    grid-column-end: 3;
+    grid-row-end: 4;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+#users {
+    background: black;
+    grid-column-start: 2;
+    grid-row-start: 1;
+    grid-column-end: 3;
+    grid-row-end: 3;
+}
+
+#messages > li {
+    padding: 0.5rem 1rem;
+}
+
+#messages > li:nth-child(odd) {
+    background: #efefef;
+}
+
+.invisible {
+    display: none;
+}

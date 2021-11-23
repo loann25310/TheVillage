@@ -1,3 +1,4 @@
+import "../styles/lobby.css"
 import {io} from "socket.io-client";
 
 const socket = io();
@@ -26,7 +27,7 @@ sendMsg.on("click", sendMessage)
 
 socket.on('chat_message', (pseudo, msg) => {
     create_message(pseudo, msg);
-    window.scrollTo(0, document.body.scrollHeight);
+    messages.scrollTop(messages[0].scrollHeight);
 });
 
 socket.on("new_player", function (id, sockId){
