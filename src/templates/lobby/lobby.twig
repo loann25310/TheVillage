@@ -14,11 +14,13 @@
         <div id="form"><label><input id="input" type="text" autocomplete="off"></label><button id="sendMessage">Send</button></div>
         <ul id="messages"></ul>
     </div>
-    <p id="id" class="invisible">{{ user.id }}</p>
-    <p id="roomName" class="invisible">{{ roomId }}</p>
 
 {% endblock %}
 
 {% block javascripts %}
+    <script>
+        var _id = {{ user.id }};
+        var _roomId = "{{ roomId }}";
+    </script>
     <script src="/dist/lobby_client.js"></script>
 {% endblock %}

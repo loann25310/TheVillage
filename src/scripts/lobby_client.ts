@@ -3,15 +3,15 @@ import {io} from "socket.io-client";
 
 const socket = io();
 
-let uid: number = +$("#id").text();
+
+// @ts-ignore
+let uid = _id;
+// @ts-ignore
+let roomName = _roomId;
 let messages = $('#messages');
 let pseudo = $('#pseudo').text();
 let sendMsg = $("#sendMessage")
 let input = $("#input");
-
-
-let roomName = $('#roomName').text();
-
 
 function sendMessage() {
     if (input.val() && `${input.val()}`.trim() !== "") {
