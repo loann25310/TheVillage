@@ -48,16 +48,16 @@ export async function getAvailableRoom(uid) :Promise<number>{
     return newGame.id
 }
 
-export async function joinRoom(uid, gameId) :Promise<boolean>{
+export async function joinRoom(uid, gameId) :Promise<number>{
     let room = await gameRepo.findOne(gameId);
-    if (!room) return false;
+    if (!room) return -1;
     if ((room.status !== PartieStatus.WAIT_USERS && room.status !== PartieStatus.CREATING && room.status !== PartieStatus.ENDED) || room.players.length >= Partie.nbJoueursMax) {
-        return false;
+        return -1;
     }
     //Si la partie s'est remplie entre le dernier test et maintenant,
     //le joueur ne peut pas rejoindre, on le renvoie au menu
     if (!room.addPlayer(uid)) {
-        return false;
+        return -1;
     }
     let p = await userRepo.findOne(uid);
     p.partie = room.id;
@@ -67,23 +67,27 @@ export async function joinRoom(uid, gameId) :Promise<boolean>{
     if (room.status === PartieStatus.STARTING)
         room.start();
     await gameRepo.save(room);
-
-    return true;
+    return room.players.length;
 }
 
-export function disconnect(uid) {
+export function disconnect(uid, io) {
     if (!uid)
         return
     userRepo.findOne(uid).then(u=>{
         if (!u){
+            console.log(`${uid} not found`)
             return;
         }
         gameRepo.findOne(u.partie).then(room => {
-            if (room && PartieStatus.STARTING !== room.status) {
+            if (room && room.status !== PartieStatus.STARTING) {
                 let index = room.players.indexOf(u.id);
                 if (index !== -1){
+                    console.log("réussi")
                     room.players.splice(index, 1);
-                }
+                    gameRepo.save(room).then(()=>{
+                        io.to(`${room.id}`).emit("nbPlayers", room.players.length);
+                    })
+                }else console.log("EUH NIQUE TA MÈRE")
             }
         })
     })

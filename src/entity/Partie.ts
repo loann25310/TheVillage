@@ -32,8 +32,7 @@ export class Partie {
     players: number[];
 
     @Column({
-        type: "simple-json",
-        default: 2
+        type: "simple-json"
     })
     players_playing: number[] = [];
 

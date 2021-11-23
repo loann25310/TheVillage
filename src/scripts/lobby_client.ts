@@ -6,9 +6,8 @@ const socket = io();
 
 
 // @ts-ignore
-let uid = _id;
-// @ts-ignore
-let roomName = _roomId;
+let uid = _id, roomName = _roomId;
+let nbJoueurs = $("#nbJoueurs");
 let messages = $('#messages');
 let pseudo = $('#pseudo').text();
 let sendMsg = $("#sendMessage")
@@ -38,12 +37,12 @@ socket.on("new_player", function (id, sockId){
         window.location.replace("/?otherDevice=1");
 })
 socket.on("nbPlayers", function (nbPlayers){
-    $('#nbJoueurs').text("HEYYY");
+    console.log("cc")
+    nbJoueurs.text(nbPlayers);
 })
 
 document.body.onload = ()=>{
     socket.emit("new_guy", uid, roomName)
-
 }
 
 function create_message(pseudo, msg) {
