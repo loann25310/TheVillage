@@ -83,7 +83,12 @@ export function Route(router: Router) {
     })
 
     router.get('/auth/getPassword', (req, res) => {
-        res.render("auth/getPassword", {erreur: req.query.erreur});
+        console.log("TEST");
+        let email = req.query.email;
+        res.render("auth/getPassword", {
+            erreur: req.query.erreur,
+            email: email
+        });
     });
 
     router.post("/auth/envoyerMail", async (req, res) => {
@@ -139,4 +144,5 @@ export function Route(router: Router) {
         successRedirect: '/',
         failureRedirect: '/auth?failed=1'
     }));
+
 }

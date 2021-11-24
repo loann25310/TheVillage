@@ -1,0 +1,35 @@
+body {
+    background-color: #280000;
+    color: white;
+    font-size: 18px;
+}
+
+h1 {
+    font-size: 36px;
+}
+
+.succes {
+    float: left;
+    margin-left: 25%;
+    text-align: center;
+}
+
+.statistiques {
+    float: left;
+    margin-left: 25%;
+    text-align: center;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.retour {
+    border-radius: 20px;
+    padding: 10px 15px;
+    font-size: 15px;
+}
+
+button:hover {
+    cursor: pointer;
+}

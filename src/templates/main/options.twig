@@ -1,0 +1,29 @@
+{% extends "body.twig" %}
+
+{% block title %}
+    Options
+{% endblock %}
+
+{% block body %}
+    <button class="retour" id="retour" type="button"><i class="fas fa-long-arrow-alt-left"></i></button>
+    <div class="grid">
+        <button id="son">
+            <i class="fas fa-volume-up color-green"></i>
+        </button>
+
+        <h1>Pseudo</h1>
+            <span id="pseudo">{{ user.pseudo }}</span>
+            <button id="changeusername" class="changement_information" type="button">changer le pseudo</button>
+
+        <h1>Adresse mail</h1>
+            <span id="email">{{ user.adresseMail }}</span>
+            <button id="changeemail" class="changement_information" type="button">changer l'adresse mail</button>
+
+        <h1>Mot de passe</h1>
+    <button id="changepassword" class="changement_information" type="button">changer le mot de passe</button>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/dist/options.js" type="text/javascript"></script>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "body.twig" %}
+
+{% block title %}
+    Profil
+{% endblock %}
+
+{% block body %}
+    <button class="retour" id="retour" type="button"><i class="fas fa-long-arrow-alt-left"></i></button>
+    <h1>{{ user.pseudo }}</h1>
+    <p>Niveau {{ user.niveau }}
+    <p>Argent : {{ user.argent }} €
+    <div class="succes">
+        <h1>Succès</h1>
+        <p>{{ user.succes }}
+    </div>
+    <div class="statistiques">
+        <h1>Statistiques</h1>
+        <label class="hidden" id="nbParties">{{ user.nbPartiesJouees }}</label>
+        <canvas id="winrateChart"></canvas>
+        <label class="hidden" id="nbVictoires">{{ user.nbPartiesGagnees }}</label>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/dist/profil.js" type="text/javascript"></script>
+{% endblock %}
