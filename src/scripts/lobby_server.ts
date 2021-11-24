@@ -5,11 +5,6 @@ import {User} from "../entity/User";
 let gameRepo = getRepository(Partie);
 let userRepo = getRepository(User);
 
-export async function countPlayers(gameId) {
-    let game = await gameRepo.findOne(gameId);
-    return game?.players?.length;
-}
-
 export async function getAvailableRoom(uid) :Promise<number>{
     let user = await userRepo.findOne(uid);
     //si l'utilisateur est trouvé :
@@ -75,19 +70,17 @@ export function disconnect(uid, io) {
         return
     userRepo.findOne(uid).then(u=>{
         if (!u){
-            console.log(`${uid} not found`)
             return;
         }
         gameRepo.findOne(u.partie).then(room => {
             if (room && room.status !== PartieStatus.STARTING) {
                 let index = room.players.indexOf(u.id);
                 if (index !== -1){
-                    console.log("réussi")
                     room.players.splice(index, 1);
                     gameRepo.save(room).then(()=>{
                         io.to(`${room.id}`).emit("nbPlayers", room.players.length);
                     })
-                }else console.log("EUH NIQUE TA MÈRE")
+                }
             }
         })
     })

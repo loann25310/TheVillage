@@ -37,7 +37,6 @@ socket.on("new_player", function (id, sockId){
         window.location.replace("/?otherDevice=1");
 })
 socket.on("nbPlayers", function (nbPlayers){
-    console.log("cc")
     nbJoueurs.text(nbPlayers);
 })
 

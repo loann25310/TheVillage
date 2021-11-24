@@ -43,7 +43,6 @@ export function Route(router: Router, io: Server) {
         })
 
         socket.on("disconnecting", ()=>{
-            console.log(socket.data.uid);
             disconnect(socket.data.uid, io);
         })
     })
