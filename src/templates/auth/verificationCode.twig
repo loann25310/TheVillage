@@ -1,0 +1,49 @@
+{% extends "body.twig" %}
+
+
+{% block body %}
+    <div>
+        Nous vous avons envoyé un mail, pensez à vérifier vos spams.
+    </div>
+    <form method="post" action="/auth/verifCode">
+        <label>Adresse mail
+            <input type="text" name="mail" id="mail" {% if mail is defined %} value="{{ mail }}" {% endif %}>
+        </label><br>
+        <label>
+            Code de récupération
+            <input type="text" name="code" id="code" {% if code is defined %} value="{{ code }}" {% endif %}>
+        </label><br>
+        {% if wrongCode is defined %}
+
+            <span>Mauvais code ou mavaise adresse mail</span><br>
+
+        {% endif %}
+        <label>
+            Nouveau mot de passe
+            <input type="password" name="password" id="password">
+        </label><br>
+        <span id="password_info"></span><br>
+        <label>
+            Nouveau mot de passe (vérification)
+            <input type="password" name="password2" id="password2">
+        </label><br>
+        {% if wrongPassword is defined %}
+
+            Votre mot de passe n'est pas assez fort ou les deux mots de passe ne correspondent pas. Veuillez réessayer
+
+        {% endif %}
+        {% if erreur is defined %}
+
+            Une erreur est survenue, veuillez réessayer.
+
+        {% endif %}
+        <input type="submit" value="valider">
+    </form>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script src="/dist/verifCode.js"></script>
+
+{% endblock %}

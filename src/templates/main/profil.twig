@@ -5,19 +5,19 @@
 {% endblock %}
 
 {% block body %}
-    <button class="retour" id="retour" type="button">< Retour</button>
-    <h1>{{ user.Pseudo }}</h1>
-    <p>Niveau {{ user.Niveau }}
-    <p>Argent : {{ user.Argent }} €
+    <button class="retour" id="retour" type="button"><i class="fas fa-long-arrow-alt-left"></i></button>
+    <h1>{{ user.pseudo }}</h1>
+    <p>Niveau {{ user.niveau }}
+    <p>Argent : {{ user.argent }} €
     <div class="succes">
         <h1>Succès</h1>
-        <p>{{ user.Succes }}
+        <p>{{ user.succes }}
     </div>
     <div class="statistiques">
         <h1>Statistiques</h1>
-        <label class="hidden" id="nbParties">{{ user.NbPartiesJouees }}</label>
+        <label class="hidden" id="nbParties">{{ user.nbPartiesJouees }}</label>
         <canvas id="winrateChart"></canvas>
-        <label class="hidden" id="nbVictoires">{{ user.NbPartiesGagnees }}</label>
+        <label class="hidden" id="nbVictoires">{{ user.nbPartiesGagnees }}</label>
     </div>
 {% endblock %}
 

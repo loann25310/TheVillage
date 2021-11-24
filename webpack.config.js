@@ -5,11 +5,13 @@ module.exports = {
     entry: {
         app: './src/scripts/app.ts',
         chargement: './src/scripts/chargement.js',
-        inscription: './src/scripts/inscription.js',
+        inscription: './src/scripts/inscription.ts',
         login: './src/scripts/login.js',
         options: './src/scripts/options.ts',
         profil: './src/scripts/profil.ts',
-        getPassword: './src/scripts/getPassword.ts'
+        getPassword: './src/scripts/getPassword.ts',
+        verifCode: "./src/scripts/verifCode.ts",
+        game: './src/scripts/game.ts'
     },
     output: {
         path: path.resolve(__dirname, 'public/dist'),

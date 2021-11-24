@@ -1,8 +1,9 @@
 {% extends "body.twig" %}
 
-{% block title %}Log in{% endblock %}
+{% block title %}Inscription{% endblock %}
 
 {% block stylesheets %}
+
     <style rel="stylesheet">
         input{
             margin: 10px;
@@ -21,14 +22,6 @@
                     <input type="text" id="pseudo" name="pseudo" placeholder="Pseudo" {% if pseudo is defined %} value="{{ pseudo }}" {% endif %}>
                 </label><br>
 
-                <label>Prénom<br>
-                    <input type="text" id="prenom" name="prenom" placeholder="Prénom" {% if prenom is defined %} value="{{ pseudo }}" {% endif %}>
-                </label><br>
-
-                <label>Nom<br>
-                    <input type="text"  id="nom" name="nom" placeholder="Nom" {% if nom is defined %} value="{{ nom }}" {% endif %}>
-                </label><br>
-
                 <label>Adresse mail<br>
                     <input type="text" id="email" name="mail" placeholder="Adresse mail" {% if mail is defined %} value="{{ mail }}" {% endif %}>
                 </label><br>
@@ -44,7 +37,7 @@
                 <label>Confirmer mot de passe<br>
                     <input type="password" id="password2" name="password2" placeholder="Confirmer mot de passe">
                 </label>
-
+                <input type="submit" value="valider">
             </form>
             <span id="password_verif"></span>
 
@@ -61,6 +54,14 @@
                 </div>
 
         {%  endif %}
+
+            {% if missed is defined %}
+
+                <div style="color: red">
+                    Vérifiez que tous les champs soient remplis comme il faut.
+                </div>
+
+            {% endif %}
         </div>
     </div>
 {% endblock %}

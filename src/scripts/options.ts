@@ -5,10 +5,6 @@ import '@fortawesome/fontawesome-free/js/fontawesome'
 import '@fortawesome/fontawesome-free/js/solid'
 import '@fortawesome/fontawesome-free/js/regular'
 import '@fortawesome/fontawesome-free/js/brands'
-import {getRepository} from "typeorm";
-import {User} from "../entity/User";
-
-let email = $("#email").text();
 
 $("#retour").click(() => {
     history.back();

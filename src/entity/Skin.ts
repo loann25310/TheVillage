@@ -7,11 +7,11 @@ export class Skin{
     id :number;
 
     @Column()
-    Lien :string;
+    lien :string;
 
     @Column()
-    Description :string;
+    description :string;
 
     @Column()
-    Prix :number;
+    prix :number;
 }
