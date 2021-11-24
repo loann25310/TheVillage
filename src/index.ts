@@ -31,6 +31,7 @@ const saltRounds = 10;
 let urlWithoutAuth :string[] = [
     "/",
     "/auth *",
+    "/credits *"
 ];
 
 logger.info("Starting The Village");
@@ -100,7 +101,6 @@ createConnection().then(async connection => {
             usernameField: 'mail'
         },
         async function (mail, password, done){
-            console.log("coucou")
             let userRepo = getRepository(User);
             let user = await userRepo.find({where : {adresseMail : mail}});
             for (let i = 0; i < user.length; i++){
