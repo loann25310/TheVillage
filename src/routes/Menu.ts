@@ -1,6 +1,7 @@
 import {Router} from "express";
 import {User} from "../entity/User";
 import {getRepository} from "typeorm";
+const bcrypt = require('bcrypt');
 
 export function Route(router: Router) {
 
@@ -30,12 +31,19 @@ export function Route(router: Router) {
    });
 
     router.put('/options/email', async (req, res) => {
-        let user = req.user as User;
-        user.AdresseMail = req.body.email;
-        await getRepository(User).save(user);
-        res.send({
-            result: "ok"
-        });
+        let password = req.body.password;
+        let user = req.user as User
+        if (!(await bcrypt.compare(password, user.Password))){
+            res.send({
+                result: "bad"
+            });
+        }else{
+            user.AdresseMail = req.body.email;
+            await getRepository(User).save(user);
+            res.send({
+                result: "ok"
+            });
+        }
     });
 
     router.get('/profil', (req, res) => {

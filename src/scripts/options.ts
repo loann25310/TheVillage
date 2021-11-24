@@ -49,7 +49,7 @@ $("#changeusername").click(async () => {
 });
 
 $("#changeemail").click(async () => {
-    let result = await Swal.fire({
+    let resultEmail = await Swal.fire({
         title: 'Modifier votre adresse mail',
         input: "email",
         inputLabel: 'Adresse mail',
@@ -58,7 +58,7 @@ $("#changeemail").click(async () => {
         showCancelButton: true,
         cancelButtonText: "<i class=\"fas fa-times color-red\"></i> Annuler"
     });
-    if (!result.isConfirmed) return;
+    if (!resultEmail.isConfirmed) return;
     let resultPassword = await Swal.fire({
         title: 'Entrez votre mot de passe',
         input: "password",
@@ -69,22 +69,24 @@ $("#changeemail").click(async () => {
         cancelButtonText: "<i class=\"fas fa-times color-red\"></i> Annuler"
     });
     if (!resultPassword.isConfirmed) return;
+    let result = await $.ajax({
+        url: "/options/email",
+        method: "PUT",
+        data: {
+            email: resultEmail.value,
+            password: resultPassword.value
+        }
+    });
 
-    else {
-        // TODO: Unbroken this code. Make verification on server side
-        /* let userRepo = getRepository(User);
-        let user = await userRepo.find({where : {AdresseMail : email}});
-        for (let i = 0; i < user.length; i++) {
-            if (await bcrypt.compare(resultPassword, user[i].Password)) {
-                await $.ajax({
-                    url: "/options/email",
-                    method: "PUT",
-                    data: {
-                        email: result.value
-                    }
-                });
-                $("#email").text(result.value);
-            }
-        } */
+    if (result.result === "ok") {
+        $("#email").text(resultEmail.value);
+    }
+
+    if (result.result === "bad") {
+        await Swal.fire({
+            icon: 'error',
+            title: 'Bad password',
+            text: 'Mot de passe incorrect !',
+        })
     }
 })
