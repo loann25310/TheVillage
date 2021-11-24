@@ -1,26 +1,22 @@
 import {Router} from "express";
-import {getRepository} from "typeorm";
 import {User} from "../entity/User";
 import {Server} from "socket.io";
 import {Partie} from "../entity/Partie";
 import {disconnect, getAvailableRoom, joinRoom} from "../scripts/lobby_server";
-
-let userRepo = getRepository(User);
-
-
 
 export function Route(router: Router, io: Server) {
     router.get('/lobby/:room', async (req, res) => {
         let user = req.user as User;
         if(!user) return res.redirect('/?notlogged');
         let roomId = req.params.room;
-        let nbPlayers;
-        if ((nbPlayers = await joinRoom(user.id, roomId)) !== -1) {
-            io.to(roomId).emit("nbPlayers", nbPlayers);
+        let players;
+        if ((players = await joinRoom(user.id, roomId)) !== null) {
+            io.to(roomId).emit("players", players);
             return res.render("lobby/lobby", {
                 maxPlayers: Partie.nbJoueursMax,
                 roomId,
-                nbPlayers,
+                nbPlayers : players.length,
+                players : JSON.stringify(players),
                 user
             });
         }

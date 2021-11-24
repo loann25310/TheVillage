@@ -1,7 +1,6 @@
 import {Column, Entity, getRepository, PrimaryGeneratedColumn} from "typeorm";
 
 import {User} from "./User";
-import {deserializeUser} from "passport";
 
 export enum PartieStatus {
     CREATING,
@@ -14,7 +13,7 @@ export enum PartieStatus {
 @Entity()
 export class Partie {
 
-    static nbJoueursMax = 10;
+    static readonly nbJoueursMax = 10;
 
     @PrimaryGeneratedColumn()
     id: number;

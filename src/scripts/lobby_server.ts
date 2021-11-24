@@ -43,16 +43,16 @@ export async function getAvailableRoom(uid) :Promise<number>{
     return newGame.id
 }
 
-export async function joinRoom(uid, gameId) :Promise<number>{
+export async function joinRoom(uid, gameId) :Promise<User[]>{
     let room = await gameRepo.findOne(gameId);
-    if (!room) return -1;
+    if (!room) return null;
     if ((room.status !== PartieStatus.WAIT_USERS && room.status !== PartieStatus.CREATING && room.status !== PartieStatus.ENDED) || room.players.length >= Partie.nbJoueursMax) {
-        return -1;
+        return null;
     }
     //Si la partie s'est remplie entre le dernier test et maintenant,
     //le joueur ne peut pas rejoindre, on le renvoie au menu
     if (!room.addPlayer(uid)) {
-        return -1;
+        return null;
     }
     let p = await userRepo.findOne(uid);
     p.partie = room.id;
@@ -62,7 +62,7 @@ export async function joinRoom(uid, gameId) :Promise<number>{
     if (room.status === PartieStatus.STARTING)
         room.start();
     await gameRepo.save(room);
-    return room.players.length;
+    return await room.getPlayers();
 }
 
 export function disconnect(uid, io) {
@@ -73,15 +73,18 @@ export function disconnect(uid, io) {
             return;
         }
         gameRepo.findOne(u.partie).then(room => {
-            if (room && room.status !== PartieStatus.STARTING) {
-                let index = room.players.indexOf(u.id);
-                if (index !== -1){
-                    room.players.splice(index, 1);
-                    gameRepo.save(room).then(()=>{
-                        io.to(`${room.id}`).emit("nbPlayers", room.players.length);
-                    })
-                }
-            }
+            if (!room || room.status === PartieStatus.STARTING) return;
+
+            let index = room.players.indexOf(u.id);
+            if (index === -1) return;
+
+            room.players.splice(index, 1);
+            gameRepo.save(room).then(()=>{
+                room.getPlayers().then(p => {
+                    io.to(`${room.id}`).emit("players", p);
+                })
+            })
+
         })
     })
 }

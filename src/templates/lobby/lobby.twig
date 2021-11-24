@@ -11,7 +11,7 @@
 
     </div>
     <div id="chat">
-        <div id="form"><label><input id="input" type="text" autocomplete="off"></label><button id="sendMessage">Send</button></div>
+        <div id="form"><button id="sendMessage">Send</button><label><input id="input" type="text" autocomplete="off"></label></div>
         <ul id="messages"></ul>
     </div>
 
@@ -21,6 +21,7 @@
     <script>
         var _id = {{ user.id }};
         var _roomId = "{{ roomId }}";
+        var _players = {{ players }};
     </script>
     <script src="/dist/lobby_client.js"></script>
 {% endblock %}
