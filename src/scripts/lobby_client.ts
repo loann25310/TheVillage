@@ -60,17 +60,19 @@ function create_message(pseudo, msg) {
 
 function create_players(players) {
     users.empty();
-    players.forEach(p => {
-        users.append(create_user_tag(p));
-    })
+    for (let i = 0; i < players.length; i++)
+        users.append(create_user_tag(players[i], i));
 }
 
-function create_user_tag(p :User) :JQuery {
-    let div = $("<div>");
+function create_user_tag(p :User, index :number) :JQuery {
+    let div = $(`<div id="user_${index}">`);
     let pseudo = $("<span>")
+    pseudo.addClass("pseudo")
     pseudo.text(p.pseudo);
     div.append(pseudo);
     let level = $('<span>')
+    level.addClass("level")
     level.text(p.niveau);
+    div.append(level);
     return div;
 }
