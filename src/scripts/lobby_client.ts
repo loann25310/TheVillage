@@ -42,7 +42,6 @@ socket.on("new_player", function (user, sockId){
 })
 
 socket.on("players", function (players){
-    console.log(players)
     nbJoueurs.text(players.length);
     create_players(players);
 })
@@ -60,12 +59,14 @@ function create_message(pseudo, msg) {
 
 function create_players(players) {
     users.empty();
-    for (let i = 0; i < players.length; i++)
+    for (let i = 0; i < players.length; i++) {
         users.append(create_user_tag(players[i], i));
+    }
 }
 
 function create_user_tag(p :User, index :number) :JQuery {
     let div = $(`<div id="user_${index}">`);
+    div.addClass("user")
     let pseudo = $("<span>")
     pseudo.addClass("pseudo")
     pseudo.text(p.pseudo);

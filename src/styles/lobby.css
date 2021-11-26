@@ -113,6 +113,10 @@ input[type="text"]:focus {
     display: none;
 }
 
+.user {
+    border: 1px black solid;
+}
+
 #user_0 {
     grid-column-start: 1;
     grid-row-start: 1;
