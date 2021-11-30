@@ -1,10 +1,7 @@
 import "../styles/lobby.css"
 import {io} from "socket.io-client";
 import {User} from "../entity/User";
-
-
 const socket = io();
-
 
 // @ts-ignore
 let uid = _id, roomName = _roomId, players = _players;
@@ -25,9 +22,9 @@ function sendMessage() {
 document.addEventListener("keydown", (e)=>{
     if (e.code === "Enter" || e.code === "NumpadEnter")
         sendMessage();
-})
+});
 
-sendMsg.on("click", sendMessage)
+sendMsg.on("click", sendMessage);
 
 socket.on('chat_message', (pseudo, msg) => {
     create_message(pseudo, msg);
@@ -37,7 +34,7 @@ socket.on('chat_message', (pseudo, msg) => {
 socket.on("new_player", function (user, sockId){
     //Si le joueur est déjà connecté et joue, il est renvoyé à l'accueil
     //(il joue avec le dernier appareil connecté
-    if (uid === user.id && sockId !== socket.id)
+    if (uid === user && sockId !== socket.id)
         window.location.replace("/?otherDevice=1");
 })
 
@@ -47,7 +44,7 @@ socket.on("players", function (players){
 })
 
 document.body.onload = ()=>{
-    socket.emit("new_guy", uid, roomName)
+    socket.emit("new_guy", uid, roomName);
     create_players(players);
 }
 
@@ -61,19 +58,20 @@ function create_players(players) {
     users.empty();
     for (let i = 0; i < players.length; i++) {
         users.append(create_user_tag(players[i], i));
+        let avatar = $(`#avatar_${i}`);
+        avatar.css("background-color", players[i].avatar);
     }
 }
 
-function create_user_tag(p :User, index :number) :JQuery {
+function create_user_tag(p :User, index :number) {
     let div = $(`<div id="user_${index}">`);
-    div.addClass("user")
-    let pseudo = $("<span>")
-    pseudo.addClass("pseudo")
-    pseudo.text(p.pseudo);
-    div.append(pseudo);
-    let level = $('<span>')
-    level.addClass("level")
-    level.text(p.niveau);
-    div.append(level);
+    div.addClass("user");
+
+    let html = `
+        <div class="container"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt=" "><div id="avatar_${index}" class="avatar"></div></div>
+        <span class="pseudo">${p.pseudo}</span>
+        <span class="level">Level ${p.niveau}</span>
+    `;
+    div.html(html);
     return div;
 }

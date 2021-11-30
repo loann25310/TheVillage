@@ -5,6 +5,8 @@ import {User} from "../entity/User";
 let gameRepo = getRepository(Partie);
 let userRepo = getRepository(User);
 
+export function Route(){}
+
 export async function getAvailableRoom(uid) :Promise<number>{
     let user = await userRepo.findOne(uid);
     //si l'utilisateur est trouvé :
@@ -88,5 +90,3 @@ export function disconnect(uid, io) {
         })
     })
 }
-
-

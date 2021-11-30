@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {getLibs} from "../scripts/libs";
+import {getLibs} from "./libs";
 
 export function Route(router: Router) {
 

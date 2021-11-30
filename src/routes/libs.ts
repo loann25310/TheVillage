@@ -3,6 +3,8 @@ import * as fs from "fs";
 const libs = require(`../../package.json`).dependencies
 const libs2 = require(`../../package.json`).devDependencies
 
+export function Route(){}
+
 export async function getLibs(){
     let l = {
         titre: "Librairies utilisées",

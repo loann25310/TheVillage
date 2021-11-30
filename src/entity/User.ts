@@ -45,6 +45,9 @@ export class User {
     })
     partie: number;
 
+    @Column()
+    avatar: string;
+
     @ManyToMany(() => Succes)
     succes :Succes[];
 

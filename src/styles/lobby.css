@@ -80,6 +80,14 @@ input[type="text"]:focus {
     overflow-wrap: break-word;
 }
 
+#messages > li {
+    padding: 0.5rem 1rem;
+}
+
+#messages > li:nth-child(odd) {
+    background: #efefef;
+}
+
 #chat{
     grid-column-start: 2;
     grid-row-start: 3;
@@ -98,23 +106,48 @@ input[type="text"]:focus {
     display: grid;
     grid-template-columns: 50%;
     grid-template-rows: 20% 20% 20% 20%;
-
-}
-
-#messages > li {
-    padding: 0.5rem 1rem;
-}
-
-#messages > li:nth-child(odd) {
-    background: #efefef;
-}
-
-.invisible {
-    display: none;
 }
 
 .user {
-    border: 1px black solid;
+    border: 3px black solid;
+    position: relative;
+}
+
+.pseudo {
+    position: absolute;
+    font-size: 1.2em;
+    left: 25%;
+    top: 30%;
+    transform: translateY(-50%);
+    font-weight: bold;
+}
+
+.avatar {
+    position: absolute;
+    border-radius: 50%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.container {
+    top: 50%;
+    transform: translate(20%, -50%);
+    position: relative;
+    display: inline-block;
+    height: 70%;
+}
+
+.container > img {
+    height: 100%;
+}
+
+.level {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10%;
 }
 
 #user_0 {
@@ -185,4 +218,8 @@ input[type="text"]:focus {
     grid-row-start: 5;
     grid-column-end: 3;
     grid-row-end: 6;
+}
+
+.invisible {
+    display: none;
 }

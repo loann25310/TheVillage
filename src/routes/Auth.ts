@@ -2,7 +2,7 @@ import {Router} from "express";
 import {getRepository} from "typeorm";
 import {User} from "../entity/User";
 import * as console from "console";
-import {envoyerMail} from "../scripts/Mail";
+import {envoyerMail} from "./Mail";
 import {verifMdp} from "../scripts/VerifMdp"
 import {RecuperationEmail} from "../entity/RecuperationEmail";
 import {deserializeUser} from "passport";
@@ -73,6 +73,7 @@ export function Route(router: Router) {
             user.succes = []
             user.skins = []
             user.partie = 0;
+            user.avatar = `#${Math.floor(Math.random()*16777215).toString(16)}`;
             repo.save(user).then((r) => {
                 return res.redirect("/auth?mail=" + user.adresseMail);
             });

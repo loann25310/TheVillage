@@ -2,7 +2,7 @@ import {Router} from "express";
 import {User} from "../entity/User";
 import {Server} from "socket.io";
 import {Partie} from "../entity/Partie";
-import {disconnect, getAvailableRoom, joinRoom} from "../scripts/lobby_server";
+import {disconnect, getAvailableRoom, joinRoom} from "./lobby_server";
 
 export function Route(router: Router, io: Server) {
     router.get('/lobby/:room', async (req, res) => {

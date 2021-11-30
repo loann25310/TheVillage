@@ -56,3 +56,9 @@ div{
 small{
     font-size: 0.7em !important;
 }
+
+.paused {
+    animation-play-state: paused !important;
+    -webkit-animation-play-state: paused !important;
+    -moz-animation-play-state: paused !important;
+}

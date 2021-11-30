@@ -4,6 +4,7 @@ import * as $ from "jquery";
 let index = 0,
     index_2 = 0,
     wait = 0,
+    interval = null,
     lib = JSON.parse($("#lib").text())
 
 const display = [
@@ -43,13 +44,36 @@ const display = [
         ]
     }, lib
 ]
+$(window).on('focus', function() {
+    $(".up").css("animationPlayState", 'running');
+    write();
+});
+
+$(window).on('blur', function() {
+    $(".up").css("animationPlayState", 'paused');
+    clearInterval(interval);
+});
+
+$(window).on("visibilitychange", function (){
+    if (document.hidden) {
+        $(".up").css("animationPlayState", 'paused');
+        clearInterval(interval);
+    } else {
+        $(".up").css("animationPlayState", 'running');
+        write();
+    }
+})
+
 write();
 
 function write(){
-    setInterval(getNext, 300);
+    clearInterval(interval)
+    interval = setInterval(getNext, 300);
 }
 
 function getNext(){
+    if (document.hidden)
+        return;
     if (wait > 0){
         wait --
         return;
@@ -81,7 +105,7 @@ function titre(string :string){
     }).text(string).appendTo("#container")
     setTimeout(() => {
         h1.remove();
-    }, 10000)
+    }, 60000)
 }
 
 function texte(string :string){
@@ -90,5 +114,5 @@ function texte(string :string){
     }).html(string).appendTo("#container")
     setTimeout(() => {
         div.remove();
-    }, 10000)
+    }, 60000)
 }
