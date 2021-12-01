@@ -1,7 +1,10 @@
 import "../styles/lobby.css"
 import {io} from "socket.io-client";
 import {User} from "../entity/User";
+import {Chart, registerables} from 'chart.js';
 const socket = io();
+Chart.register(...registerables);
+
 
 // @ts-ignore
 let uid = _id, roomName = _roomId, players = _players;
@@ -14,7 +17,7 @@ let users = $("#users");
 
 function sendMessage() {
     if (input.val() && `${input.val()}`.trim() !== "") {
-        socket.emit('chat_message', pseudo, input.val(), roomName);
+        socket.emit('chat_message', {pseudo, uid}, input.val(), roomName);
         input.val("");
     }
 }
@@ -26,8 +29,8 @@ document.addEventListener("keydown", (e)=>{
 
 sendMsg.on("click", sendMessage);
 
-socket.on('chat_message', (pseudo, msg) => {
-    create_message(pseudo, msg);
+socket.on('chat_message', (user, msg) => {
+    create_message(user, msg);
     messages.scrollTop(messages[0].scrollHeight);
 });
 
@@ -38,9 +41,10 @@ socket.on("new_player", function (user, sockId){
         window.location.replace("/?otherDevice=1");
 })
 
-socket.on("players", function (players){
-    nbJoueurs.text(players.length);
-    create_players(players);
+socket.on("players", function (p){
+    players = p;
+    nbJoueurs.text(p.length);
+    create_players(p);
 })
 
 document.body.onload = ()=>{
@@ -48,9 +52,22 @@ document.body.onload = ()=>{
     create_players(players);
 }
 
-function create_message(pseudo, msg) {
+function create_message(user, msg) {
     let item = $('<li>');
-    item.text(`${pseudo} : ${msg}`);
+    let u;
+    for (let i = 0; i < players.length; i++){
+        if (players[i].id === uid){
+            u = players[i];
+            break;
+        }
+    }
+    let name = $(`<span class="msg_pseudo">${user.pseudo}</span>`)
+    name.on("click", function(){
+        display_user_info(u);
+    })
+    item.append(name)
+    item.append(` : ${msg}`);
+    console.log(item.html())
     messages.append(item);
 }
 
@@ -73,5 +90,64 @@ function create_user_tag(p :User, index :number) {
         <span class="level">Level ${p.niveau}</span>
     `;
     div.html(html);
+    div.on('click', function () {
+        if ($(".popup").length === 0)
+            display_user_info(p as User);
+    })
     return div;
+}
+
+function display_user_info(player :User) {
+    let p = popup();
+    let html = `
+        <span class="show_pseudo">${player.pseudo}</span>
+        <span class="show_level">Niveau ${player.niveau}</span>
+    `
+    html +=  (player.nbPartiesJouees > 0) ?
+       `<canvas class="show_camembert"></canvas><p></p>` : //<p> only here so that the canvas stays inside the popup (without overflowing it)
+        `<span class="show_camembert">Ce joueur n'a encore jamais joué</span>`
+    p.text.html(html);
+
+    $(document.body).append(p.div);
+    if (player.nbPartiesJouees === 0) {
+        return
+    }
+    new Chart(($(".show_camembert").get(0) as HTMLCanvasElement).getContext("2d"), {
+        type: 'doughnut',
+        data: {
+            labels: ['Victoires','Défaites'],
+            datasets: [{
+                label: 'Victoires/Défaites',
+                data: [player.nbPartiesGagnees, player.nbPartiesJouees - player.nbPartiesGagnees],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 99, 132, 0.5)',
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 99, 132, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+    });
+}
+
+function popup() {
+    let div = $("<div>");
+    div.addClass("popup");
+    let outerdiv = $("<div>");
+    outerdiv.append(div);
+    outerdiv.addClass("fond_blanc");
+    let close = $("<span>").addClass("close").text("✖");
+    div.append(close);
+    let text = $("<div>").addClass("innerPopup");
+    div.append(text)
+    close.on("click", function () {
+        outerdiv.remove();
+    })
+    outerdiv.on("click", function () {
+        outerdiv.remove();
+    })
+    return {div: outerdiv, text};
 }

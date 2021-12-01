@@ -28,8 +28,8 @@ export function Route(router: Router, io: Server) {
             socket.emit("room_found", await getAvailableRoom(userId));
         });
 
-        socket.on("chat_message", (pseudo, msg, room) =>{
-            io.to(room).emit("chat_message", pseudo, msg)
+        socket.on("chat_message", (user, msg, room) =>{
+            io.to(room).emit("chat_message", user, msg)
         });
 
         socket.on("new_guy", (uid :number, room) => {

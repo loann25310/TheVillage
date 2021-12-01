@@ -70,8 +70,8 @@ export function Route(router: Router) {
             user.password = hash;
             user.adresseMail = req.body.mail;
             user.dateDeNaissance = req.body.ddn;
-            user.succes = []
-            user.skins = []
+            user.succes = [];
+            user.skins = [];
             user.partie = 0;
             user.avatar = `#${Math.floor(Math.random()*16777215).toString(16)}`;
             repo.save(user).then((r) => {
