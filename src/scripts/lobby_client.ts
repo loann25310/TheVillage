@@ -142,14 +142,15 @@ function popup() {
     let text = $("<div>").addClass("innerPopup");
     div.append(text)
     close.on("click", function () {
-        outerdiv.remove();
+        outerdiv.addClass("disappear");
+        setTimeout(function(){outerdiv.remove();}, 1000);
     })
     div.on("click", function(e){
         e.stopPropagation();
     })
     outerdiv.on("click", function () {
-
-        outerdiv.remove();
+        outerdiv.addClass("disappear");
+        setTimeout(function(){outerdiv.remove();}, 1000);
     })
     return {div: outerdiv, text};
 }
