@@ -14,6 +14,10 @@ body {
 
 }
 
+#pseudo {
+    font-size: 2.5em;
+}
+
 #profile {
     grid-column-start: 1;
     grid-row-start: 1;
@@ -116,11 +120,11 @@ input[type="text"]:focus {
 
 .pseudo {
     position: absolute;
-    font-size: 1.2em;
+    font-size: 1.4em;
     left: 25%;
     top: 30%;
     transform: translateY(-50%);
-    font-weight: bold;
+    font-weight: bolder;
 }
 
 .avatar {
@@ -263,7 +267,7 @@ input[type="text"]:focus {
     height: 100%;
     display: grid;
     grid-template-columns: 20% 30% 30% 20%;
-    grid-template-rows: 20% 60% 20%;
+    grid-template-rows: 20% 30% 30% 20%;
     column-gap: 10px;
     row-gap: 10px;
 }
@@ -286,9 +290,16 @@ input[type="text"]:focus {
     grid-column-start: 1;
     grid-column-end: 5;
     grid-row-start: 2;
-    grid-row-end: 3;
+    grid-row-end: 4;
 }
 
 .msg_pseudo {
     cursor: pointer;
+}
+
+.never_played {
+    grid-column-start: 1;
+    grid-column-end: 5;
+    grid-row-start: 3;
+    grid-row-end: 4;
 }

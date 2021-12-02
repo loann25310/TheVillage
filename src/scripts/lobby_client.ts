@@ -67,7 +67,6 @@ function create_message(user, msg) {
     })
     item.append(name)
     item.append(` : ${msg}`);
-    console.log(item.html())
     messages.append(item);
 }
 
@@ -105,7 +104,7 @@ function display_user_info(player :User) {
     `
     html +=  (player.nbPartiesJouees > 0) ?
        `<canvas class="show_camembert"></canvas><p></p>` : //<p> only here so that the canvas stays inside the popup (without overflowing it)
-        `<span class="show_camembert">Ce joueur n'a encore jamais joué</span>`
+        `<span class="never_played">Ce joueur n'a encore jamais joué</span>`
     p.text.html(html);
 
     $(document.body).append(p.div);
