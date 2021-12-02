@@ -21,12 +21,19 @@ function sendMessage() {
     }
 }
 
-document.addEventListener("keydown", (e)=>{
+sendMsg.on("click", sendMessage);
+
+$(document).on("keydown", function (e){
     if (e.code === "Enter" || e.code === "NumpadEnter")
         sendMessage();
-});
-
-sendMsg.on("click", sendMessage);
+    if (e.key === "Escape") {
+        let outerdiv = $('.fond_blanc')
+        if (outerdiv.length > 0){
+            outerdiv.addClass("disappear");
+            setTimeout(function(){outerdiv.remove();}, 1000);
+        }
+    }
+})
 
 socket.on('chat_message', (user, msg) => {
     create_message(user, msg);
@@ -107,9 +114,8 @@ function display_user_info(player) {
     p.text.html(html);
 
     $(document.body).append(p.div);
-    if (player.nbPartiesJouees === 0) {
+    if (player.nbPartiesJouees === 0)
         return
-    }
     new Chart(($(".show_camembert").get(0) as HTMLCanvasElement).getContext("2d"), {
         type: 'doughnut',
         data: {

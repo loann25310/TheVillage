@@ -286,6 +286,7 @@ input[type="text"]:focus {
     grid-row-start: 1;
     grid-row-end: 2;
 }
+
 .show_camembert{
     grid-column-start: 1;
     grid-column-end: 5;
@@ -313,8 +314,10 @@ input[type="text"]:focus {
 @keyframes disappear {
     from {
         opacity: initial;
+        display: initial;
     }
     to {
         opacity: 0;
+        display: none;
     }
 }
