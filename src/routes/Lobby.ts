@@ -11,12 +11,23 @@ export function Route(router: Router, io: Server) {
         let roomId = req.params.room;
         let players;
         if ((players = await joinRoom(user.id, roomId)) !== null) {
-            io.to(roomId).emit("players", players);
+            let users = []
+            for (let p of players) {
+                users.push({
+                    id: p.id,
+                    pseudo: p.pseudo,
+                    nbPartiesJouees: p.nbPartiesJouees,
+                    nbPartiesGagnees: p.nbPartiesGagnees,
+                    niveau: p.niveau,
+                    avatar: p.avatar
+                })
+            }
+            io.to(roomId).emit("players", users);
             return res.render("lobby/lobby", {
                 maxPlayers: Partie.nbJoueursMax,
                 roomId,
                 nbPlayers : players.length,
-                players : JSON.stringify(players),
+                players : JSON.stringify(users),
                 user
             });
         }

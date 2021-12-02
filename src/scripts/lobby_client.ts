@@ -1,6 +1,5 @@
 import "../styles/lobby.css"
 import {io} from "socket.io-client";
-import {User} from "../entity/User";
 import {Chart, registerables} from 'chart.js';
 const socket = io();
 Chart.register(...registerables);
@@ -34,10 +33,10 @@ socket.on('chat_message', (user, msg) => {
     messages.scrollTop(messages[0].scrollHeight);
 });
 
-socket.on("new_player", function (user, sockId){
+socket.on("new_player", function (userId, sockId){
     //Si le joueur est déjà connecté et joue, il est renvoyé à l'accueil
     //(il joue avec le dernier appareil connecté
-    if (uid === user && sockId !== socket.id)
+    if (uid === userId && sockId !== socket.id)
         window.location.replace("/?otherDevice=1");
 })
 
@@ -79,7 +78,7 @@ function create_players(players) {
     }
 }
 
-function create_user_tag(p :User, index :number) {
+function create_user_tag(p, index :number) {
     let div = $(`<div id="user_${index}">`);
     div.addClass("user");
 
@@ -91,12 +90,12 @@ function create_user_tag(p :User, index :number) {
     div.html(html);
     div.on('click', function () {
         if ($(".popup").length === 0)
-            display_user_info(p as User);
+            display_user_info(p);
     })
     return div;
 }
 
-function display_user_info(player :User) {
+function display_user_info(player) {
     let p = popup();
     let html = `
         <span class="show_pseudo">${player.pseudo}</span>
@@ -145,7 +144,11 @@ function popup() {
     close.on("click", function () {
         outerdiv.remove();
     })
+    div.on("click", function(e){
+        e.stopPropagation();
+    })
     outerdiv.on("click", function () {
+
         outerdiv.remove();
     })
     return {div: outerdiv, text};
