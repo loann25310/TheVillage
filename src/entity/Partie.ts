@@ -13,8 +13,6 @@ export enum PartieStatus {
 @Entity()
 export class Partie {
 
-    static readonly nbJoueursMax = 10;
-
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -26,35 +24,43 @@ export class Partie {
     status: PartieStatus;
 
     @Column({
+        default: 10
+    })
+    nbJoueursMax :number;
+
+    @Column({
+        default: 60
+    })
+    dureeVote :number;
+
+    @Column({
+        default: 0
+    })
+    gameMaster :number;
+
+    @Column({
         type: "simple-json",
     })
     players: number[];
-
-    @Column({
-        type: "simple-json"
-    })
-    players_playing: number[] = [];
 
     async getPlayers(): Promise<User[]> {
         return await getRepository(User).findByIds(this.players);
     }
 
     addPlayer(userId: number) :boolean{
-        if (!this.players)
-            this.players = [];
-        if (this.players.length >= Partie.nbJoueursMax)
+        this.players ??= [];
+        if (this.players.length >= this.nbJoueursMax)
             return false;
         if (!this.players.includes(userId))
             this.players.push(userId);
+        if (this.players.length === 1)
+            this.gameMaster = userId;
         return true;
     }
 
     start(){
-        this.players_playing = this.players;
         // add stuff here if needed
         this.status = PartieStatus.STARTED;
-        //The game is updated (in db) right after this function.
-        //It only has to be called in lobby_server.ts > joinRoom();
     }
 
 }

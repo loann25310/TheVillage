@@ -1,16 +1,18 @@
 import {Router} from "express";
 import {User} from "../entity/User";
 import {Server} from "socket.io";
-import {Partie} from "../entity/Partie";
 import {disconnect, getAvailableRoom, joinRoom} from "./lobby_server";
+import {getRepository} from "typeorm";
+import {Partie} from "../entity/Partie";
 
 export function Route(router: Router, io: Server) {
     router.get('/lobby/:room', async (req, res) => {
         let user = req.user as User;
         if(!user) return res.redirect('/?notlogged');
         let roomId = req.params.room;
-        let players;
-        if ((players = await joinRoom(user.id, roomId)) !== null) {
+        let game;
+        if ((game = await joinRoom(user.id, roomId)) !== null) {
+            let players = await game.getPlayers();
             let users = []
             for (let p of players) {
                 users.push({
@@ -24,10 +26,13 @@ export function Route(router: Router, io: Server) {
             }
             io.to(roomId).emit("players", users);
             return res.render("lobby/lobby", {
-                maxPlayers: Partie.nbJoueursMax,
-                roomId,
-                nbPlayers : players.length,
-                players : JSON.stringify(users),
+                partie: JSON.stringify({
+                    id: game.id,
+                    nbJoueursMax: game.nbJoueursMax,
+                    players: users,
+                    dureeVote: game.dureeVote
+                }),
+                gameMaster: game.gameMaster,
                 user
             });
         }
@@ -51,6 +56,22 @@ export function Route(router: Router, io: Server) {
 
         socket.on("disconnecting", ()=>{
             disconnect(socket.data.uid, io);
+        })
+
+        socket.on("change_max_players", async (id, nb) => {
+            let repo = getRepository(Partie);
+            let room = await repo.findOne(id);
+            room.nbJoueursMax = nb;
+            await repo.save(room);
+            io.to(`${room.id}`).emit("change_max_players", nb);
+        });
+
+        socket.on("duree_vote", async (id, val) => {
+            let repo = getRepository(Partie);
+            let room = await repo.findOne(id);
+            room.dureeVote = val;
+            await repo.save(room);
+            io.to(`${room.id}`).emit("duree_vote", val);
         })
     })
 }

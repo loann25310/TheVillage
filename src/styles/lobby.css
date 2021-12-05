@@ -10,8 +10,7 @@ body {
     overflow: hidden;
     display: grid;
     grid-template-columns: 50% 50%;
-    grid-template-rows: 20% 30% 50%;
-
+    grid-template-rows: 20% 30% 48% 2%;
 }
 
 #pseudo {
@@ -23,14 +22,7 @@ body {
     grid-row-start: 1;
     grid-column-end: 2;
     grid-row-end: 2;
-}
-
-#game_settings {
-    grid-column-start: 1;
-    grid-row-start: 2;
-    grid-column-end: 2;
-    grid-row-end: 4;
-    background-color: yellow;
+    background: linear-gradient(180deg, rgba(204,204,204), rgba(255,255,255));
 }
 
 #form {
@@ -42,6 +34,7 @@ body {
     height: 3rem;
     box-sizing: border-box;
     backdrop-filter: blur(10px);
+    border-radius: 5px;
 }
 
 label {
@@ -56,6 +49,7 @@ input[type="text"]{
     height: 100%;
     font-size: 1.2em;
     padding: 0 2%;
+    background-color: transparent;
 }
 
 input[type="text"]:focus {
@@ -76,7 +70,6 @@ input[type="text"]:focus {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    border: 1px black solid;
     height: 100%;
     width: 100%;
     overflow: scroll;
@@ -86,10 +79,8 @@ input[type="text"]:focus {
 
 #messages > li {
     padding: 0.5rem 1rem;
-}
-
-#messages > li:nth-child(odd) {
-    background: #efefef;
+    border: lightgray solid 0;
+    border-top-width: 1px;
 }
 
 #chat{
@@ -106,7 +97,6 @@ input[type="text"]:focus {
     grid-row-start: 1;
     grid-column-end: 3;
     grid-row-end: 3;
-
     display: grid;
     grid-template-columns: 50%;
     grid-template-rows: 20% 20% 20% 20%;
@@ -296,6 +286,7 @@ input[type="text"]:focus {
 
 .msg_pseudo {
     cursor: pointer;
+    font-weight: bold;
 }
 
 .never_played {
@@ -319,5 +310,98 @@ input[type="text"]:focus {
     to {
         opacity: 0;
         display: none;
+    }
+}
+
+#nbPlayers, #maxPlayers {
+    font-weight: bold;
+}
+
+#game_settings {
+    grid-column-start: 1;
+    grid-row-start: 2;
+    grid-column-end: 2;
+    grid-row-end: 5;
+    flex-wrap: nowrap;
+    border-collapse: collapse;
+    padding: 2em;
+}
+
+#settings {
+    overflow-y: scroll;
+}
+
+#game_master_settings {
+    width: 100%;
+    height: max-content;
+    padding-bottom: 2em;
+}
+
+fieldset {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+#nbJoueurs {
+    font-size: 2em;
+}
+
+::-webkit-scrollbar {
+    width: 0;  /* Remove scrollbar space */
+}
+
+.lds-ellipsis {
+    display: inline-block;
+    position: relative;
+    width: 40px;
+    height: 40px;
+}
+.lds-ellipsis div {
+    position: absolute;
+    top: 16px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #888;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+    left: 4px;
+    animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+    left: 4px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+    left: 16px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+    left: 28px;
+    animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+@keyframes lds-ellipsis3 {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
+    }
+}
+@keyframes lds-ellipsis2 {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(12px, 0);
     }
 }
