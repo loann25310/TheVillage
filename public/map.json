@@ -1,0 +1,46 @@
+{
+  "objects" : [
+    {
+      "type": "buisson",
+      "coordonnees" : [
+        {"x" :10, "y" :10},
+        {"x" : 50, "y" : 30},
+        {"x" : 80,"y" : 60}
+      ]
+    },
+    {
+      "type": "arbre",
+      "coordonnees" :
+      [
+        {"x" :60, "y" :60},
+        {"x" : 65, "y" : 70},
+        {"x" : 80,"y" : 80}
+      ]
+    },
+    {
+      "type": "caisse",
+      "coordonnees" :
+      [
+        {"x" :150, "y" :60},
+        {"x" : 200, "y" : 70},
+        {"x" : 140,"y" : 80}
+      ]
+    },
+    {
+      "type": "maison",
+      "coordonnees" :
+      [
+        {"x" :300, "y" :50},
+        {"x" : 100, "y" : 100},
+        {"x" : 50,"y" : 200}
+      ]
+    }
+  ],
+  "players_spawn" : [
+    {"x" :0, "y" :0},
+    {"x" : 10, "y" : 10},
+    {"x" : 20,"y" : 20}
+  ],
+  "nom_map" : "The village",
+  "version" : "v1.0.0"
+}

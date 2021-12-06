@@ -42,35 +42,37 @@ export class Player extends Displayable {
         let vector: Coordinate = { x: 0, y: 0};
 
         //sprint = false;
-
+        let pixelSprint = 4;
+        let pixelNoSprint = 1;
+        let condition = (sprint)?pixelSprint:pixelNoSprint;
         switch (type) {
             case PlayerMove.moveN:
-                vector.y += (sprint)?4:1;
+                vector.y += condition;
                 break;
             case PlayerMove.moveNE:
-                vector.y += (sprint)?4:1;
-                vector.x -= (sprint)?4:1;
+                vector.y += condition;
+                vector.x -= condition;
                 break;
             case PlayerMove.moveE:
-                vector.x -= (sprint)?4:1;
+                vector.x -= condition;
                 break;
             case PlayerMove.moveSE:
-                vector.x -= (sprint)?4:1;
-                vector.y -= (sprint)?4:1;
+                vector.x -= condition;
+                vector.y -= condition;
                 break;
             case PlayerMove.moveS:
-                vector.y -= (sprint)?4:1;
+                vector.y -= condition;
                 break;
             case PlayerMove.moveSW:
-                vector.y -= (sprint)?4:1;
-                vector.x += (sprint)?4:1;
+                vector.y -= condition;
+                vector.x += condition;
                 break;
             case PlayerMove.moveW:
-                vector.x += (sprint)?4:1;
+                vector.x += condition;
                 break;
             case PlayerMove.moveNW:
-                vector.x += (sprint)?4:1;
-                vector.y += (sprint)?4:1;
+                vector.x += condition;
+                vector.y += condition;
                 break;
         }
 

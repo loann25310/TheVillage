@@ -1,5 +1,6 @@
 import {Displayable} from "./Displayable";
 import {Coordinate} from "./types/Coordinate";
+import axios from 'axios';
 
 export class Environment {
 
@@ -35,6 +36,10 @@ export class Environment {
                 object.update();
             }
         }
+    }
+    async create(){
+        const response = await axios.get('/map.json');
+        console.log(response);
     }
 
     move(movement: { x: number, y: number }){
