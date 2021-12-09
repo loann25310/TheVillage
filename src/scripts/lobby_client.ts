@@ -109,6 +109,13 @@ socket.on("unban", function(player, bans) {
     addBans(bans);
 })
 
+socket.on("game_master", (id) => {
+    game.gameMaster = id;
+    if (uid === id) {
+        (fieldset[0] as HTMLFieldSetElement).disabled = false;
+    }
+})
+
 document.body.onload = ()=>{
     document.title = `The Village - ${game.id}`;
     input[0].focus();

@@ -2,6 +2,7 @@ import {Partie, PartieStatus} from "../entity/Partie";
 import {getRepository} from "typeorm";
 import {User} from "../entity/User";
 import {Tools} from "../entity/Tools";
+import {createSocket} from "dgram";
 
 let gameRepo = getRepository(Partie);
 let userRepo = getRepository(User);
@@ -76,6 +77,10 @@ export function disconnect(uid, io) {
             if (index === -1) return;
 
             room.players.splice(index, 1);
+            if (room.gameMaster === u.id) {
+                room.gameMaster = room.players[0] || 0;
+                io.to(room.id).emit("game_master", room.gameMaster);
+            }
             gameRepo.save(room).then(()=>{
                 room.getPlayers().then(p => {
                     io.to(`${room.id}`).emit("players", p);
