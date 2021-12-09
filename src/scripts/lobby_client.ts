@@ -22,7 +22,8 @@ let roomName = `${game.id}`,
     users = $("#users"),
     fieldset = $("#fieldset"),
     change_max_players = $("#change_max_players"),
-    visibility = $("#visibility");
+    visibility = $("#visibility"),
+    bans = $("#joueursBan");
 
 change_max_players.on("input", function () {
     if (uid !== game.gameMaster && !(fieldset[0] as HTMLFieldSetElement).disabled)
@@ -96,10 +97,16 @@ socket.on("start_game", () => {
     window.location.replace("/play/" + game.id)
 })
 
-socket.on("ban", id => {
+socket.on("ban", (id, bans) => {
     if (id === game.gameMaster) return;
     sendMessageBan(id);
-    if (id === uid) location.replace("/?banned=1");
+    if (id === uid) return location.replace("/?banned=1");
+    addBans(bans);
+});
+
+socket.on("unban", function(player, bans) {
+    sendUnbanMessage(player);
+    addBans(bans);
 })
 
 document.body.onload = ()=>{
@@ -109,6 +116,7 @@ document.body.onload = ()=>{
     maxPlayers.text(game.nbJoueursMax);
     (visibility[0] as HTMLInputElement).checked = !game.publique;
     (change_max_players[0] as HTMLInputElement).value = game.nbJoueursMax;
+    addBans(game.bans);
     socket.emit("new_guy", uid, roomName);
     create_players(players);
     $("#nbJoueursMin").text(Partie.nbJoueursMin);
@@ -270,5 +278,31 @@ function sendMessageBan(id) {
     let li = $("<li>");
     li.addClass("ban_message");
     li.text(`Info : ${user.pseudo} a été banni de la partie.`);
+    messages.append(li)
+}
+
+function addBans(ban) {
+    bans.html(`<summary>Joueurs bannis</summary>`);
+    ban.forEach(b => {
+        let div = $("<div>").addClass("banned_player");
+        div.addClass("joueur_ban");
+        let p = $("<p>");
+        p.text(`${b.pseudo} `);
+        div.append(p);
+        let close = $("<span>").addClass("unban").text("✖");
+        div.append(close);
+        close.on("click", function() {
+
+            socket.emit("unban", roomName, b);
+        });
+        bans.append(div);
+    })
+}
+
+function sendUnbanMessage(player) {
+    if (uid !== game.gameMaster) return;
+    let li = $("<li>");
+    li.addClass("unban_message");
+    li.text(`Info : ${player.pseudo} n'est plus banni de la partie.`);
     messages.append(li)
 }

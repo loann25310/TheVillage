@@ -30,13 +30,19 @@ export function Route(router: Router, io: Server) {
                 })
             }
             io.to(roomId).emit("players", users);
+            let bans = [];
+            for (const b of game.bans) {
+                let p = await getRepository(User).findOne(b);
+                bans.push({id: p.id, pseudo: p.pseudo});
+            }
             return res.render("lobby/lobby", {
                 partie: JSON.stringify({
                     id: game.id,
                     nbJoueursMax: game.nbJoueursMax,
                     players: users,
                     dureeVote: game.dureeVote,
-                    publique: game.publique
+                    publique: game.publique,
+                    bans
                 }),
                 gameMaster: game.gameMaster,
                 user
@@ -92,10 +98,27 @@ export function Route(router: Router, io: Server) {
         });
 
         socket.on("ban", (gameId, uid) => {
-            repo.findOne(gameId).then(room => {
+            repo.findOne(gameId).then( async room => {
                 if (room.bans.includes(uid)) return;
                 room.bans.push(uid);
-                repo.save(room).then(()=> io.to(gameId).emit('ban', uid));
+                let bans = [];
+                for (const b of room.bans) {
+                    let p = await getRepository(User).findOne(b);
+                    bans.push({id: p.id, pseudo: p.pseudo});
+                }
+                repo.save(room).then(()=> io.to(gameId).emit('ban', uid, bans));
+            })
+        });
+
+        socket.on("unban", (room, player) => {
+            repo.findOne(room).then( async room => {
+                room.bans.splice(room.bans.indexOf(player.id), 1)
+                let bans = [];
+                for (const b of room.bans) {
+                    let p = await getRepository(User).findOne(b);
+                    bans.push({id: p.id, pseudo: p.pseudo});
+                }
+                repo.save(room).then(()=> io.to(room.id).emit('unban', player, bans));
             })
         })
     })
