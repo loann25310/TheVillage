@@ -19,6 +19,11 @@ export class Partie {
     id: string;
 
     @Column({
+        default: false
+    })
+    publique: boolean;
+
+    @Column({
         type: "enum",
         enum: PartieStatus,
         default: PartieStatus.CREATING
@@ -49,7 +54,7 @@ export class Partie {
         return await getRepository(User).findByIds(this.players);
     }
 
-    addPlayer(userId: number) :boolean{
+    addPlayer(userId: number): boolean{
         this.players ??= [];
         if (this.players.length >= this.nbJoueursMax)
             return false;

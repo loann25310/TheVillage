@@ -18,7 +18,7 @@ export async function getAvailableRoom(uid): Promise<string>{
                 return lastGame.id;
         }
     }
-    let games = await gameRepo.find({where: {status: `${PartieStatus.WAIT_USERS}`}});
+    let games = await gameRepo.find({where: {status: `${PartieStatus.WAIT_USERS}`, publique: true}});
     for (let i = 0; i < games.length; i++) {
         // Si la partie n'est pas pleine (et n'a pas commencé)
         if (games[i].players.length < games[i].nbJoueursMax)

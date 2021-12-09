@@ -21,7 +21,8 @@ let roomName = `${game.id}`,
     input = $("#input"),
     users = $("#users"),
     fieldset = $("#fieldset"),
-    change_max_players = $("#change_max_players");
+    change_max_players = $("#change_max_players"),
+    visibility = $("#visibility");
 
 change_max_players.on("input", function () {
     if (uid !== game.gameMaster && !(fieldset[0] as HTMLFieldSetElement).disabled)
@@ -49,6 +50,13 @@ $(document).on("keydown", function (e){
         }
     }
 });
+
+visibility.on("change", function() {
+    if (uid === game.gameMaster)
+    socket.emit("private", roomName, (visibility[0] as HTMLInputElement).checked);
+});
+
+socket.on("private", bool => (visibility[0] as HTMLInputElement).checked = bool);
 
 socket.on('chat_message', (user, msg) => {
     create_message(user, msg);
@@ -93,6 +101,7 @@ document.body.onload = ()=>{
     input[0].focus();
     nbPlayers.text(game.players.length);
     maxPlayers.text(game.nbJoueursMax);
+    (visibility[0] as HTMLInputElement).checked = !game.publique;
     (change_max_players[0] as HTMLInputElement).value = game.nbJoueursMax;
     socket.emit("new_guy", uid, roomName);
     create_players(players);

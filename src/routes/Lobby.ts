@@ -14,7 +14,7 @@ export function Route(router: Router, io: Server) {
         let user = req.user as User;
         if(!user) return res.redirect('/?notlogged');
         let roomId = req.params.room;
-        let game;
+        let game: Partie;
         if ((game = await joinRoom(user.id, roomId)) !== null) {
             let players = await game.getPlayers();
             let users = []
@@ -34,7 +34,8 @@ export function Route(router: Router, io: Server) {
                     id: game.id,
                     nbJoueursMax: game.nbJoueursMax,
                     players: users,
-                    dureeVote: game.dureeVote
+                    dureeVote: game.dureeVote,
+                    publique: game.publique
                 }),
                 gameMaster: game.gameMaster,
                 user
@@ -77,9 +78,16 @@ export function Route(router: Router, io: Server) {
         })
 
         socket.on("start_game", async gameId => {
-            let room = await repo.findOne(+gameId);
+            let room = await repo.findOne(gameId);
             room.start();
             io.to(gameId).emit("start_game");
+        });
+
+        socket.on("private", (gameId, bool) => {
+            repo.findOne(gameId).then(room => {
+                room.publique = !bool;
+                repo.save(room).then(()=> io.to(gameId).emit('private', bool));
+            })
         })
     })
 }

@@ -14,10 +14,14 @@
                 <fieldset id="fieldset" {% if gameMaster != user.id %} disabled="true" {% endif %}>
                     <ul>
                         <li>
+                            <h3>Visibilité de la partie</h3>
+                            <label>Privée <input type="checkbox" name="visibility" id="visibility"></label>
+                        </li>
+                        <li>
                             <h3>Nombre de joueurs maximum</h3>
                             <div id="config_joueurs_max">
                                 <ul>
-                                    <label for="change_max_players"></label><input type="range" min="7" max="15" id="change_max_players">
+                                    <input type="range" min="7" max="15" id="change_max_players">
                                 </ul>
                             </div>
                         </li>
