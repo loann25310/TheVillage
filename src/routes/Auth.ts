@@ -72,7 +72,7 @@ export function Route(router: Router) {
             user.dateDeNaissance = req.body.ddn;
             user.succes = [];
             user.skins = [];
-            user.partie = 0;
+            user.partie = "";
             user.avatar = `#${Math.floor(Math.random()*16777215).toString(16)}`;
             repo.save(user).then((r) => {
                 return res.redirect("/auth?mail=" + user.adresseMail);

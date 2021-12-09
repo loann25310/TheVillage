@@ -18,7 +18,7 @@ export class User {
     adresseMail: string;
 
     @Column("date")
-    dateDeNaissance :string;
+    dateDeNaissance: string;
 
     @Column({
         default: 1
@@ -28,30 +28,30 @@ export class User {
     @Column({
         default: 0
     })
-    argent :number;
+    argent: number;
 
     @Column({
         default: 0
     })
-    nbPartiesGagnees :number;
+    nbPartiesGagnees: number;
 
     @Column({
         default: 0
     })
-    nbPartiesJouees :number;
+    nbPartiesJouees: number;
 
     @Column({
-        default: 0
+        default: ""
     })
-    partie: number;
+    partie: string;
 
     @Column()
     avatar: string;
 
     @ManyToMany(() => Succes)
-    succes :Succes[];
+    succes: Succes[];
 
     @ManyToMany(() => Skin)
-    skins : Skin[];
+    skins: Skin[];
 }
 

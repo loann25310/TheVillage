@@ -1,4 +1,4 @@
-import {Column, Entity, getRepository, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, getRepository, PrimaryColumn} from "typeorm";
 
 import {User} from "./User";
 
@@ -13,8 +13,10 @@ export enum PartieStatus {
 @Entity()
 export class Partie {
 
-    @PrimaryGeneratedColumn()
-    id: number;
+    public static readonly nbJoueursMin = 7;
+
+    @PrimaryColumn()
+    id: string;
 
     @Column({
         type: "enum",
@@ -59,6 +61,7 @@ export class Partie {
     }
 
     start(){
+        this.status = PartieStatus.STARTED;
         // add stuff here if needed
         this.status = PartieStatus.STARTED;
     }

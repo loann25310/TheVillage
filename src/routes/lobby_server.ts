@@ -1,18 +1,19 @@
 import {Partie, PartieStatus} from "../entity/Partie";
 import {getRepository} from "typeorm";
 import {User} from "../entity/User";
+import {Tools} from "../entity/Tools";
 
 let gameRepo = getRepository(Partie);
 let userRepo = getRepository(User);
 
 export function Route(){}
 
-export async function getAvailableRoom(uid) :Promise<number>{
+export async function getAvailableRoom(uid): Promise<string>{
     let user = await userRepo.findOne(uid);
     if (user) {
         let lastGame = await gameRepo.findOne(user.partie);
         //Si sa dernière partie n'a pas commencé
-        if (lastGame && lastGame.status === PartieStatus.WAIT_USERS || lastGame.status === PartieStatus.CREATING) {
+        if (lastGame && (lastGame.status === PartieStatus.WAIT_USERS || lastGame.status === PartieStatus.CREATING)) {
             if (lastGame.players.length < lastGame.nbJoueursMax)
                 return lastGame.id;
         }
@@ -27,11 +28,21 @@ export async function getAvailableRoom(uid) :Promise<number>{
 
     let newGame = new Partie();
     newGame.players = [];
-    await gameRepo.save(newGame);
+    await save_game(newGame);
     return newGame.id
 }
 
-export async function joinRoom(uid, gameId) :Promise<Partie>{
+async function save_game(game: Partie) {
+    try {
+        game.id = Tools.generateRandomString(6);
+        await gameRepo.save(game);
+    }
+    catch (e) {
+        await save_game(game);
+    }
+}
+
+export async function joinRoom(uid, gameId): Promise<Partie>{
     let room = await gameRepo.findOne(gameId);
     if (!room) return null;
     if ((room.status !== PartieStatus.WAIT_USERS && room.status !== PartieStatus.CREATING && room.status !== PartieStatus.ENDED) || room.players.length >= room.nbJoueursMax) {
@@ -44,6 +55,8 @@ export async function joinRoom(uid, gameId) :Promise<Partie>{
     }
     let p = await userRepo.findOne(uid);
     p.partie = room.id;
+    if (room.status === PartieStatus.CREATING)
+        room.status = PartieStatus.WAIT_USERS;
     await userRepo.save(p);
     await gameRepo.save(room);
     return room;

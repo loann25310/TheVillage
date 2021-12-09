@@ -1,29 +1,37 @@
 import "../styles/lobby.css";
 import {io} from "socket.io-client";
 import {Chart, registerables} from 'chart.js';
+import {Partie} from "../entity/Partie";
 const socket = io();
 Chart.register(...registerables);
 
 
 // @ts-ignore
 let uid = _id, game = _game;
-let roomName = `${game.id}`, players = game.players,
+// @ts-ignore
+game.gameMaster = _gameMaster;
+let roomName = `${game.id}`,
+    players = game.players,
     dureeVote = $("select[name='config_duree_vote']"),
     vote_load = $("#vote_load"),
     nbPlayers = $("#nbPlayers"),
     maxPlayers = $("#maxPlayers"),
     messages = $('#messages'),
-    pseudo = $('#pseudo').text(),
     sendMsg = $("#sendMessage"),
     input = $("#input"),
     users = $("#users"),
+    fieldset = $("#fieldset"),
     change_max_players = $("#change_max_players");
 
-change_max_players.on("input", update_max_players);
+change_max_players.on("input", function () {
+    if (uid !== game.gameMaster && !(fieldset[0] as HTMLFieldSetElement).disabled)
+        return
+        update_max_players();
+});
 
 function sendMessage() {
     if (input.val() && `${input.val()}`.trim() !== "") {
-        socket.emit('chat_message', {pseudo, uid}, input.val(), roomName);
+        socket.emit('chat_message', ...players.filter(u => u.id === uid), input.val(), roomName);
         input.val("");
     }
 }
@@ -76,13 +84,19 @@ socket.on("duree_vote", (duree) => {
     })
 })
 
+socket.on("start_game", () => {
+    window.location.replace("/play/" + game.id)
+})
+
 document.body.onload = ()=>{
+    document.title = `The Village - ${game.id}`;
     input[0].focus();
     nbPlayers.text(game.players.length);
     maxPlayers.text(game.nbJoueursMax);
     (change_max_players[0] as HTMLInputElement).value = game.nbJoueursMax;
     socket.emit("new_guy", uid, roomName);
     create_players(players);
+    $("#nbJoueursMin").text(Partie.nbJoueursMin);
 
     dureeVote.find("option").each((index, element)=>{
         if (+($(element).val()) === +game.dureeVote){
@@ -92,17 +106,31 @@ document.body.onload = ()=>{
 }
 
 dureeVote.on("change", (element)=>{
+    if (uid !== game.gameMaster)
+        return;
     let val = $(element.target).val();
     if (!([30, 45, 60, 90, 120, 150].includes(+val)))
-        return alert("Stop messing with this *(-_-)*");
+        return;
     vote_charge(true);
     socket.emit("duree_vote", `${game.id}`, +val)
+})
+
+$("#start").on("click", function () {
+    if (uid === game.gameMaster)
+        start_game();
 })
 
 function vote_charge(charge) {
     if (!charge)
         return vote_load.empty();
     vote_load.html(`<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>`)
+}
+
+function start_game() {
+    if (players.length >= Partie.nbJoueursMin)
+        socket.emit("start_game", `${game.id}`);
+    else
+        alert("Vous n'êtes pas assez nombreux");
 }
 
 function create_message(user, msg) {
@@ -116,7 +144,7 @@ function create_message(user, msg) {
     }
     let name = $(`<span class="msg_pseudo">${user.pseudo}</span>`);
     name.on("click", function(){
-        display_user_info(u);
+        display_user_info(user);
     });
     item.append(name);
     item.append(` : ${msg}`);
@@ -209,10 +237,10 @@ function popup() {
 }
 
 function update_max_players() {
-    (change_max_players[0] as HTMLInputElement).min = `${Math.max(7, game.players.length)}`;
+    (change_max_players[0] as HTMLInputElement).min = `${Math.max(Partie.nbJoueursMin, game.players.length)}`;
     if (change_max_players.val() === game.nbJoueursMax) return;
-    if (change_max_players.val() < 7 || change_max_players.val() > 15) {
-        (change_max_players[0] as HTMLInputElement).min = `${Math.max(7, game.players.length)}`;
+    if (change_max_players.val() < Partie.nbJoueursMin || change_max_players.val() > 15) {
+        (change_max_players[0] as HTMLInputElement).min = `${Math.max(Partie.nbJoueursMin, game.players.length)}`;
         (change_max_players[0] as HTMLInputElement).max = `15`;
         alert("Stop messing with this *(-_-)*");
         return;

@@ -6,75 +6,76 @@
     </div>
 
     <div id="game_settings">
-        <span id="nbJoueurs">Joueurs : <span id="nbPlayers"></span> / <span id="maxPlayers"></span></span>
+        <p id="nbJoueurs">Joueurs : <span id="nbPlayers"></span> / <span id="maxPlayers"></span></p>
+        <p id="joueursMin">Nombre de joueurs minimum : <span id="nbJoueursMin"></span></p>
         <div id="settings">
             <h2>Configuration de la partie</h2>
             <div id="game_master_settings">
-                <fieldset {% if gameMaster != user.id %} disabled="true" {% endif %}>
-                <ul>
-                    <li>
-                        <h3>Nombre de joueurs maximum</h3>
-                        <div id="config_joueurs_max">
-                            <ul>
-                                <label for="change_max_players"></label><input type="range" min="7" max="15" id="change_max_players">
-                            </ul>
-                        </div>
-                    </li>
-                    <li>
-                        <h3>Interdire des rôles</h3>
-                        <div id="config_roles_ban">
-                            <ul>
-                                <li>
-                                    Cartes Méchants
-                                </li>
-                                <li>
-                                    Cartes Gentils
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li>
-                        <h3>Configurer le temps</h3>
-                        <div id="config_temps_partie">
-                            <ul>
-                                <li>
-                                    <label>Durée du vote :
-                                    <select name="config_duree_vote" id="config_duree_vote">
-                                        <optgroup label="rapide">
-                                            <option value="30">30 secondes</option>
-                                            <option value="45">45 secondes</option>
-                                        </optgroup>
-                                        <optgroup label="normal">
-                                            <option value="60">1 minute</option>
-                                            <option value="90">1 minute 30</option>
-                                        </optgroup>
-                                        <optgroup label="long">
-                                            <option value="120">2 minutes</option>
-                                            <option value="150">2 minutes 30</option>
-                                        </optgroup>
-                                    </select><div id="vote_load"></div></label>
-                                </li>
-                                <li>
-                                    Durée de la nuit
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li>
-                        <h3>Configurer la répartition des rôles</h3>
-                        <div id="config_repartition_roles">
-                            <ul>
-                                <li>
-                                    Nombre de LG normaux + LG blanc ? + etc;
-                                </li>
-                                <li>
-                                    Nombre de Villageois / rôles supplémentaires;
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-
-                </ul>
+                <fieldset id="fieldset" {% if gameMaster != user.id %} disabled="true" {% endif %}>
+                    <ul>
+                        <li>
+                            <h3>Nombre de joueurs maximum</h3>
+                            <div id="config_joueurs_max">
+                                <ul>
+                                    <label for="change_max_players"></label><input type="range" min="7" max="15" id="change_max_players">
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <h3>Interdire des rôles</h3>
+                            <div id="config_roles_ban">
+                                <ul>
+                                    <li>
+                                        Cartes Méchants
+                                    </li>
+                                    <li>
+                                        Cartes Gentils
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <h3>Configurer le temps</h3>
+                            <div id="config_temps_partie">
+                                <ul>
+                                    <li>
+                                        <label>Durée du vote :
+                                        <select name="config_duree_vote" id="config_duree_vote">
+                                            <optgroup label="rapide">
+                                                <option value="30">30 secondes</option>
+                                                <option value="45">45 secondes</option>
+                                            </optgroup>
+                                            <optgroup label="normal">
+                                                <option value="60">1 minute</option>
+                                                <option value="90">1 minute 30</option>
+                                            </optgroup>
+                                            <optgroup label="long">
+                                                <option value="120">2 minutes</option>
+                                                <option value="150">2 minutes 30</option>
+                                            </optgroup>
+                                        </select><div id="vote_load"></div></label>
+                                    </li>
+                                    <li>
+                                        Durée de la nuit
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <h3>Configurer la répartition des rôles</h3>
+                            <div id="config_repartition_roles">
+                                <ul>
+                                    <li>
+                                        Nombre de LG normaux + LG blanc ? + etc;
+                                    </li>
+                                    <li>
+                                        Nombre de Villageois / rôles supplémentaires;
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                    <button id="start">Lancer la partie</button>
                 </fieldset>
             </div>
 
@@ -87,7 +88,7 @@
     </div>
 
     <div id="chat">
-        <div id="form"><button id="sendMessage">Send</button><label><input id="input" type="text" placeholder="Envoyer un message" autocomplete="off"></label></div>
+        <div id="form"><button id="sendMessage">Envoyer</button><label><input id="input" type="text" placeholder="Envoyer un message" autocomplete="off"></label></div>
         <ul id="messages"></ul>
     </div>
 
@@ -95,9 +96,9 @@
 
 {% block javascripts %}
     <script>
-        console.log()
         var _id = {{ user.id }};
         var _game = {{ partie }};
+        var _gameMaster = {{ gameMaster }};
     </script>
     <script src="/dist/lobby_client.js"></script>
 {% endblock %}

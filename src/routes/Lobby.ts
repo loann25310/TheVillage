@@ -3,9 +3,13 @@ import {User} from "../entity/User";
 import {Server} from "socket.io";
 import {disconnect, getAvailableRoom, joinRoom} from "./lobby_server";
 import {getRepository} from "typeorm";
-import {Partie} from "../entity/Partie";
+import {Partie, PartieStatus} from "../entity/Partie";
 
 export function Route(router: Router, io: Server) {
+
+    let repo = getRepository(Partie);
+
+
     router.get('/lobby/:room', async (req, res) => {
         let user = req.user as User;
         if(!user) return res.redirect('/?notlogged');
@@ -59,7 +63,6 @@ export function Route(router: Router, io: Server) {
         })
 
         socket.on("change_max_players", async (id, nb) => {
-            let repo = getRepository(Partie);
             let room = await repo.findOne(id);
             room.nbJoueursMax = nb;
             await repo.save(room);
@@ -67,11 +70,16 @@ export function Route(router: Router, io: Server) {
         });
 
         socket.on("duree_vote", async (id, val) => {
-            let repo = getRepository(Partie);
             let room = await repo.findOne(id);
             room.dureeVote = val;
             await repo.save(room);
             io.to(`${room.id}`).emit("duree_vote", val);
+        })
+
+        socket.on("start_game", async gameId => {
+            let room = await repo.findOne(+gameId);
+            room.start();
+            io.to(gameId).emit("start_game");
         })
     })
 }
