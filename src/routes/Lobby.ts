@@ -3,7 +3,7 @@ import {User} from "../entity/User";
 import {Server} from "socket.io";
 import {disconnect, getAvailableRoom, joinRoom} from "./lobby_server";
 import {getRepository} from "typeorm";
-import {Partie, PartieStatus} from "../entity/Partie";
+import {Partie} from "../entity/Partie";
 
 export function Route(router: Router, io: Server) {
 
@@ -14,8 +14,9 @@ export function Route(router: Router, io: Server) {
         let user = req.user as User;
         if(!user) return res.redirect('/?notlogged');
         let roomId = req.params.room;
-        let game: Partie;
-        if ((game = await joinRoom(user.id, roomId)) !== null) {
+        let game = await getRepository(Partie).findOne(roomId);
+        if (game?.bans?.includes(user.id)) return res.redirect("/?banned=1");
+        if ((game = await joinRoom(user.id, game)) !== null) {
             let players = await game.getPlayers();
             let users = []
             for (let p of players) {
@@ -87,6 +88,14 @@ export function Route(router: Router, io: Server) {
             repo.findOne(gameId).then(room => {
                 room.publique = !bool;
                 repo.save(room).then(()=> io.to(gameId).emit('private', bool));
+            })
+        });
+
+        socket.on("ban", (gameId, uid) => {
+            repo.findOne(gameId).then(room => {
+                if (room.bans.includes(uid)) return;
+                room.bans.push(uid);
+                repo.save(room).then(()=> io.to(gameId).emit('ban', uid));
             })
         })
     })

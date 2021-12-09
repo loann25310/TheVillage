@@ -50,6 +50,11 @@ export class Partie {
     })
     players: number[];
 
+    @Column({
+        type: "simple-json",
+    })
+    bans: number[];
+
     async getPlayers(): Promise<User[]> {
         return await getRepository(User).findByIds(this.players);
     }

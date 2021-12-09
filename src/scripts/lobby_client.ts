@@ -96,6 +96,12 @@ socket.on("start_game", () => {
     window.location.replace("/play/" + game.id)
 })
 
+socket.on("ban", id => {
+    if (id === game.gameMaster) return;
+    sendMessageBan(id);
+    if (id === uid) location.replace("/?banned=1");
+})
+
 document.body.onload = ()=>{
     document.title = `The Village - ${game.id}`;
     input[0].focus();
@@ -144,13 +150,6 @@ function start_game() {
 
 function create_message(user, msg) {
     let item = $('<li>');
-    let u;
-    for (let i = 0; i < players.length; i++){
-        if (players[i].id === uid){
-            u = players[i];
-            break;
-        }
-    }
     let name = $(`<span class="msg_pseudo">${user.pseudo}</span>`);
     name.on("click", function(){
         display_user_info(user);
@@ -188,16 +187,25 @@ function create_user_tag(p, index :number) {
 
 function display_user_info(player) {
     let p = popup();
-    let html = `
+    let html = `<div id="text_popup">
         <span class="show_pseudo">${player.pseudo}</span>
         <span class="show_level">Niveau ${player.niveau}</span>
     `;
     html +=  (player.nbPartiesJouees > 0) ?
-       `<canvas class="show_camembert"></canvas><p></p>` : //<p> only here so that the canvas stays inside the popup (without overflowing it)
+        `<canvas class="show_camembert"></canvas><p></p>` :
         `<span class="never_played">Ce joueur n'a encore jamais joué</span>`;
+    html += '</div>';
+    if (uid === game.gameMaster && player.id !== uid) {
+        html += `
+            <button id="ban" class="red_btn">Bannir</button>
+        `;
+    }
     p.text.html(html);
-
     $(document.body).append(p.div);
+    let ban = $("#ban");
+    ban.one("click", function() {
+        socket.emit("ban", roomName, player.id);
+    });
     if (player.nbPartiesJouees === 0)
         return;
     new Chart(($(".show_camembert").get(0) as HTMLCanvasElement).getContext("2d"), {
@@ -255,4 +263,12 @@ function update_max_players() {
         return;
     }
     socket.emit("change_max_players", game.id, change_max_players.val());
+}
+
+function sendMessageBan(id) {
+    let user = players.filter(u => u.id === id)[0];
+    let li = $("<li>");
+    li.addClass("ban_message");
+    li.text(`Info : ${user.pseudo} a été banni de la partie.`);
+    messages.append(li)
 }

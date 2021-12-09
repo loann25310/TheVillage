@@ -14,20 +14,21 @@ export async function getAvailableRoom(uid): Promise<string>{
         let lastGame = await gameRepo.findOne(user.partie);
         //Si sa dernière partie n'a pas commencé
         if (lastGame && (lastGame.status === PartieStatus.WAIT_USERS || lastGame.status === PartieStatus.CREATING)) {
-            if (lastGame.players.length < lastGame.nbJoueursMax)
+            if (lastGame.players.length < lastGame.nbJoueursMax && !lastGame.bans.includes(uid))
                 return lastGame.id;
         }
     }
     let games = await gameRepo.find({where: {status: `${PartieStatus.WAIT_USERS}`, publique: true}});
     for (let i = 0; i < games.length; i++) {
         // Si la partie n'est pas pleine (et n'a pas commencé)
-        if (games[i].players.length < games[i].nbJoueursMax)
+        if (games[i].players.length < games[i].nbJoueursMax && !games[i].bans.includes(uid))
             return games[i].id;
     }
     //Aucune partie n'est libre, on en créée une
 
     let newGame = new Partie();
     newGame.players = [];
+    newGame.bans = [];
     await save_game(newGame);
     return newGame.id
 }
@@ -42,8 +43,7 @@ async function save_game(game: Partie) {
     }
 }
 
-export async function joinRoom(uid, gameId): Promise<Partie>{
-    let room = await gameRepo.findOne(gameId);
+export async function joinRoom(uid, room): Promise<Partie>{
     if (!room) return null;
     if ((room.status !== PartieStatus.WAIT_USERS && room.status !== PartieStatus.CREATING && room.status !== PartieStatus.ENDED) || room.players.length >= room.nbJoueursMax) {
         return null;

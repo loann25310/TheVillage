@@ -260,9 +260,14 @@ input[type="text"]:focus {
     white-space: nowrap;
     width: 100%;
     height: 100%;
+}
+
+#text_popup {
+    width: 100%;
+    height: 100%;
     display: grid;
     grid-template-columns: 20% 30% 30% 20%;
-    grid-template-rows: 20% 30% 30% 20%;
+    grid-template-rows: 20% 30% 50%;
     column-gap: 10px;
     row-gap: 10px;
 }
@@ -286,7 +291,24 @@ input[type="text"]:focus {
     grid-column-start: 1;
     grid-column-end: 5;
     grid-row-start: 2;
-    grid-row-end: 4;
+    grid-row-end: 3;
+}
+
+#ban {
+    margin-top: 1em;
+}
+
+.red_btn {
+    background-color: #B11000BF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5em 1em;
+    transition-duration: 0.5s;
+}
+
+.red_btn:hover {
+    background-color: #B11000;
 }
 
 .msg_pseudo {
@@ -299,6 +321,12 @@ input[type="text"]:focus {
     grid-column-end: 5;
     grid-row-start: 3;
     grid-row-end: 4;
+    margin-bottom: 1em;
+}
+
+.ban_message {
+    color: #B11000;
+    background-color: #FF000022;
 }
 
 .disappear {
