@@ -12,7 +12,8 @@ module.exports = {
         getPassword: './src/scripts/getPassword.ts',
         verifCode: "./src/scripts/verifCode.ts",
         game: './src/scripts/game.ts',
-        credits: "./src/scripts/credits.ts"
+        credits: "./src/scripts/credits.ts",
+        menu: "./src/scripts/menu.ts"
     },
     output: {
         path: path.resolve(__dirname, 'public/dist'),
