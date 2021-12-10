@@ -406,6 +406,10 @@ fieldset {
     font-weight: bold;
 }
 
+.yellow {
+    color: gold;
+}
+
 ::-webkit-scrollbar {
     width: 0;  /* Remove scrollbar space */
 }

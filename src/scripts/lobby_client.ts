@@ -2,6 +2,10 @@ import "../styles/lobby.css";
 import {io} from "socket.io-client";
 import {Chart, registerables} from 'chart.js';
 import {Partie} from "../entity/Partie";
+import '@fortawesome/fontawesome-free/js/fontawesome';
+import '@fortawesome/fontawesome-free/js/solid';
+import '@fortawesome/fontawesome-free/js/regular';
+import '@fortawesome/fontawesome-free/js/brands';
 const socket = io();
 Chart.register(...registerables);
 
@@ -189,9 +193,12 @@ function create_user_tag(p, index :number) {
 
     let html = `
         <div class="container"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt=" "><div id="avatar_${index}" class="avatar"></div></div>
-        <span class="pseudo">${p.pseudo}</span>
-        <span class="level">Level ${p.niveau}</span>
-    `;
+        <span class="pseudo">${p.pseudo} `
+
+    if (p.id === game.gameMaster)
+        html += `<i class="fas fa-crown yellow"></i>`;
+
+    html += `</span><span class="level">Level ${p.niveau}</span>`;
     div.html(html);
     div.on('click', function () {
         if ($(".popup").length === 0)
