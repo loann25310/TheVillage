@@ -1,5 +1,13 @@
 import "../styles/credits.css";
 import * as $ from "jquery";
+import '@fortawesome/fontawesome-free/js/fontawesome';
+import '@fortawesome/fontawesome-free/js/solid';
+import '@fortawesome/fontawesome-free/js/regular';
+import '@fortawesome/fontawesome-free/js/brands';
+
+$("#retour").on('click', () => {
+    history.back();
+});
 
 let index = 0,
     index_2 = 0,
