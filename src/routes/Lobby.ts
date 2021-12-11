@@ -120,6 +120,12 @@ export function Route(router: Router, io: Server) {
                 }
                 repo.save(room).then(()=> io.to(room.id).emit('unban', player, bans));
             })
+        });
+
+        socket.on("get_game_master", room => {
+            getRepository(Partie).findOne(room).then(r => {
+                io.to(room).emit("game_master", r.gameMaster);
+            })
         })
     })
 }

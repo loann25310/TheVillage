@@ -114,10 +114,10 @@ socket.on("unban", function(player, bans) {
 })
 
 socket.on("game_master", (id) => {
+    console.log(id);
     game.gameMaster = id;
-    if (uid === id) {
-        (fieldset[0] as HTMLFieldSetElement).disabled = false;
-    }
+    (fieldset[0] as HTMLFieldSetElement).disabled = uid !== id;
+    create_players(players);
 })
 
 document.body.onload = ()=>{
@@ -131,7 +131,7 @@ document.body.onload = ()=>{
     socket.emit("new_guy", uid, roomName);
     create_players(players);
     $("#nbJoueursMin").text(Partie.nbJoueursMin);
-
+    socket.emit('get_game_master', roomName);
     dureeVote.find("option").each((index, element)=>{
         if (+($(element).val()) === +game.dureeVote){
             (element as HTMLOptionElement).selected = true;

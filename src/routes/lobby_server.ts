@@ -2,7 +2,6 @@ import {Partie, PartieStatus} from "../entity/Partie";
 import {getRepository} from "typeorm";
 import {User} from "../entity/User";
 import {Tools} from "../entity/Tools";
-import {createSocket} from "dgram";
 
 let gameRepo = getRepository(Partie);
 let userRepo = getRepository(User);
@@ -84,8 +83,8 @@ export function disconnect(uid, io) {
             gameRepo.save(room).then(()=>{
                 room.getPlayers().then(p => {
                     io.to(`${room.id}`).emit("players", p);
-                })
-            })
-        })
-    })
+                });
+            });
+        });
+    });
 }

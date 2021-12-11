@@ -65,7 +65,7 @@ export class Partie {
             return false;
         if (!this.players.includes(userId))
             this.players.push(userId);
-        if (this.players.length === 1)
+        if (this.gameMaster === 0)
             this.gameMaster = userId;
         return true;
     }
