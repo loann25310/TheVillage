@@ -41,6 +41,11 @@ export class Partie {
     dureeVote :number;
 
     @Column({
+        default: 240
+    })
+    dureeNuit :number;
+
+    @Column({
         default: 0
     })
     gameMaster :number;

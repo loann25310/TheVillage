@@ -27,11 +27,11 @@ let roomName = `${game.id}`,
     fieldset = $("#fieldset"),
     change_max_players = $("#change_max_players"),
     visibility = $("#visibility"),
-    bans = $("#joueursBan");
+    bans = $("#joueursBan"),
+    nuit = $("select[name='config_duree_nuit']");
 
 change_max_players.on("input", function () {
-    if (uid !== game.gameMaster && !(fieldset[0] as HTMLFieldSetElement).disabled)
-        return
+    if (uid === game.gameMaster || (fieldset[0] as HTMLFieldSetElement).disabled)
         update_max_players();
 });
 
@@ -54,11 +54,6 @@ $(document).on("keydown", function (e){
             setTimeout(function(){outer.remove();}, 1000);
         }
     }
-});
-
-visibility.on("change", function() {
-    if (uid === game.gameMaster)
-    socket.emit("private", roomName, (visibility[0] as HTMLInputElement).checked);
 });
 
 socket.on("private", bool => (visibility[0] as HTMLInputElement).checked = bool);
@@ -84,21 +79,31 @@ socket.on("players", function (p){
 socket.on("change_max_players", max_players => {
     maxPlayers.text(`${max_players}`);
     game.nbJoueursMax = max_players;
-    change_max_players.val(max_players)
+    change_max_players.val(max_players);
 })
 
 socket.on("duree_vote", (duree) => {
     game.dureeVote = duree;
-    vote_charge(false);
     dureeVote.find("option").each((index, element)=>{
         if (+($(element).val()) === +game.dureeVote){
             (element as HTMLOptionElement).selected = true;
+            return;
         }
-    })
-})
+    });
+});
+
+socket.on("duree_nuit", (duree) => {
+    game.dureeNuit = duree;
+    nuit.find("option").each((index, element) => {
+        if (+($(element).val()) === +duree){
+            (element as HTMLOptionElement).selected = true;
+            return;
+        }
+    });
+});
 
 socket.on("start_game", () => {
-    window.location.replace("/play/" + game.id)
+    window.location.replace("/play/" + game.id);
 })
 
 socket.on("ban", (id, bans) => {
@@ -114,7 +119,6 @@ socket.on("unban", function(player, bans) {
 })
 
 socket.on("game_master", (id) => {
-    console.log(id);
     game.gameMaster = id;
     (fieldset[0] as HTMLFieldSetElement).disabled = uid !== id;
     create_players(players);
@@ -135,30 +139,42 @@ document.body.onload = ()=>{
     dureeVote.find("option").each((index, element)=>{
         if (+($(element).val()) === +game.dureeVote){
             (element as HTMLOptionElement).selected = true;
+            return;
         }
     })
+    nuit.find("option").each((index, element) => {
+        if (+(element.value) === +game.dureeNuit){
+            (element as HTMLOptionElement).selected = true;
+            return;
+        }
+    });
 }
+
+visibility.on("change", function() {
+    if (uid === game.gameMaster)
+        socket.emit("private", roomName, (visibility[0] as HTMLInputElement).checked);
+});
 
 dureeVote.on("change", (element)=>{
     if (uid !== game.gameMaster)
         return;
-    let val = $(element.target).val();
-    if (!([30, 45, 60, 90, 120, 150].includes(+val)))
-        return;
-    vote_charge(true);
-    socket.emit("duree_vote", `${game.id}`, +val)
+    let val = +($(element.target).val());
+    if ([30, 45, 60, 90, 120, 150].includes(val))
+        socket.emit("duree_vote", game.id, val);
 })
+
+nuit.on("change", (element) => {
+    if (uid !== game.gameMaster)
+        return;
+    let val = +($(element.target).val());
+    if ([180, 210, 240, 300, 420, 600].includes(val))
+        socket.emit("duree_nuit", game.id, val);
+});
 
 $("#start").on("click", function () {
     if (uid === game.gameMaster)
         start_game();
 })
-
-function vote_charge(charge) {
-    if (!charge)
-        return vote_load.empty();
-    vote_load.html(`<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>`)
-}
 
 function start_game() {
     if (players.length >= Partie.nbJoueursMin)
@@ -193,7 +209,7 @@ function create_user_tag(p, index :number) {
 
     let html = `
         <div class="container"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt=" "><div id="avatar_${index}" class="avatar"></div></div>
-        <span class="pseudo">${p.pseudo} `
+        <span class="pseudo">${p.pseudo} `;
 
     if (p.id === game.gameMaster)
         html += `<i class="fas fa-crown yellow"></i>`;
@@ -264,7 +280,7 @@ function popup() {
     close.on("click", function () {
         outer.addClass("disappear");
         setTimeout(function(){outer.remove();}, 1000);
-    })
+    });
     div.on("click", function(e){
         e.stopPropagation();
     });
@@ -281,8 +297,7 @@ function update_max_players() {
     if (change_max_players.val() < Partie.nbJoueursMin || change_max_players.val() > 15) {
         (change_max_players[0] as HTMLInputElement).min = `${Math.max(Partie.nbJoueursMin, game.players.length)}`;
         (change_max_players[0] as HTMLInputElement).max = `15`;
-        alert("Stop messing with this *(-_-)*");
-        return;
+        return alert("Stop messing with this *(-_-)*");
     }
     socket.emit("change_max_players", game.id, change_max_players.val());
 }
@@ -292,7 +307,7 @@ function sendMessageBan(id) {
     let li = $("<li>");
     li.addClass("ban_message");
     li.text(`Info : ${user.pseudo} a été banni de la partie.`);
-    messages.append(li)
+    messages.append(li);
 }
 
 function addBans(ban) {
@@ -306,7 +321,6 @@ function addBans(ban) {
         let close = $("<span>").addClass("unban").text("✖");
         div.append(close);
         close.on("click", function() {
-
             socket.emit("unban", roomName, b);
         });
         bans.append(div);
@@ -318,5 +332,5 @@ function sendUnbanMessage(player) {
     let li = $("<li>");
     li.addClass("unban_message");
     li.text(`Info : ${player.pseudo} n'est plus banni de la partie.`);
-    messages.append(li)
+    messages.append(li);
 }

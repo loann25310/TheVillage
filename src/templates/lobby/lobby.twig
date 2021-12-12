@@ -3,6 +3,7 @@
 {% block body %}
     <div id="profile">
         <h1 id="pseudo">{{ user.pseudo }}</h1>
+        <span id="share">Inviter quelqu'un</span>
     </div>
 
     <div id="game_settings">
@@ -11,7 +12,7 @@
         <div id="settings">
             <h2>Configuration de la partie</h2>
             <div id="game_master_settings">
-                <fieldset id="fieldset" {% if gameMaster != user.id %} disabled="true" {% endif %}>
+                <fieldset id="fieldset" disabled>
                     <ul>
                         <li>
                             <h3>Visibilité de la partie</h3>
@@ -63,10 +64,25 @@
                                                 <option value="120">2 minutes</option>
                                                 <option value="150">2 minutes 30</option>
                                             </optgroup>
-                                        </select><div id="vote_load"></div></label>
+                                        </select></label>
                                     </li>
                                     <li>
-                                        Durée de la nuit
+                                        <label>Durée de la nuit :
+                                        <select name="config_duree_nuit" id="config_duree_nuit">
+                                            <optgroup label="rapide">
+                                                <option value="180">3 minutes</option>
+                                                <option value="210">3 minutes 30</option>
+                                            </optgroup>
+                                            <optgroup label="normal">
+                                                <option value="240">4 minutes</option>
+                                                <option value="300">5 minutes</option>
+                                            </optgroup>
+                                            <optgroup label="long">
+                                                <option value="420">7 minutes</option>
+                                                <option value="600">10 minutes</option>
+                                            </optgroup>
+                                        </select></label>
+
                                     </li>
                                 </ul>
                             </div>

@@ -41,6 +41,7 @@ export function Route(router: Router, io: Server) {
                     nbJoueursMax: game.nbJoueursMax,
                     players: users,
                     dureeVote: game.dureeVote,
+                    dureeNuit: game.dureeNuit,
                     publique: game.publique,
                     bans
                 }),
@@ -82,7 +83,14 @@ export function Route(router: Router, io: Server) {
             room.dureeVote = val;
             await repo.save(room);
             io.to(`${room.id}`).emit("duree_vote", val);
-        })
+        });
+
+        socket.on("duree_nuit", async (id, val) => {
+            let room = await repo.findOne(id);
+            room.dureeNuit = val;
+            await repo.save(room);
+            io.to(`${room.id}`).emit("duree_nuit", val);
+        });
 
         socket.on("start_game", async gameId => {
             let room = await repo.findOne(gameId);

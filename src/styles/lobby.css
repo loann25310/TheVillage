@@ -11,6 +11,8 @@ body {
     display: grid;
     grid-template-columns: 50% 50%;
     grid-template-rows: 20% 30% 48% 2%;
+    background-color: #280000;
+    color: white;
 }
 
 p {
@@ -27,7 +29,7 @@ p {
     grid-row-start: 1;
     grid-column-end: 2;
     grid-row-end: 2;
-    background: linear-gradient(180deg, rgba(204,204,204), rgba(255,255,255));
+    margin-left: 1em;
 }
 
 #form {
@@ -55,6 +57,7 @@ input[type="text"]{
     font-size: 1.2em;
     padding: 0 2%;
     background-color: transparent;
+    color: white;
 }
 
 input[type="text"]:focus {
@@ -84,7 +87,7 @@ input[type="text"]:focus {
 
 #messages > li {
     padding: 0.5rem 1rem;
-    border: lightgray solid 0;
+    border: #FFFFFF44 solid 0;
     border-top-width: 1px;
 }
 
@@ -230,7 +233,7 @@ input[type="text"]:focus {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: #888888AA;
+    background: #00000088;
 }
 
 .close {
@@ -253,6 +256,7 @@ input[type="text"]:focus {
     border: solid #003366 2px;
     border-radius: 10px;
     padding: 2em;
+    color: black;
 }
 
 .innerPopup {
@@ -377,9 +381,6 @@ input[type="text"]:focus {
     flex-wrap: nowrap;
     border-collapse: collapse;
     padding: 2em;
-}
-
-#settings {
     overflow-y: scroll;
 }
 
@@ -406,66 +407,34 @@ fieldset {
     font-weight: bold;
 }
 
+#joueursBan {
+    cursor: pointer;
+}
+
 .yellow {
     color: gold;
 }
 
-::-webkit-scrollbar {
-    width: 0;  /* Remove scrollbar space */
+.info {
+    position: absolute;
+    top : 5vh;
+    right: 5vh;
+    background-color: #10B10088;
+    border-radius: 12px;
+    border: none;
 }
 
-.lds-ellipsis {
-    display: inline-block;
-    position: relative;
-    width: 40px;
-    height: 40px;
+select {
+    margin-left: 1em;
+    border-radius: 5px;
+    padding: 0.2em 0.5em;
+    font-size: 1em;
 }
-.lds-ellipsis div {
-    position: absolute;
-    top: 16px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #888;
-    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+select:focus, select {
+    border: none;
+    outline: none;
 }
-.lds-ellipsis div:nth-child(1) {
-    left: 4px;
-    animation: lds-ellipsis1 0.6s infinite;
-}
-.lds-ellipsis div:nth-child(2) {
-    left: 4px;
-    animation: lds-ellipsis2 0.6s infinite;
-}
-.lds-ellipsis div:nth-child(3) {
-    left: 16px;
-    animation: lds-ellipsis2 0.6s infinite;
-}
-.lds-ellipsis div:nth-child(4) {
-    left: 28px;
-    animation: lds-ellipsis3 0.6s infinite;
-}
-@keyframes lds-ellipsis1 {
-    0% {
-        transform: scale(0);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-@keyframes lds-ellipsis3 {
-    0% {
-        transform: scale(1);
-    }
-    100% {
-        transform: scale(0);
-    }
-}
-@keyframes lds-ellipsis2 {
-    0% {
-        transform: translate(0, 0);
-    }
-    100% {
-        transform: translate(12px, 0);
-    }
+
+::-webkit-scrollbar {
+    width: 0;  /* Remove scrollbar space */
 }
