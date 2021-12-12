@@ -38,8 +38,7 @@ export class Environment {
         }
     }
     async create(){
-        const response = await axios.get('/map.json');
-        console.log(response);
+        return await axios.get('/map.json');
     }
 
     move(movement: { x: number, y: number }){
