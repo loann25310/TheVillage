@@ -409,6 +409,11 @@ input[type="text"]:focus {
     margin: 1em 0;
     padding: 1em;
 }
+
+.sous-liste {
+    list-style-type: none;
+}
+
 .sous-liste > li {
     margin: 1em 2em;
 }

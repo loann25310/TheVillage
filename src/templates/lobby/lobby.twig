@@ -16,21 +16,31 @@
                     <ul id="list_config_partie">
                         <li>
                             <h3>Visibilité de la partie</h3>
-                            <label>Privée <input type="checkbox" name="visibility" id="visibility"></label>
+                            <ul class="sous-liste">
+                                <li>
+                                    <label>Privée <input type="checkbox" name="visibility" id="visibility"></label>
+                                </li>
+                            </ul>
                         </li>
                         <li>
                             <h3>Nombre de joueurs maximum</h3>
                             <div id="config_joueurs_max">
-                                <ul>
-                                    <input type="range" min="7" max="15" id="change_max_players">
+                                <ul class="sous-liste">
+                                    <li>
+                                        <input type="range" min="7" max="15" id="change_max_players">
+                                    </li>
                                 </ul>
                             </div>
                         </li>
                         <li>
                             <h3>Gestion des joueurs</h3>
-                            <details id="joueursBan">
-                                <summary>Joueurs bannis</summary>
-                            </details>
+                            <ul class="sous-liste">
+                                <li>
+                                    <details id="joueursBan">
+                                        <summary>Joueurs bannis</summary>
+                                    </details>
+                                </li>
+                            </ul>
                         </li>
                         <li>
                             <h3>Interdire des rôles</h3>
