@@ -16,9 +16,10 @@ let uid = _id, game = _game;
 game.gameMaster = _gameMaster;
 let roomName = `${game.id}`,
     players = game.players,
-    dureeVote = $("select[name='config_duree_vote']"),
+    share = $("#share"),
     nbPlayers = $("#nbPlayers"),
     maxPlayers = $("#maxPlayers"),
+    dureeVote = $("select[name='config_duree_vote']"),
     messages = $('#messages'),
     sendMsg = $("#sendMessage"),
     input = $("#input"),
@@ -152,6 +153,19 @@ document.body.onload = ()=>{
         }
     });
 }
+
+share.on("click", () => {
+    let p = popup();
+    $(document.body).append(p.div);
+    p.text.html(`<h2>Copiez ce lien</h2><span id="lien">${document.location.href}</span>`);
+    p.text.addClass("center");
+    let r = document.createRange();
+    let w = $("#lien")[0];
+    r.selectNodeContents(w);
+    let sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(r);
+})
 
 visibility.on("change", function() {
     if (uid === game.gameMaster)

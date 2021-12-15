@@ -49,6 +49,17 @@ p {
     background-color: #222;
 }
 
+.center {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.center > h2 {
+    margin-top: 0.5em;
+}
+
 #form {
     display: flex;
     flex-direction: row-reverse;
