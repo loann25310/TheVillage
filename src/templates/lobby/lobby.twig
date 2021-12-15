@@ -13,7 +13,7 @@
             <h2>Configuration de la partie</h2>
             <div id="game_master_settings">
                 <fieldset id="fieldset" disabled>
-                    <ul>
+                    <ul id="list_config_partie">
                         <li>
                             <h3>Visibilité de la partie</h3>
                             <label>Privée <input type="checkbox" name="visibility" id="visibility"></label>
@@ -35,7 +35,7 @@
                         <li>
                             <h3>Interdire des rôles</h3>
                             <div id="config_roles_ban">
-                                <ul>
+                                <ul class="sous-liste">
                                     <li>
                                         Cartes Méchants
                                     </li>
@@ -48,7 +48,7 @@
                         <li>
                             <h3>Configurer le temps</h3>
                             <div id="config_temps_partie">
-                                <ul>
+                                <ul class="sous-liste">
                                     <li>
                                         <label>Durée du vote :
                                         <select name="config_duree_vote" id="config_duree_vote">
@@ -82,7 +82,6 @@
                                                 <option value="600">10 minutes</option>
                                             </optgroup>
                                         </select></label>
-
                                     </li>
                                 </ul>
                             </div>
@@ -90,7 +89,7 @@
                         <li>
                             <h3>Configurer la répartition des rôles</h3>
                             <div id="config_repartition_roles">
-                                <ul>
+                                <ul class="sous-liste">
                                     <li>
                                         Nombre de LG normaux + LG blanc ? + etc;
                                     </li>

@@ -17,7 +17,6 @@ game.gameMaster = _gameMaster;
 let roomName = `${game.id}`,
     players = game.players,
     dureeVote = $("select[name='config_duree_vote']"),
-    vote_load = $("#vote_load"),
     nbPlayers = $("#nbPlayers"),
     maxPlayers = $("#maxPlayers"),
     messages = $('#messages'),
