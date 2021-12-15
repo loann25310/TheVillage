@@ -30,6 +30,23 @@ p {
     grid-column-end: 2;
     grid-row-end: 2;
     margin-left: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#share {
+    margin: 1em 1em 0 0;
+    width: unset;
+    height: max-content;
+    padding: 0.4em 1em;
+    font-size: 1.5em;
+    border-radius: 10px;
+    transition-duration: 0.5s;
+}
+
+#share:hover {
+    background-color: #222;
 }
 
 #form {
@@ -66,7 +83,7 @@ input[type="text"]:focus {
     outline: none
 }
 
-#form > button, #start {
+button {
     background: #333;
     border: none;
     margin: 0 0 0 15px;
