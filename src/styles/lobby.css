@@ -102,6 +102,7 @@ button {
     outline: none;
     color: #fff;
     width: 10%;
+    cursor: pointer;
 }
 
 #messages {
@@ -424,6 +425,14 @@ button {
     font-size: 2em;
     margin-left: 5%;
     color: darkgoldenrod;
+}
+
+#label_visibility {
+    cursor: pointer;
+}
+
+#label_visibility > input{
+    cursor: pointer;
 }
 
 #change_max_players {
