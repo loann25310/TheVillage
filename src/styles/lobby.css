@@ -57,11 +57,13 @@ input[type="text"]{
     font-size: 1.2em;
     padding: 0 2%;
     background-color: transparent;
-    color: white;
+    color: white;;
+    overflow-wrap: break-word;
+    overflow: hidden;
 }
 
 input[type="text"]:focus {
-    outline: none;
+    outline: none
 }
 
 #form > button, #start {
@@ -390,6 +392,16 @@ input[type="text"]:focus {
     padding-bottom: 2em;
 }
 
+#locker {
+    font-size: 2em;
+    margin-left: 5%;
+    color: darkgoldenrod;
+}
+
+#change_max_players {
+    width: 80%;
+}
+
 #list_config_partie {
     margin: 0;
     padding: 0;
@@ -403,6 +415,7 @@ input[type="text"]:focus {
     width: 100%;
     border-bottom: 1px solid lightgrey;
 }
+
 #list_config_partie > li {
     border: 1px solid lightgrey;
     border-radius: 5px;

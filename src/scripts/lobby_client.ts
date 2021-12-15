@@ -55,7 +55,10 @@ $(document).on("keydown", function (e){
     }
 });
 
-socket.on("private", bool => (visibility[0] as HTMLInputElement).checked = bool);
+socket.on("private", bool => {
+    (visibility[0] as HTMLInputElement).checked = bool;
+    $("#locker").html(bool ? "<i class=\"fas fa-lock\"></i>" : "<i class=\"fas fa-lock-open\"></i>");
+});
 
 socket.on('chat_message', (user, msg) => {
     create_message(user, msg);
@@ -129,6 +132,7 @@ document.body.onload = ()=>{
     nbPlayers.text(game.players.length);
     maxPlayers.text(game.nbJoueursMax);
     (visibility[0] as HTMLInputElement).checked = !game.publique;
+    $("#locker").html(!game.publique ? "<i class=\"fas fa-lock\"></i>" : "<i class=\"fas fa-lock-open\"></i>");
     (change_max_players[0] as HTMLInputElement).value = game.nbJoueursMax;
     addBans(game.bans);
     socket.emit("new_guy", uid, roomName);
