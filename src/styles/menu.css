@@ -1,0 +1,95 @@
+body{
+    background-image: url("../../public/img/spooky.png");
+    background-size: 100%;
+    object-fit: cover;
+}
+
+.container {
+    word-wrap: break-word;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.container#title{
+    display: flex;
+    justify-content: center;
+
+}
+h2{
+    border-style: solid;
+    border-image: linear-gradient(cornsilk,firebrick,red,black)15;
+    border-radius: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background:linear-gradient(180deg,#ff0507,#710507);
+    vertical-align: center;
+    font-size: 40px;
+}
+.container#middle{
+
+    flex-direction: column;
+    align-items: center;
+}
+.container#option{
+    float: right;
+}
+
+.bt {
+    width: 20%;
+    height: 60px;
+    font-size: 15px;
+    border-radius: 30px;
+    margin-bottom: 20px;
+    background-color: darkred;
+    border: 3px solid black;
+    transition-duration: 500ms;
+}
+.bt#connexion{
+    width: 10%;
+    height: 30px;
+    border-radius: 30px;
+
+}
+.bt#options{
+    background-image: url("../../public/img/settings.png");
+    background-size: 100%;
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+
+}
+.section{
+    padding-top: 10px;
+}
+.footer{
+position: fixed;
+bottom: 0;
+width: 100%;
+}
+.social{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.bt:hover{
+    height: 70px;
+    background-color: #313131;
+
+
+
+    font-weight: bolder;
+}
+
+@-webkit-keyframes move_eye { from { margin-left:20%; } to { margin-left:100%; }  }
+
+
+img{
+    width: 30px;
+    height: 30px;
+}
+.bt#options:hover{
+    animation: transform 1.2s linear;
+    transform: rotate(360deg);
+}
+
