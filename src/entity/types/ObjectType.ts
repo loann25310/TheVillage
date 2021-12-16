@@ -8,6 +8,6 @@ export enum ObjectType {
     souche = "souche",
     fleurs = "fleurs",
     herbe = "herbe",
-    pavé = "pavé",
+    pave = "pave",
     bois = "bois"
 }
