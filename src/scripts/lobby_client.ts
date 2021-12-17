@@ -157,14 +157,19 @@ document.body.onload = ()=>{
 share.on("click", () => {
     let p = popup();
     $(document.body).append(p.div);
-    p.text.html(`<h2>Copiez ce lien</h2><span id="lien">${document.location.href}</span>`);
+    p.text.html(`<h2 id="title_link">Copiez ce lien</h2><textarea cols="${Math.floor(document.location.href.length/1.2)}" id="lien">${document.location.href}</textarea>`);
     p.text.addClass("center");
-    let r = document.createRange();
-    let w = $("#lien")[0];
-    r.selectNodeContents(w);
-    let sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(r);
+    let w = $("#lien");
+    w[0].focus();
+    (w[0] as HTMLTextAreaElement).select();
+    try {
+        let successful = document.execCommand('copy');
+        console.log(successful);
+        let title = $("#title_link");
+        title.text(successful ? "Lien copié !" : "Copiez ce lien");
+    } catch (err) {
+        console.log(err);
+    }
 })
 
 visibility.on("change", function() {
