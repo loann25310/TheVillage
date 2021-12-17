@@ -20,7 +20,10 @@ canvas.width  = window.innerWidth;
 canvas.height = window.innerHeight;
 
 let player = new Player(ctx, environment, { x: (canvas.width-100) / 2, y: (canvas.height-152) / 2 }, Player.defaultSize);
-const map = environment.create();
+async function init(){
+    await environment.create(ctx);
+}
+init().then();
 
 function draw(){
     requestAnimationFrame(draw);

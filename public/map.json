@@ -2,38 +2,59 @@
   "objects" : [
     {
       "type": "buisson",
-      "coordonnees" : [
-        {"x" :10, "y" :10},
-        {"x" : 50, "y" : 30},
-        {"x" : 80,"y" : 60}
-      ]
+      "coordonnees" : {"x" :10, "y" :10},
+      "size": {"w": 175, "h": 130}
     },
     {
       "type": "arbre",
-      "coordonnees" :
-      [
-        {"x" :60, "y" :60},
-        {"x" : 65, "y" : 70},
-        {"x" : 80,"y" : 80}
-      ]
+      "coordonnees" : {"x" :10, "y" :10},
+      "size": {"w": 175, "h": 130}
+
     },
     {
       "type": "caisse",
-      "coordonnees" :
-      [
-        {"x" :150, "y" :60},
-        {"x" : 200, "y" : 70},
-        {"x" : 140,"y" : 80}
-      ]
+      "coordonnees" : {"x" :10, "y" :10},
+      "size": {"w": 175, "h": 130}
     },
     {
       "type": "maison",
-      "coordonnees" :
-      [
-        {"x" :300, "y" :50},
-        {"x" : 100, "y" : 100},
-        {"x" : 50,"y" : 200}
-      ]
+      "coordonnees" : {"x" :10, "y" :10},
+      "size": {"w": 175, "h": 130}
+    },
+    {
+      "type": "sapin",
+      "coordonnees" : {"x" :10, "y" :10},
+      "size": {"w": 175, "h": 130}
+    },
+    {
+      "type": "fourche",
+      "coordonnees" : {"x" :10, "y" :10},
+      "size": {"w": 175, "h": 130}
+    },
+    {
+      "type": "souche",
+      "coordonnees" : {"x" :10, "y" :10},
+      "size": {"w": 175, "h": 130}
+    },
+    {
+      "type": "fleurs",
+      "coordonnees" : {"x" :10, "y" :10},
+      "size": {"w": 175, "h": 130}
+    },
+    {
+      "type": "herbe",
+      "coordonnees" : {"x" :10, "y" :10},
+      "size": {"w": 175, "h": 130}
+    },
+    {
+      "type": "pave",
+      "coordonnees" : {"x" :10, "y" :10},
+      "size": {"w": 175, "h": 130}
+    },
+    {
+      "type": "bois",
+      "coordonnees" : {"x" :10, "y" :10},
+      "size": {"w": 175, "h": 130}
     }
   ],
   "players_spawn" : [
