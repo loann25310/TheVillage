@@ -20,7 +20,7 @@ export function Route(router: Router, io: SocketIOServer) {
         cord: Coordinate
     }[] = [];
 
-    io.on("connection", (socket) => {
+/*    io.on("connection", (socket) => {
 
         let pid = players.push({
             pid: players.length,
@@ -55,6 +55,8 @@ export function Route(router: Router, io: SocketIOServer) {
         });
 
     });
+    */
+
 
 
 }

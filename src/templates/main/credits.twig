@@ -1,11 +1,28 @@
 {% extends "body.twig" %}
 
+{% block stylesheets %}
+<style>
+    .retour {
+        border-radius: 20px;
+        padding: 10px 15px;
+        font-size: 15px;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
+
+    .retour:hover {
+        background-color: #a4a4a4;
+    }
+</style>
+{% endblock %}
+
 {% block body %}
     <div id="lib">
         {{ lib }}
     </div>
     <div id="container"></div>
-
+    <button class="retour" id="retour" type="button"><i class="fas fa-long-arrow-alt-left"></i></button>
 {% endblock %}
 
 {% block javascripts %}

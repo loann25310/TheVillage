@@ -10,10 +10,12 @@ module.exports = {
         options: './src/scripts/options.ts',
         profil: './src/scripts/profil.ts',
         getPassword: './src/scripts/getPassword.ts',
-        verifCode: "./src/scripts/verifCode.ts",
         game: './src/scripts/game.ts',
+        lobby_client: './src/scripts/lobby_client.ts',
+        verifCode: "./src/scripts/verifCode.ts",
         credits: "./src/scripts/credits.ts",
-        menu: "./src/scripts/menu.ts"
+        menu: "./src/scripts/menu.ts",
+        menu_jouer: "./src/scripts/menu_jouer.ts"
     },
     output: {
         path: path.resolve(__dirname, 'public/dist'),

@@ -1,0 +1,139 @@
+{% extends "body.twig" %}
+
+{% block body %}
+    <div id="profile">
+        <h1 id="pseudo">{{ user.pseudo }}</h1>
+        <button id="share">Partager</button>
+    </div>
+
+    <div id="game_settings">
+        <p id="nbJoueurs">Joueurs : <span id="nbPlayers"></span> / <span id="maxPlayers"></span></p>
+        <p id="joueursMin">Nombre de joueurs minimum : <span id="nbJoueursMin"></span></p>
+        <div id="settings">
+            <h2>Configuration de la partie</h2>
+            <div id="game_master_settings">
+                <fieldset id="fieldset" disabled>
+                    <ul id="list_config_partie">
+                        <li>
+                            <h3>Visibilité de la partie</h3>
+                            <ul class="sous-liste">
+                                <li>
+                                    <label id="label_visibility">Privée <input type="checkbox" name="visibility" id="visibility"><span id="locker"></span></label>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h3>Nombre de joueurs maximum</h3>
+                            <div id="config_joueurs_max">
+                                <ul class="sous-liste">
+                                    <li>
+                                        <input type="range" min="7" max="15" id="change_max_players">
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <h3>Gestion des joueurs</h3>
+                            <ul class="sous-liste">
+                                <li>
+                                    <details id="joueursBan">
+                                        <summary>Joueurs bannis</summary>
+                                    </details>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h3>Interdire des rôles</h3>
+                            <div id="config_roles_ban">
+                                <ul class="sous-liste">
+                                    <li>
+                                        Cartes Méchants
+                                    </li>
+                                    <li>
+                                        Cartes Gentils
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <h3>Configurer le temps</h3>
+                            <div id="config_temps_partie">
+                                <ul class="sous-liste">
+                                    <li>
+                                        <label>Durée du vote :
+                                        <select name="config_duree_vote" id="config_duree_vote">
+                                            <optgroup label="rapide">
+                                                <option value="30">30 secondes</option>
+                                                <option value="45">45 secondes</option>
+                                            </optgroup>
+                                            <optgroup label="normal">
+                                                <option value="60">1 minute</option>
+                                                <option value="90">1 minute 30</option>
+                                            </optgroup>
+                                            <optgroup label="long">
+                                                <option value="120">2 minutes</option>
+                                                <option value="150">2 minutes 30</option>
+                                            </optgroup>
+                                        </select></label>
+                                    </li>
+                                    <li>
+                                        <label>Durée de la nuit :
+                                        <select name="config_duree_nuit" id="config_duree_nuit">
+                                            <optgroup label="rapide">
+                                                <option value="180">3 minutes</option>
+                                                <option value="210">3 minutes 30</option>
+                                            </optgroup>
+                                            <optgroup label="normal">
+                                                <option value="240">4 minutes</option>
+                                                <option value="300">5 minutes</option>
+                                            </optgroup>
+                                            <optgroup label="long">
+                                                <option value="420">7 minutes</option>
+                                                <option value="600">10 minutes</option>
+                                            </optgroup>
+                                        </select></label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <h3>Configurer la répartition des rôles</h3>
+                            <div id="config_repartition_roles">
+                                <ul class="sous-liste">
+                                    <li>
+                                        Nombre de LG normaux + LG blanc ? + etc;
+                                    </li>
+                                    <li>
+                                        Nombre de Villageois / rôles supplémentaires;
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                    <button id="start">Lancer la partie</button>
+                </fieldset>
+            </div>
+
+            <h2>Configuration personnelle</h2>
+
+        </div>
+    </div>
+
+    <div id="users">
+    </div>
+
+    <div id="chat">
+        <div id="form"><button id="sendMessage">Envoyer</button><label><input id="input" type="text" placeholder="Envoyer un message" autocomplete="off"></label></div>
+        <ul id="messages"></ul>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        var _id = {{ user.id }};
+        var _game = {{ partie }};
+        var _gameMaster = {{ gameMaster }};
+    </script>
+    <script src="/dist/lobby_client.js"></script>
+{% endblock %}

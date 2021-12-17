@@ -3,12 +3,12 @@ import {getLibs} from "../scripts/libs";
 import {User} from "../entity/User";
 import {getRepository} from "typeorm";
 const bcrypt = require('bcrypt');
+import {getLibs} from "./libs";
 
 export function Route(router: Router) {
 
     router.get('/', (req, res) => {
-        console.log(req.session)
-        res.render('main/menu', {connected: req.session["passport"]?.user});
+        res.render('main/menu', {user: req.session["passport"]?.user});
 
     });
 
@@ -57,4 +57,8 @@ export function Route(router: Router) {
         });
     });
 
+    router.get("/credits", async(req, res) => {
+        let libs = await getLibs();
+        res.render("main/credits", {lib: JSON.stringify(libs)})
+    })
 }

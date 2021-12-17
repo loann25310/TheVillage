@@ -2,9 +2,10 @@ import {Router} from "express";
 import {getRepository} from "typeorm";
 import {User} from "../entity/User";
 import * as console from "console";
-import {envoyerMail} from "../scripts/Mail";
+import {envoyerMail} from "./Mail";
 import {verifMdp} from "../scripts/VerifMdp"
 import {RecuperationEmail} from "../entity/RecuperationEmail";
+import {deserializeUser} from "passport";
 const passport = require("passport");
 const bcrypt = require('bcrypt');
 //pour hash le mdp
@@ -17,7 +18,8 @@ export function Route(router: Router) {
         if (req.session['passport'] && req.session["passport"].user){
             return res.redirect('/');
         }
-        res.render('auth/login', {failed: req.query.failed, mail: req.query.mail});
+        let mail = req.query.mail;
+        res.render('auth/login', {failed: req.query.failed, mail: mail});
     });
 
     router.get('/logout', (req, res) => {
@@ -68,17 +70,13 @@ export function Route(router: Router) {
             user.password = hash;
             user.adresseMail = req.body.mail;
             user.dateDeNaissance = req.body.ddn;
-            user.niveau = 1;
-            user.argent = 0;
-            user.nbPartiesGagnees = 0;
-            user.nbPartiesJouees = 0;
-            user.succes = []
-            user.skins = []
+            user.succes = [];
+            user.skins = [];
+            user.partie = "";
+            user.avatar = `#${Math.floor(Math.random()*16777215).toString(16)}`;
             repo.save(user).then((r) => {
-                console.log(JSON.stringify(r));
                 return res.redirect("/auth?mail=" + user.adresseMail);
             });
-
         })
     })
 
@@ -98,9 +96,7 @@ export function Route(router: Router) {
             return res.redirect("/auth/getPassword?erreur=1")
         }
 
-        console.log("envoi du mail")
         await envoyerMail(req, user[0], req.body.mail, (err, info) => {
-            console.log("mail envoyé ?")
             if (err)
                 res.redirect("/auth/getPassword?erreur=1")
             else
@@ -120,7 +116,6 @@ export function Route(router: Router) {
         }
 
         if (verifMdp(req.body.password) !== "" || req.body.password2 !== req.body.password) {
-            console.log(verifMdp(req.body.password), req.body.password, req.body.password2)
             return res.redirect(`/auth/changePassword?wrongPassword=1&mail=${req.body.mail}&code=${req.body.code}`)
         }
         let userRepo = getRepository(User);

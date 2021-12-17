@@ -3,6 +3,9 @@ import {User} from "../entity/User";
 import {RecuperationEmail} from "../entity/RecuperationEmail";
 const nodemailer = require("nodemailer")
 
+export function Route(){}
+
+
 export async function envoyerMail(req, user :User, mail: string, callback){
     async function get_code() {
         let code: string = "";
