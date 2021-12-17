@@ -18,7 +18,7 @@ export function Route(router: Router, io: Server) {
         if (game?.bans?.includes(user.id)) return res.redirect("/?banned=1");
         if ((game = await joinRoom(user.id, game)) !== null) {
             let players = await game.getPlayers();
-            let users = []
+            let users = [];
             for (let p of players) {
                 users.push({
                     id: p.id,
@@ -27,7 +27,7 @@ export function Route(router: Router, io: Server) {
                     nbPartiesGagnees: p.nbPartiesGagnees,
                     niveau: p.niveau,
                     avatar: p.avatar
-                })
+                });
             }
             io.to(roomId).emit("players", users);
             let bans = [];
@@ -49,7 +49,7 @@ export function Route(router: Router, io: Server) {
                 user
             });
         }
-        res.redirect("/?roomfull=1")
+        res.redirect("/?roomfull=1");
     });
 
     io.on("connection", async (socket) =>{
@@ -58,13 +58,33 @@ export function Route(router: Router, io: Server) {
         });
 
         socket.on("chat_message", (user, msg, room) =>{
-            io.to(room).emit("chat_message", user, msg)
+            io.to(room).emit("chat_message", user, msg);
         });
 
-        socket.on("new_guy", (uid :number, room) => {
+        socket.on("new_guy", async (uid :number, room) => {
             socket.data.uid = uid;
-            socket.join(`${room}`)
+            socket.join(`${room}`);
+            let r = await repo.findOne(room);
+            if (r && !r.players.includes(uid)){
+                r.players.push(uid);
+                if (r.gameMaster === 0)
+                    r.gameMaster = uid;
+                await repo.save(r);
+            }
             io.to(room).emit("new_player", uid, socket.id);
+            let players = await r.getPlayers();
+            let users = [];
+            for (let p of players) {
+                users.push({
+                    id: p.id,
+                    pseudo: p.pseudo,
+                    nbPartiesJouees: p.nbPartiesJouees,
+                    nbPartiesGagnees: p.nbPartiesGagnees,
+                    niveau: p.niveau,
+                    avatar: p.avatar
+                });
+            }
+            io.to(r.id).emit("players", users);
         })
 
         socket.on("disconnecting", ()=>{
@@ -102,7 +122,7 @@ export function Route(router: Router, io: Server) {
             repo.findOne(gameId).then(room => {
                 room.publique = !bool;
                 repo.save(room).then(()=> io.to(gameId).emit('private', bool));
-            })
+            });
         });
 
         socket.on("ban", (gameId, uid) => {
@@ -115,25 +135,25 @@ export function Route(router: Router, io: Server) {
                     bans.push({id: p.id, pseudo: p.pseudo});
                 }
                 repo.save(room).then(()=> io.to(gameId).emit('ban', uid, bans));
-            })
+            });
         });
 
         socket.on("unban", (room, player) => {
             repo.findOne(room).then( async room => {
-                room.bans.splice(room.bans.indexOf(player.id), 1)
+                room.bans.splice(room.bans.indexOf(player.id), 1);
                 let bans = [];
                 for (const b of room.bans) {
                     let p = await getRepository(User).findOne(b);
                     bans.push({id: p.id, pseudo: p.pseudo});
                 }
                 repo.save(room).then(()=> io.to(room.id).emit('unban', player, bans));
-            })
+            });
         });
 
         socket.on("get_game_master", room => {
             getRepository(Partie).findOne(room).then(r => {
                 io.to(room).emit("game_master", r.gameMaster);
-            })
-        })
-    })
+            });
+        });
+    });
 }

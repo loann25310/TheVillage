@@ -66,9 +66,8 @@ export function disconnect(uid, io) {
     if (!uid)
         return
     userRepo.findOne(uid).then(u=>{
-        if (!u){
+        if (!u)
             return;
-        }
         gameRepo.findOne(u.partie).then(room => {
             if (!room || room.status === PartieStatus.STARTING) return;
 
