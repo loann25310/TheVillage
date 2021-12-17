@@ -35,20 +35,6 @@ p {
     justify-content: space-between;
 }
 
-#share {
-    margin: 1em 1em 0 0;
-    width: unset;
-    height: max-content;
-    padding: 0.4em 1em;
-    font-size: 1.5em;
-    border-radius: 10px;
-    transition-duration: 0.5s;
-}
-
-#share:hover {
-    background-color: #222;
-}
-
 .center {
     display: flex;
     flex-direction: column;
@@ -94,7 +80,7 @@ input[type="text"]:focus {
     outline: none
 }
 
-button {
+#share, #start, #form > button{
     background: #333;
     border: none;
     margin: 0 0 0 15px;
@@ -103,6 +89,20 @@ button {
     color: #fff;
     width: 10%;
     cursor: pointer;
+}
+
+#share {
+    margin: 1em 1em 0 0;
+    width: unset;
+    height: max-content;
+    padding: 0.4em 1em;
+    font-size: 1.5em;
+    border-radius: 10px;
+    transition-duration: 0.5s;
+}
+
+#share:hover {
+    background-color: #222;
 }
 
 #messages {

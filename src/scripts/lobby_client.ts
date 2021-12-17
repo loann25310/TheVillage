@@ -325,6 +325,7 @@ function sendMessageBan(id) {
     li.addClass("ban_message");
     li.text(`Info : ${user.pseudo} a été banni de la partie.`);
     messages.append(li);
+    messages.scrollTop(messages[0].scrollHeight);
 }
 
 function addBans(ban) {
@@ -350,4 +351,5 @@ function sendUnbanMessage(player) {
     li.addClass("unban_message");
     li.text(`Info : ${player.pseudo} n'est plus banni de la partie.`);
     messages.append(li);
+    messages.scrollTop(messages[0].scrollHeight);
 }
