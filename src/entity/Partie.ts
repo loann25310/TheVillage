@@ -70,7 +70,7 @@ export class Partie {
             return false;
         if (!this.players.includes(userId))
             this.players.push(userId);
-        if (this.gameMaster === 0)
+        if (this.gameMaster === 0 || !this.players.includes(this.gameMaster))
             this.gameMaster = userId;
         return true;
     }
