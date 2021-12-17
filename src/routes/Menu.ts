@@ -3,7 +3,6 @@ import {getLibs} from "../scripts/libs";
 import {User} from "../entity/User";
 import {getRepository} from "typeorm";
 const bcrypt = require('bcrypt');
-import {getLibs} from "./libs";
 
 export function Route(router: Router) {
 
