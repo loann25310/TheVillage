@@ -19,6 +19,7 @@ body {
 .container#title{
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 h2{
@@ -29,6 +30,7 @@ h2{
     padding-right: 10px;
     background:linear-gradient(180deg,#ff0507,#710507);
     vertical-align: center;
+    text-align: center;
     font-size: 40px;
 }
 .container#middle{
