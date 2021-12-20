@@ -1,7 +1,13 @@
-body{
+html, body{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+body {
     background-image: url("../../public/img/spooky.png");
-    background-size: 100%;
-    object-fit: cover;
+    background-size: cover;
+    position: relative;
 }
 
 .container {
@@ -68,7 +74,7 @@ h2{
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    position: relative;
+    position: absolute;
     bottom: 0;
     width: 100%;
 
