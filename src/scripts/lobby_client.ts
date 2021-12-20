@@ -221,7 +221,8 @@ function create_players(players) {
     for (let i = 0; i < players.length; i++) {
         users.append(create_user_tag(players[i], i));
         let avatar = $(`#avatar_${i}`);
-        avatar.css("background-color", players[i].avatar);
+        if (players[i].avatar.startsWith("#"))
+            avatar.css("background-color", players[i].avatar);
     }
 }
 
@@ -230,7 +231,11 @@ function create_user_tag(p, index :number) {
     div.addClass("user");
 
     let html = `
-        <div class="container"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt=" "><div id="avatar_${index}" class="avatar"></div></div>
+        <div class="container">`;
+    html += p.avatar.startsWith("#")
+        ? `<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt=" "><div id="avatar_${index}" class="avatar"></div>`
+        : `<img src="${p.avatar}" alt=" ">`;
+    html += `</div>
         <span class="pseudo">${p.pseudo} `;
 
     if (p.id === game.gameMaster)

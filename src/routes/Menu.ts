@@ -2,7 +2,10 @@ import {Router} from "express";
 import {getLibs} from "../scripts/libs";
 import {User} from "../entity/User";
 import {getRepository} from "typeorm";
+import formidable from "formidable";
+import * as fs from "fs";
 const bcrypt = require('bcrypt');
+
 
 export function Route(router: Router) {
 
@@ -48,6 +51,21 @@ export function Route(router: Router) {
                 result: "ok"
             });
         }
+    });
+
+    router.put("/options/avatar", async (req, res) => {
+        let form = new formidable.IncomingForm();
+        form.parse(req, function (err, fields, files) {
+            if ("filepath" in files.file && "originalFilename" in files.file){
+                var oldpath = files.file.filepath;
+                var newpath = 'C:/Users/Your Name/' + files.file.originalFilename;
+                fs.rename(oldpath, newpath, function (error) {
+                    if (err || error) return res.status(500).send(err);
+                    res.write('File uploaded and moved!');
+                    res.end();
+                });
+            }
+        })
     });
 
     router.get('/profil', (req, res) => {

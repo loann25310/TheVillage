@@ -85,4 +85,24 @@ $("#changeemail").click(async () => {
             text: 'Mot de passe incorrect !',
         })
     }
+});
+
+$("#changeavatar").on("click", async function() {
+    let {value: type} = await Swal.fire({
+        title: 'Selectionnez le type d\'avatar',
+        input: "radio",
+        inputOptions: {
+            "color" : "Couleur",
+            "image" : "Image"
+        },
+        inputValidator: (value) => {
+            if (!value) {
+                return 'Choisissez une option'
+            }
+        },
+        confirmButtonText: "<i class=\"fas fa-save color-blue\"></i> Valider",
+        showCancelButton: true,
+        cancelButtonText: "<i class=\"fas fa-times color-red\"></i> Annuler"
+    });
+
 })
