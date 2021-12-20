@@ -1,7 +1,13 @@
-body{
+html, body{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+body {
     background-image: url("../../public/img/spooky.png");
-    background-size: 100%;
-    object-fit: cover;
+    background-size: cover;
+    position: relative;
 }
 
 .container {
@@ -13,6 +19,7 @@ body{
 .container#title{
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 h2{
@@ -23,6 +30,7 @@ h2{
     padding-right: 10px;
     background:linear-gradient(180deg,#ff0507,#710507);
     vertical-align: center;
+    text-align: center;
     font-size: 40px;
 }
 .container#middle{
@@ -68,7 +76,7 @@ h2{
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    position: relative;
+    position: absolute;
     bottom: 0;
     width: 100%;
 
