@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 export function Route(router: Router) {
 
     router.get('/', (req, res) => {
-        res.render('main/menu', {user: (req.user as User).id});
+        res.render('main/menu', {user: (req.user as User)?.id});
 
     });
 
