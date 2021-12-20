@@ -6,6 +6,8 @@ import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
+import '../entity/Tools';
+import {Tools} from "../entity/Tools";
 const socket = io();
 Chart.register(...registerables);
 
@@ -155,7 +157,7 @@ document.body.onload = ()=>{
 }
 
 share.on("click", () => {
-    let p = popup();
+    let p = Tools.popup();
     $(document.body).append(p.div);
     p.text.html(`<h2 id="title_link">Copiez ce lien</h2><textarea cols="${Math.floor(document.location.href.length/1.2)}" id="lien">${document.location.href}</textarea>`);
     p.text.addClass("center");
@@ -251,7 +253,7 @@ function create_user_tag(p, index :number) {
 }
 
 function display_user_info(player) {
-    let p = popup();
+    let p = Tools.popup();
     let html = `<div id="text_popup">
         <span class="show_pseudo">${player.pseudo}</span>
         <span class="show_level">Niveau ${player.niveau}</span>
@@ -292,30 +294,6 @@ function display_user_info(player) {
             }]
         },
     });
-}
-
-function popup() {
-    let div = $("<div>");
-    div.addClass("popup");
-    let outer = $("<div>");
-    outer.append(div);
-    outer.addClass("fond_blanc");
-    let close = $("<span>").addClass("close").text("✖");
-    div.append(close);
-    let text = $("<div>").addClass("innerPopup");
-    div.append(text);
-    close.on("click", function () {
-        outer.addClass("disappear");
-        setTimeout(function(){outer.remove();}, 1000);
-    });
-    div.on("click", function(e){
-        e.stopPropagation();
-    });
-    outer.on("click", function () {
-        outer.addClass("disappear");
-        setTimeout(function(){outer.remove();}, 1000);
-    });
-    return {div: outer, text};
 }
 
 function update_max_players() {

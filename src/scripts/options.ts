@@ -104,5 +104,11 @@ $("#changeavatar").on("click", async function() {
         showCancelButton: true,
         cancelButtonText: "<i class=\"fas fa-times color-red\"></i> Annuler"
     });
+    if (type) {
 
+    }
 })
+
+function popup() {
+    
+}
