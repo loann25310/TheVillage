@@ -13,8 +13,8 @@ body{
 .container#title{
     display: flex;
     justify-content: center;
-
 }
+
 h2{
     border-style: solid;
     border-image: linear-gradient(cornsilk,firebrick,red,black)15;
@@ -37,12 +37,15 @@ h2{
 .bt {
     width: 20%;
     height: 60px;
-    font-size: 15px;
     border-radius: 30px;
+    border-style: hidden;
+    outline: 0;
+    font-size: 15px;
     margin-bottom: 20px;
     background-color: darkred;
-    border: 3px solid black;
-    transition-duration: 500ms;
+    box-shadow: 0 9px #710507;
+
+    /*transition-duration: 500ms;*/
 }
 .bt#connexion{
     width: 10%;
@@ -62,9 +65,13 @@ h2{
     padding-top: 10px;
 }
 .footer{
-position: fixed;
-bottom: 0;
-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+
 }
 .social{
     display: flex;
@@ -73,23 +80,17 @@ width: 100%;
 }
 
 .bt:hover{
-    height: 70px;
-    background-color: #313131;
-
-
-
+    cursor: pointer;
+    box-shadow: 0 6px #710507;
     font-weight: bolder;
 }
 
-@-webkit-keyframes move_eye { from { margin-left:20%; } to { margin-left:100%; }  }
-
-
-img{
-    width: 30px;
-    height: 30px;
-}
 .bt#options:hover{
-    animation: transform 1.2s linear;
-    transform: rotate(360deg);
+    /*animation: transform 1.2s linear;
+    transform: rotate(360deg);*/
 }
 
+.footer img{
+    width: 75px;
+    height: 75px;
+}

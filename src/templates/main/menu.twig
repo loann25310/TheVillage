@@ -1,17 +1,21 @@
 {% extends "body.twig" %}
 
-{% block title %}Test{% endblock %}
+{% block title %}{% endblock %}
 
 {% block body %}
-    123 456 : {{ variable }}
-    {% if connected is defined %}
-         <a href="/logout">Se déconnecter</a>
-    {% else %}
-        <a href="/auth">Se connecter</a>
+
+
+
         <div class="header">
             <div class="container">
+                {% if user is not defined %}
                 <button class="bt" id="connexion" onclick="location.href='/auth'">Se Connecter</button>
-                <button class="bt" id="options" ></button>
+
+                {% else %}
+                    <button class="bt"  onclick="location.href='/logout'">Se Déconnecter</button>
+                    <button class="bt" id="options"></button>
+                {% endif %}
+
             </div>
         </div>
         <div class="title">
@@ -21,23 +25,26 @@
         </div>
         <div class="section">
             <div class="container" id="middle">
-                <button class="bt">Jouer</button>
-                <button class="bt">Options</button>
-                <button class="bt">Crédits</button>
-                <button class="bt">Quitter</button>
+                {% if user is defined %}
+                <button class="bt" onclick="location.href='../lobby/lobby'">Jouer</button>
+                <button class="bt" onclick="location.href='/options'">Options</button>
+                <button class="bt"  onclick="location.href='/profil'">Profil</button>
+                {% endif %}
+                <button class="bt" onclick="location.href='/credits'">Crédits</button>
+                <button class="bt" onclick="window.close()">Quitter</button>
+
             </div>
         </div>
         <div class="footer">
+            <img src="/img/iut.png">
             <p>&copy; 2021 The Village</p>
         </div>
-        <div class="social">
-            <img src="/img/reddit.png" id="reddit">
-            <img src="/img/twitter.png" id="twitter">
-        </div>
-    {% endif %}
-    <a href="/options">Options</a>
-    <a href="/profil">Profil</a>
+
+
+
+
 {% endblock %}
 {% block javascripts %}
     <script src="/dist/menu.js"></script>
+    <script></script>
 {% endblock %}
