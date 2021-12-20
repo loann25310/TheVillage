@@ -12,8 +12,9 @@
                 <button class="bt" id="connexion" onclick="location.href='/auth'">Se Connecter</button>
 
                 {% else %}
-                    <button class="bt"  onclick="location.href='/logout'">Se Déconnecter</button>
+                    <button class="bt" id="connexion"  onclick="location.href='/logout'">Se Déconnecter</button>
                     <button class="bt" id="options"></button>
+                    <p id="uid" style="display: none">{{ user }}</p>
                 {% endif %}
 
             </div>
@@ -26,7 +27,7 @@
         <div class="section">
             <div class="container" id="middle">
                 {% if user is defined %}
-                <button class="bt" onclick="location.href='../lobby/lobby'">Jouer</button>
+                <button class="bt" id="play">Jouer</button>
                 <button class="bt" onclick="location.href='/options'">Options</button>
                 <button class="bt"  onclick="location.href='/profil'">Profil</button>
                 {% endif %}
@@ -46,5 +47,6 @@
 {% endblock %}
 {% block javascripts %}
     <script src="/dist/menu.js"></script>
+    <script src="/dist/menu_jouer.js"></script>
     <script></script>
 {% endblock %}

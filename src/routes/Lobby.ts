@@ -54,6 +54,7 @@ export function Route(router: Router, io: Server) {
 
     io.on("connection", async (socket) =>{
         socket.on("ask_room", async (userId) =>{
+            console.log(userId)
             socket.emit("room_found", await getAvailableRoom(userId));
         });
 
