@@ -8,7 +8,8 @@ import '@fortawesome/fontawesome-free/js/brands';
 import '../entity/Tools';
 import {Tools} from "../entity/Tools";
 // @ts-ignore
-let uid = _uid;
+let user = _user;
+let uid = user.id;
 
 $("#retour").click(() => {
     history.back();
@@ -124,3 +125,14 @@ $("#changeavatar").on("click", async function() {
         popup.text.html(html);
     }
 });
+
+console.log("hey")
+let avatar = $(`#avatar_pic`);
+let html = "";
+html += user.avatar.startsWith("#")
+    ? `<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt=" "><div id="avatar_color" class="avatar"></div>`
+    : `<img src="/avatars/${user.avatar}" width="80" alt=" ">`;
+html += `</div>`
+avatar.html(html);
+if (user.avatar.startsWith("#"))
+    $("#avatar_color").css("background-color", user.avatar);
