@@ -71,6 +71,13 @@ export function Route(router: Router) {
         res.redirect("/options");
     });
 
+    router.post("/options/avatar_col", async (req, res) => {
+        let user = (req.user as User);
+        user.avatar = `${req.body.avatar}`;
+        await getRepository(User).save(user);
+        res.redirect("/options");
+    });
+
     router.get('/profil', (req, res) => {
         res.render('main/profil', {
             user: req.user

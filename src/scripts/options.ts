@@ -119,14 +119,16 @@ $("#changeavatar").on("click", async function() {
                 <button form="form_avatar" id="submit_avatar"><i class="fas fa-save color-blue"></i> Valider</input>
             </form>
         ` : `
-            <input type="color" name="avatar">
-            <button id="submit_avatar"><i class="fas fa-save color-blue"></i> Valider</button>
+            <form id="form_avatar" action="/options/avatar_col" method="post">
+                <input type="hidden" name="userId" value='${uid}'>
+                <input type="color" name="avatar" required>
+                <button form="form_avatar" id="submit_avatar"><i class="fas fa-save color-blue"></i> Valider</input>
+            </form>
         `;
         popup.text.html(html);
     }
 });
 
-console.log("hey")
 let avatar = $(`#avatar_pic`);
 let html = "";
 html += user.avatar.startsWith("#")
