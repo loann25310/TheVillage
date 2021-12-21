@@ -11,11 +11,11 @@ import {Tools} from "../entity/Tools";
 let user = _user;
 let uid = user.id;
 
-$("#retour").click(() => {
-    history.back();
+$("#retour").on("click", () => {
+    window.location.replace("/");
 });
 
-$("#son").click(function(){
+$("#son").on("click", () => {
     let icon = $(this).children();
    if($(icon).hasClass("fa-volume-up")) {
        $(icon).removeClass("fa-volume-up").addClass("fa-volume-mute");
@@ -26,11 +26,11 @@ $("#son").click(function(){
    }
 });
 
-$("#changepassword").click(() => {
+$("#changepassword").on("click", () => {
     window.location.href = "../auth/getPassword?email="+$("#email").text();
 });
 
-$("#changeusername").click(async () => {
+$("#changeusername").on("click", async () => {
     let result = await Swal.fire({
        title: 'Modifier votre pseudo',
        input: "text",
@@ -49,7 +49,7 @@ $("#changeusername").click(async () => {
     $("#pseudo").text(result.value);
 });
 
-$("#changeemail").click(async () => {
+$("#changeemail").on("click", async () => {
     let resultEmail = await Swal.fire({
         title: 'Modifier votre adresse mail',
         input: "email",
