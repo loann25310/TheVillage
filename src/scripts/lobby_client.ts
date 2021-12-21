@@ -236,7 +236,7 @@ function create_user_tag(p, index :number) {
         <div class="container">`;
     html += p.avatar.startsWith("#")
         ? `<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt=" "><div id="avatar_${index}" class="avatar"></div>`
-        : `<img src="${p.avatar}" alt=" ">`;
+        : `<img src="/avatars/${p.avatar}" alt=" ">`;
     html += `</div>
         <span class="pseudo">${p.pseudo} `;
 
