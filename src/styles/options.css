@@ -115,6 +115,9 @@ button:hover {
     white-space: nowrap;
     width: 100%;
     height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 
 #text_popup {
@@ -125,4 +128,40 @@ button:hover {
     grid-template-rows: 20% 30% 50%;
     column-gap: 10px;
     row-gap: 10px;
+}
+
+.disappear {
+    animation: disappear linear;
+    animation-duration: 0.3s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes disappear {
+    from {
+        opacity: initial;
+        display: initial;
+    }
+    to {
+        opacity: 0;
+        display: none;
+    }
+}
+
+#submit_avatar {
+    outline: none;
+    background-color: #BAC8F7;
+    border: none;
+    font-size: 0.7em;
+    padding: 0.3em;
+    border-radius: 5px;
+}
+
+.innerPopup > h2 {
+    font-size: 1em;
+}
+
+.innerPopup > form >  input[type="file"] {
+    padding: 0.5em;
+    border-radius: 5px;
+    background-color: #BAC8F7;
 }

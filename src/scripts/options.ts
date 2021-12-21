@@ -113,12 +113,14 @@ $("#changeavatar").on("click", async function() {
         let popup = Tools.popup();
         $(document.body).append(popup.div);
         let html = type === "image" ? `
+            <h2>Choisissez un fichier</h2>
             <form id="form_avatar" action="/options/avatar_pic" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="userId" value='${uid}'>
                 <input id="avatar_input" required type="file" accept=".png, .jpg, .jpeg, .gif" name="avatar">
                 <button form="form_avatar" id="submit_avatar"><i class="fas fa-save color-blue"></i> Valider</input>
             </form>
         ` : `
+            <h2>Choisissez une couleur</h2>
             <form id="form_avatar" action="/options/avatar_col" method="post">
                 <input type="hidden" name="userId" value='${uid}'>
                 <input type="color" name="avatar" required>

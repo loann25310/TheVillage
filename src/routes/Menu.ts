@@ -86,6 +86,6 @@ export function Route(router: Router) {
 
     router.get("/credits", async(req, res) => {
         let libs = await getLibs();
-        res.render("main/credits", {lib: JSON.stringify(libs)})
-    })
+        res.render("main/credits", {lib: JSON.stringify(libs)});
+    });
 }
