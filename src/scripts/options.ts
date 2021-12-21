@@ -1,10 +1,14 @@
 import * as $ from 'jquery';
 import Swal from "sweetalert2";
 import "../styles/options.css";
-import '@fortawesome/fontawesome-free/js/fontawesome'
-import '@fortawesome/fontawesome-free/js/solid'
-import '@fortawesome/fontawesome-free/js/regular'
-import '@fortawesome/fontawesome-free/js/brands'
+import '@fortawesome/fontawesome-free/js/fontawesome';
+import '@fortawesome/fontawesome-free/js/solid';
+import '@fortawesome/fontawesome-free/js/regular';
+import '@fortawesome/fontawesome-free/js/brands';
+import '../entity/Tools';
+import {Tools} from "../entity/Tools";
+// @ts-ignore
+let uid = _uid;
 
 $("#retour").click(() => {
     history.back();
@@ -105,10 +109,18 @@ $("#changeavatar").on("click", async function() {
         cancelButtonText: "<i class=\"fas fa-times color-red\"></i> Annuler"
     });
     if (type) {
-
+        let popup = Tools.popup();
+        $(document.body).append(popup.div);
+        let html = type === "image" ? `
+            <form id="form_avatar" action="/options/avatar_pic" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="userId" value='${uid}'>
+                <input id="avatar_input" type="file" accept=".png, .jpg, .jpeg, .gif" name="avatar">
+                <button form="form_avatar" id="submit_avatar"><i class="fas fa-save color-blue"></i> Valider</input>
+            </form>
+        ` : `
+            <input type="color" name="avatar">
+            <button id="submit_avatar"><i class="fas fa-save color-blue"></i> Valider</button>
+        `;
+        popup.text.html(html);
     }
-})
-
-function popup() {
-    
-}
+});

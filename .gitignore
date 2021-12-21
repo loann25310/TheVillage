@@ -7,4 +7,5 @@ temp/
 ormconfig.json
 package-lock.json
 /public/dist/
+/public/avatars/*
 config.json

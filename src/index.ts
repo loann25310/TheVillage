@@ -16,7 +16,6 @@ const passport = require("passport");
 import {User} from "./entity/User";
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require('bcrypt');
-const formidable = require("formidable");
 
 /**
  * Pour autoriser une route sans être authentifié :
