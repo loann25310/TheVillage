@@ -115,7 +115,7 @@ $("#changeavatar").on("click", async function() {
         let html = type === "image" ? `
             <form id="form_avatar" action="/options/avatar_pic" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="userId" value='${uid}'>
-                <input id="avatar_input" type="file" accept=".png, .jpg, .jpeg, .gif" name="avatar">
+                <input id="avatar_input" required type="file" accept=".png, .jpg, .jpeg, .gif" name="avatar">
                 <button form="form_avatar" id="submit_avatar"><i class="fas fa-save color-blue"></i> Valider</input>
             </form>
         ` : `
@@ -130,7 +130,7 @@ console.log("hey")
 let avatar = $(`#avatar_pic`);
 let html = "";
 html += user.avatar.startsWith("#")
-    ? `<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt=" "><div id="avatar_color" class="avatar"></div>`
+    ? `<div id="avatar_color" class="avatar"></div>`
     : `<img src="/avatars/${user.avatar}" width="80" alt=" ">`;
 html += `</div>`
 avatar.html(html);

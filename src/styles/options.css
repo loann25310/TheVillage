@@ -73,12 +73,9 @@ button:hover {
 }
 
 .avatar {
-    position: absolute;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
 }
 
 .fond_blanc {
