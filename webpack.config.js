@@ -15,7 +15,8 @@ module.exports = {
         verifCode: "./src/scripts/verifCode.ts",
         credits: "./src/scripts/credits.ts",
         menu: "./src/scripts/menu.ts",
-        menu_jouer: "./src/scripts/menu_jouer.ts"
+        menu_jouer: "./src/scripts/menu_jouer.ts",
+        page404: "./src/scripts/page404.ts"
     },
     output: {
         path: path.resolve(__dirname, 'public/dist'),

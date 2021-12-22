@@ -65,6 +65,7 @@ createConnection().then(async connection => {
         logger.debug(` - Loading : ${file}`);
         require(resolvePath(__dirname, 'routes/', file)).Route(router, io);
     }
+
     app.use(session({
         secret: "azerty",
         resave: false,
@@ -93,6 +94,10 @@ createConnection().then(async connection => {
     })
 
     app.use(router);
+
+    app.use((req, res) => {
+        res.render("main/page404");
+    });
 
     passport.use(new LocalStrategy({
             usernameField: 'mail'

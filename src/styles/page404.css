@@ -1,0 +1,51 @@
+html, body{
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+body{
+    background-image: url("/public/img/spooky.png");
+    background-size: cover;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #00000077;
+    color: white;
+}
+
+#title {
+    align-self: center;
+}
+
+p {
+    font-size: 2em;
+}
+
+a {
+    background-color: #10B100;
+    border-radius: 5px;
+    border: 1px solid #003366;
+    color: white;
+    padding: 0.2em;
+}
+
+#explo {
+    border-radius: 5px;
+    border: 1px solid #003366;
+    padding: 0.2em;
+    background-color: darkred;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#text {
+    width: 50%;
+    align-self: center;
+}
