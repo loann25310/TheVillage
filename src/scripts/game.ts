@@ -1,6 +1,6 @@
 import * as $ from 'jquery';
 import {Displayable} from "../entity/Displayable";
-import {Buisson} from "../entity/Props/Buisson";
+import {Bush} from "../entity/Props/Bush";
 import {Player} from "../entity/Props/Player";
 import {Grass} from "../entity/Grounds/Grass";
 import {Environment} from "../entity/Environment";
@@ -59,19 +59,6 @@ setInterval(() => {
     if(keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && keys["KEY_Q"])
         player.move(PlayerMove.moveNW, shift);
 }, 1);
-
-for (let i = 0; i < 50; i++) {
-    let size = { w: 175, h: 130 };
-    let buisson = new Buisson(ctx, { x: (size.w * i), y: 0 }, size);
-    environment.addToLayer(5, buisson);
-}
-
-for (let i = 0; i < 15; i++) {
-    for (let j = 0; j < 10; j++) {
-        let ground = new Grass(ctx, { x: (i * Grass.defaultSize.w ), y: (j * Grass.defaultSize.h ) });
-        environment.addToLayer(0, ground);
-    }
-}
 
 const otherPlayers: Player[] = [];
 
