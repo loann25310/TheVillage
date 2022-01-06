@@ -113,12 +113,14 @@ socket.on("start_game", () => {
 
 socket.on("ban", (id, bans) => {
     if (id === game.gameMaster) return;
+    if (uid !== game.gameMaster) return;
     sendMessageBan(id);
     if (id === uid) return location.replace("/?banned=1");
     addBans(bans);
 });
 
 socket.on("unban", function(player, bans) {
+    if (uid !== game.gameMaster) return;
     sendUnbanMessage(player);
     addBans(bans);
 })
