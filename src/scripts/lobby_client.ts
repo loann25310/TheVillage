@@ -216,7 +216,7 @@ function create_message(user, msg) {
         display_user_info(user);
     });
     item.append(name);
-    item.append(` : ${msg}`);
+    item.append(` : `).append($("<span>").text(msg));
     messages.append(item);
 }
 
