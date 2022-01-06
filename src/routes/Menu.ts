@@ -27,10 +27,6 @@ export function Route(router: Router) {
         res.render('main/chargement');
     });
 
-    router.get("/credits", async(req, res) => {
-        let libs = await getLibs();
-        res.render("main/credits", {lib: JSON.stringify(libs)})
-    })
     router.get('/options', (req, res) => {
         res.render('main/options', {
             user: req.user
@@ -85,7 +81,7 @@ export function Route(router: Router) {
     });
 
     router.get("/credits", async(req, res) => {
-        let libs = await getLibs();
+        let libs = getLibs();
         res.render("main/credits", {lib: JSON.stringify(libs)});
     });
 }
