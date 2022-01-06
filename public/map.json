@@ -1,19 +1,24 @@
 {
   "objects" : [
     {
-      "type": "buisson",
+      "type": "herbe",
       "coordonnees" : {"x" :10, "y" :10},
+      "size": {"w": 1000, "h": 1000}
+    },
+    {
+      "type": "buisson",
+      "coordonnees" : {"x" :100, "y" :50},
       "size": {"w": 175, "h": 130}
     },
     {
       "type": "arbre",
-      "coordonnees" : {"x" :10, "y" :10},
+      "coordonnees" : {"x" :100, "y" :100},
       "size": {"w": 175, "h": 130}
 
     },
     {
       "type": "caisse",
-      "coordonnees" : {"x" :10, "y" :10},
+      "coordonnees" : {"x" :100, "y" :10},
       "size": {"w": 175, "h": 130}
     },
     {
@@ -28,21 +33,16 @@
     },
     {
       "type": "fourche",
-      "coordonnees" : {"x" :10, "y" :10},
+      "coordonnees" : {"x" :1000, "y" :10},
       "size": {"w": 175, "h": 130}
     },
     {
       "type": "souche",
-      "coordonnees" : {"x" :10, "y" :10},
+      "coordonnees" : {"x" :10, "y" :50},
       "size": {"w": 175, "h": 130}
     },
     {
       "type": "fleurs",
-      "coordonnees" : {"x" :10, "y" :10},
-      "size": {"w": 175, "h": 130}
-    },
-    {
-      "type": "herbe",
       "coordonnees" : {"x" :10, "y" :10},
       "size": {"w": 175, "h": 130}
     },
@@ -53,7 +53,7 @@
     },
     {
       "type": "bois",
-      "coordonnees" : {"x" :10, "y" :10},
+      "coordonnees" : {"x" :500, "y" :10},
       "size": {"w": 175, "h": 130}
     }
   ],

@@ -24,8 +24,8 @@ export class Displayable {
     }
 
     getPosition(): Coordinate {
-        if(!this.environment) return { x: 0, y: 0 };
-        if(!this.environment.origine) return { x: 0, y: 0 };
+        if(!this.environment) return { x: 100, y: 0 };
+        if(!this.environment.origine) return { x: 100, y: 0 };
         return {
             x: this.environment.origine.x + this.cord.x,
             y: this.environment.origine.y + this.cord.y
