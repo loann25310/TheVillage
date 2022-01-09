@@ -5,7 +5,6 @@ import * as console from "console";
 import {envoyerMail} from "./Mail";
 import {verifMdp} from "../scripts/VerifMdp"
 import {RecuperationEmail} from "../entity/RecuperationEmail";
-import {deserializeUser} from "passport";
 const passport = require("passport");
 const bcrypt = require('bcrypt');
 //pour hash le mdp
