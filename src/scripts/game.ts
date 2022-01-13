@@ -125,8 +125,7 @@ socket.on("ppid", ({pid}) => {
     player.initLocal(pid,canvas);
     $('.origine')[0].innerHTML = `{ x: ${environment.origine.x}, y: ${environment.origine.y} }`;
     player.setCord({ x: 0, y: 0 });
-
-    socket.on("playerMove", function(event){
+    player.on("playerMove", function(event){
         $('.origine')[0].innerHTML = `{ x: ${environment.origine.x}, y: ${environment.origine.y} }`;
         $('.coordinate')[0].innerHTML = `{ x: ${event.cord.x}, y: ${event.cord.y} }`;
         /*socket.emit("move", {
@@ -163,7 +162,7 @@ socket.on("movePlayer", ({ pid, cord }) => {
     //console.log(pid, cord);
     const other = otherPlayers[pid];
     if(!other) return;
-    other.setCord(cord);
+    other.setCord({x:environment.origine.x, y:environment.origine.y});
 });
 //
 //

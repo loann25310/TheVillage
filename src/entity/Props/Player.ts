@@ -19,7 +19,7 @@ export class Player extends Displayable {
         this.environment = environment;
         this.cord = { x: 0, y: 0};
         this.image = document.createElement("img");
-        this.image.src = "/img/player.png";
+        this.image.src = "/img/Bonhomme.gif";
         this.callbacks = [];
         this.x = 0;
         this.y = 0;
