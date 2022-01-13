@@ -4,8 +4,18 @@
 
 {% block body %}
     <div class="grid">
+        <div class="popup-over">
+            <div class="loader-container"></div>
+        </div>
         <div class="authentification">
         <form method="post" action="/auth/loginRequest">
+            <h1 class="toUpper">Connexion</h1>
+
+            <div class="error-container"></div>
+
+
+            <label for="email" class="block-label">Adresse email :</label>
+            <input type="text" id="email"  name="email" class="login-input" placeholder="Adresse email" {% if mail is defined %} value="{{ mail }} {% endif %}">
             <h1>Connexion</h1>
             <label>Adresse mail<br>
                 <input type="text"  name="mail" placeholder="Adresse mail" {% if mail is defined %} value="{{ mail }}" {% endif %}>
@@ -17,6 +27,10 @@
             <br>
             <input type="submit" value="Valider">
 
+            <label for="password" class="block-label">Mot de passe :</label>
+            <input type="password" id="password" name="password" class="login-input" placeholder="Mot de passe">
+
+            <button type="confirm" id="loginButton" class="btn btn-login">Se connecter</button>
         </form>
             <br>
             {% if failed == 1 %}

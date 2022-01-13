@@ -14,7 +14,7 @@ let partiesJouees = $('#nbParties');
 let victoires = $('#nbVictoires').text();
 let defaites = +partiesJouees.text() - +victoires;
 
-if (+partiesJouees.text()=== 0) {
+if (parseInt(partiesJouees.text()) === 0) {
     partiesJouees.text("Aucune partie jouée");
     partiesJouees.removeClass("hidden");
 }
