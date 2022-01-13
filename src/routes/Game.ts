@@ -6,7 +6,7 @@ import {Box} from "../entity/Props/Box";
 
 export function Route(router: Router, io: SocketIOServer) {
 
-    router.get('/game', (req, res) => {
+    router.get('/play/:id', (req, res) => {
         res.render("game/main")
     });
 
