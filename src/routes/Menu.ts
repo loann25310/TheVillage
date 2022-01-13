@@ -9,8 +9,11 @@ const storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + req.body.userId);
+    },
+    limits: {
+        fileSize: 5000000
     }
-})
+});
 
 const upload = multer({ storage });
 const bcrypt = require('bcrypt');
@@ -20,7 +23,6 @@ export function Route(router: Router) {
 
     router.get('/', (req, res) => {
         res.render('main/menu', {user: (req.user as User)?.id});
-
     });
 
     router.get('/loading', (req, res) => {
