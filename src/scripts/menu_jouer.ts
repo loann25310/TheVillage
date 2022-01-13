@@ -18,9 +18,6 @@ play.on("click", function (){
 })
 
 socket.on("room_found", (roomId) => {
-    if (is_searching_room) {
-        let port = window.location.port === "" ? "" : `:${window.location.port}`;
-        let url = `${window.location.protocol}//${window.location.hostname}${port}/lobby/${roomId}`
-        window.location.replace(url);
-    }
+    if (is_searching_room)
+        window.location.href = `/lobby/${roomId}`;
 })
