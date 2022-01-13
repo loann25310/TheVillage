@@ -54,7 +54,7 @@ createConnection().then(async connection => {
     app.set('views', __dirname + '/templates');
     app.set('view engine', 'twig');
     app.use(cookieParser());
-    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.urlencoded({ extended: true, limit:"5mb" }));
     const io = new Server(httpServer);
     logger.info("Web Server created !");
 
