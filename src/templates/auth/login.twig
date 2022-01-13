@@ -11,33 +11,23 @@
         <form method="post" action="/auth/loginRequest">
             <h1 class="toUpper">Connexion</h1>
 
-            <div class="error-container"></div>
+            <div class="error-container">
+                {% if failed == 1 %}
+                    <div class="display-error">
+                        Mauvaise adresse mail ou mot de passe. Réessayez ou créez un compte.
+                    </div>
+                {% endif %}
+            </div>
 
 
             <label for="email" class="block-label">Adresse email :</label>
             <input type="text" id="email"  name="email" class="login-input" placeholder="Adresse email" {% if mail is defined %} value="{{ mail }} {% endif %}">
-            <h1>Connexion</h1>
-            <label>Adresse mail<br>
-                <input type="text"  name="mail" placeholder="Adresse mail" {% if mail is defined %} value="{{ mail }}" {% endif %}>
-            </label><br>
-            <br><label>
-                Mot de passe<br>
-                <input type="password" name="password" placeholder="Mot de passe">
-            </label><br>
-            <br>
-            <input type="submit" value="Valider">
 
             <label for="password" class="block-label">Mot de passe :</label>
             <input type="password" id="password" name="password" class="login-input" placeholder="Mot de passe">
 
             <button type="confirm" id="loginButton" class="btn btn-login">Se connecter</button>
         </form>
-            <br>
-            {% if failed == 1 %}
-                <div class="erreur">
-                     Mauvaise adresse mail ou mot de passe. Réessayez ou créez un compte.
-                </div>
-            {% endif %}
         <a href="/auth/inscription">Créer un compte</a>
         <a href="/auth/getPassword">Récupérer mon mot de passe</a>
         </div>
