@@ -113,7 +113,6 @@ socket.on("start_game", () => {
 
 socket.on("ban", (id, bans) => {
     if (id === game.gameMaster) return;
-    if (uid !== game.gameMaster) return;
     sendMessageBan(id);
     if (id === uid) return location.replace("/?banned=1");
     addBans(bans);
@@ -272,7 +271,7 @@ function display_user_info(player) {
     p.text.html(html);
     $(document.body).append(p.div);
     let ban = $("#ban");
-    ban.one("click", function() {
+    ban.on("click", function() {
         socket.emit("ban", roomName, player.id);
     });
     if (player.nbPartiesJouees === 0)

@@ -132,6 +132,7 @@ export function Route(router: Router, io: Server) {
                 room.bans.push(uid);
                 let bans = [];
                 for (const b of room.bans) {
+                    console.log(b);
                     let p = await getRepository(User).findOne(b);
                     bans.push({id: p.id, pseudo: p.pseudo});
                 }
