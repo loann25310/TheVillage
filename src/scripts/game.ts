@@ -12,25 +12,43 @@ import { io } from "socket.io-client";
 import {data} from "jquery";
 import {Coordinate} from "../entity/types/Coordinate";
 
+const environment: Environment = new Environment();
 let canvas = $('#mainCanvas')[0] as HTMLCanvasElement;
 let ctx = canvas.getContext('2d');
+
+const map = environment.create();
 
 canvas.width  = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let x = canvas.width/2;
-let y = canvas.height/2;
+let player = new Player(ctx, environment, { x: (canvas.width-100) / 2, y: (canvas.height-152) / 2 }, Player.defaultSize);
 
 let personnage = new Image();
 
 function draw() {
     requestAnimationFrame(draw);
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clean up
-    personnage.src = "/img/player.png";
-    ctx.drawImage(personnage, x, y);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    personnage.src = "/img/Bonhomme.gif";
+    environment.update();
+        ctx.drawImage(personnage, canvas.width/2 -150, canvas.height/2 -150);
 }
 
 draw();
+
+
+
+for (let i = 0; i < 50; i++) {
+    let size = { w: 175, h: 130 };
+    let buisson = new Buisson(ctx, { x: (size.w * i), y: 0 }, size);
+    environment.addToLayer(5, buisson);
+}
+
+for (let i = 0; i < 15; i++) {
+    for (let j = 0; j < 10; j++) {
+        let ground = new Grass(ctx, { x: (i * Grass.defaultSize.w ), y: (j * Grass.defaultSize.h ) });
+        environment.addToLayer(0, ground);
+    }
+}
 
 const keys = [];
 window.addEventListener("keydown",function(e){ keys["KEY_" + e.key.toUpperCase()] = true },false);
@@ -40,61 +58,25 @@ setInterval(() => {
     let shift = keys["KEY_SHIFT"] == true;
 
     if(keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && !keys["KEY_Q"])
-        move(PlayerMove.moveN, shift);
+        player.move(PlayerMove.moveN, shift);
     if(keys["KEY_Z"] && keys["KEY_D"] && !keys["KEY_S"] && !keys["KEY_Q"])
-        move(PlayerMove.moveNE, shift);
+        player.move(PlayerMove.moveNE, shift);
     if(!keys["KEY_Z"] && keys["KEY_D"] && !keys["KEY_S"] && !keys["KEY_Q"])
-        move(PlayerMove.moveE, shift);
+        player.move(PlayerMove.moveE, shift);
     if(!keys["KEY_Z"] && keys["KEY_D"] && keys["KEY_S"] && !keys["KEY_Q"])
-        move(PlayerMove.moveSE, shift);
+        player.move(PlayerMove.moveSE, shift);
     if(!keys["KEY_Z"] && !keys["KEY_D"] && keys["KEY_S"] && !keys["KEY_Q"])
-        move(PlayerMove.moveS, shift);
+        player.move(PlayerMove.moveS, shift);
     if(!keys["KEY_Z"] && !keys["KEY_D"] && keys["KEY_S"] && keys["KEY_Q"])
-        move(PlayerMove.moveSW, shift);
+        player.move(PlayerMove.moveSW, shift);
     if(!keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && keys["KEY_Q"])
-        move(PlayerMove.moveW, shift);
+        player.move(PlayerMove.moveW, shift);
     if(keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && keys["KEY_Q"])
-        move(PlayerMove.moveNW, shift);
+        player.move(PlayerMove.moveNW, shift);
 }, 1);
 
-function move(type: PlayerMove, sprint: boolean) {
-    let pixelSprint = 4;
-    let pixelNoSprint = 1;
-    let condition = (sprint) ? pixelSprint : pixelNoSprint;
-    switch (type) {
-        case PlayerMove.moveN:
-            y -= condition;
-            break;
-        case PlayerMove.moveNE:
-            y -= condition;
-            x += condition;
-            break;
-        case PlayerMove.moveE:
-            x += condition;
-            break;
-        case PlayerMove.moveSE:
-            x += condition;
-            y += condition;
-            break;
-        case PlayerMove.moveS:
-            y += condition;
-            break;
-        case PlayerMove.moveSW:
-            y += condition;
-            x -= condition;
-            break;
-        case PlayerMove.moveW:
-            x -= condition;
-            break;
-        case PlayerMove.moveNW:
-            x -= condition;
-            y -= condition;
-            break;
-    }
-}
 
-
-// const socket = io();
+const socket = io();
 // const environment: Environment = new Environment();
 // let deplacement: { x: number, y: number } = { x: 0, y: 0 };
 // let canvas = $('#mainCanvas')[0] as HTMLCanvasElement;
@@ -136,52 +118,53 @@ function move(type: PlayerMove, sprint: boolean) {
 //     }
 // }
 //
-// const otherPlayers: Player[] = [];
-//
-// socket.on("ppid", ({pid}) => {
-//     console.log(`PID : ${pid}`);
-//     player.initLocal(pid,canvas);
-//     $('.origine')[0].innerHTML = `{ x: ${environment.origine.x}, y: ${environment.origine.y} }`;
-//     player.setCord({ x: 0, y: 0 });
-//     player.on("playerMove", function(event){
-//         $('.origine')[0].innerHTML = `{ x: ${environment.origine.x}, y: ${environment.origine.y} }`;
-//         $('.coordinate')[0].innerHTML = `{ x: ${event.cord.x}, y: ${event.cord.y} }`;
-//         /*socket.emit("move", {
-//             x: event.cord.x - (player.size.w / 2),
-//             y: event.cord.y - (player.size.h / 2)
-//         });*/
-//         socket.emit("move", event.cord);
-//     });
-// });
-// $('.coordinate')[0].innerHTML = `{ x: ${player.cord.x}, y: ${player.cord.y} }`;
-//
-// socket.on("newPlayer", ({ remotePlayer }) => {
-//     if(!remotePlayer) return;
-//     if(player.pid === remotePlayer.pid) return;
-//     console.log(`New player pid : ${remotePlayer.pid}`);
-//     let other = new Player(ctx, environment, remotePlayer.cord, Player.defaultSize);
-//     otherPlayers[remotePlayer.pid] = other;
-//     other.initRemote(remotePlayer.pid, remotePlayer.cord, player, canvas);
-//     environment.addToLayer(6, other);
-// });
-//
-// socket.on("removePlayer", ({ remotePlayer }) => {
-//     if(!remotePlayer) return;
-//     if(player.pid === remotePlayer.pid) return;
-//     console.log(`Remove player pid : ${remotePlayer.pid}`);
-//     let other = otherPlayers[remotePlayer.pid];
-//     if(!other) return;
-//     environment.removeFromLayer(6, other);
-//     otherPlayers[remotePlayer.pid] = null;
-// });
-//
-// socket.on("movePlayer", ({ pid, cord }) => {
-//     if(pid === player.pid) return;
-//     //console.log(pid, cord);
-//     const other = otherPlayers[pid];
-//     if(!other) return;
-//     other.setCord(cord);
-// });
+const otherPlayers: Player[] = [];
+
+socket.on("ppid", ({pid}) => {
+    console.log(`PID : ${pid}`);
+    player.initLocal(pid,canvas);
+    $('.origine')[0].innerHTML = `{ x: ${environment.origine.x}, y: ${environment.origine.y} }`;
+    player.setCord({ x: 0, y: 0 });
+
+    socket.on("playerMove", function(event){
+        $('.origine')[0].innerHTML = `{ x: ${environment.origine.x}, y: ${environment.origine.y} }`;
+        $('.coordinate')[0].innerHTML = `{ x: ${event.cord.x}, y: ${event.cord.y} }`;
+        /*socket.emit("move", {
+            x: event.cord.x - (player.size.w / 2),
+            y: event.cord.y - (player.size.h / 2)
+        });*/
+        socket.emit("move", event.cord);
+    });
+});
+$('.coordinate')[0].innerHTML = `{ x: ${player.cord.x}, y: ${player.cord.y} }`;
+
+socket.on("newPlayer", ({ remotePlayer }) => {
+    if(!remotePlayer) return;
+    if(player.pid === remotePlayer.pid) return;
+    console.log(`New player pid : ${remotePlayer.pid}`);
+    let other = new Player(ctx, environment, remotePlayer.cord, Player.defaultSize);
+    otherPlayers[remotePlayer.pid] = other;
+    other.initRemote(remotePlayer.pid, remotePlayer.cord, player, canvas);
+    environment.addToLayer(6, other);
+});
+
+socket.on("removePlayer", ({ remotePlayer }) => {
+    if(!remotePlayer) return;
+    if(player.pid === remotePlayer.pid) return;
+    console.log(`Remove player pid : ${remotePlayer.pid}`);
+    let other = otherPlayers[remotePlayer.pid];
+    if(!other) return;
+    environment.removeFromLayer(6, other);
+    otherPlayers[remotePlayer.pid] = null;
+});
+
+socket.on("movePlayer", ({ pid, cord }) => {
+    if(pid === player.pid) return;
+    //console.log(pid, cord);
+    const other = otherPlayers[pid];
+    if(!other) return;
+    other.setCord(cord);
+});
 //
 //
 // socket.on("boxPlaced", ({ by, cord }) => {

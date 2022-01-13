@@ -11,6 +11,9 @@ export class Player extends Displayable {
     public isLocal;
     pid: number;
 
+    public x;
+    public y;
+
     constructor(ctx, environment, positon: Coordinate, size) {
         super(ctx, positon, size, null );
         this.environment = environment;
@@ -18,6 +21,8 @@ export class Player extends Displayable {
         this.image = document.createElement("img");
         this.image.src = "/img/player.png";
         this.callbacks = [];
+        this.x = 0;
+        this.y = 0;
     }
 
     initLocal(pid: number, canvas: HTMLCanvasElement) {
@@ -39,56 +44,47 @@ export class Player extends Displayable {
     }
 
     move(type: PlayerMove, sprint: boolean) {
-        let vector: Coordinate = { x: 0, y: 0};
-
-        //sprint = false;
         let pixelSprint = 4;
         let pixelNoSprint = 1;
-        let condition = (sprint)?pixelSprint:pixelNoSprint;
+        let condition = (sprint) ? pixelSprint : pixelNoSprint;
         switch (type) {
             case PlayerMove.moveN:
-                vector.y += condition;
+                this.y -= condition;
+                this.environment.move({x:0,y:condition})
                 break;
             case PlayerMove.moveNE:
-                vector.y += condition;
-                vector.x -= condition;
+                this.y -= condition*0.707;
+                this.x += condition*0.707;
+                this.environment.move({x:-condition,y:condition})
                 break;
             case PlayerMove.moveE:
-                vector.x -= condition;
+                this.x += condition;
+                this.environment.move({x:-condition,y:0})
                 break;
             case PlayerMove.moveSE:
-                vector.x -= condition;
-                vector.y -= condition;
+                this.x += condition*0.707;
+                this.y += condition*0.707;
+                this.environment.move({x:-condition,y:-condition})
                 break;
             case PlayerMove.moveS:
-                vector.y -= condition;
+                this.y += condition;
+                this.environment.move({x:0,y:-condition})
                 break;
             case PlayerMove.moveSW:
-                vector.y -= condition;
-                vector.x += condition;
+                this.y += condition*0.707;
+                this.x -= condition*0.707;
+                this.environment.move({x:condition,y:-condition})
                 break;
             case PlayerMove.moveW:
-                vector.x += condition;
+                this.x -= condition;
+                this.environment.move({x:condition,y:0})
                 break;
             case PlayerMove.moveNW:
-                vector.x += condition;
-                vector.y += condition;
+                this.x -= condition*0.707;
+                this.y -= condition*0.707;
+                this.environment.move({x:condition,y:condition})
                 break;
         }
-
-        if(sprint)
-            this.environment.setSpeed(60);
-        else
-            this.environment.setSpeed(30);
-
-        this.cord.x -= vector.x;
-        this.cord.y -= vector.y;
-
-        this.emit("playerMove", {
-            cord: this.cord
-        });
-
-        this.environment.move(vector);
     }
 
     on(eventName: string, callback: ((data) => void)) {

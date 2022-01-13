@@ -9,6 +9,7 @@ export class Environment {
 
     constructor() {
         this.layers = [];
+        this.setOrigine({x:0,y:0});
     }
 
     addToLayer(layer: number, object: Displayable){
@@ -42,10 +43,8 @@ export class Environment {
     }
 
     move(movement: { x: number, y: number }){
-        if(this.origine){
-            this.origine.x += movement.x;
-            this.origine.y += movement.y;
-        }
+        this.origine.x += movement.x;
+        this.origine.y += movement.y;
     }
 
     setCord(cord: {x: number; y: number}) {
