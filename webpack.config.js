@@ -6,7 +6,7 @@ module.exports = {
         app: './src/scripts/app.ts',
         chargement: './src/scripts/chargement.js',
         inscription: './src/scripts/inscription.ts',
-        login: './src/scripts/login.js',
+        login: './src/scripts/login.ts',
         options: './src/scripts/options.ts',
         profil: './src/scripts/profil.ts',
         getPassword: './src/scripts/getPassword.ts',

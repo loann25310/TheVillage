@@ -100,11 +100,11 @@ createConnection().then(async connection => {
     });
 
     passport.use(new LocalStrategy({
-            usernameField: 'mail'
+            usernameField: 'email'
         },
-        async function (mail, password, done){
+        async function (email, password, done){
             let userRepo = getRepository(User);
-            let user = await userRepo.find({where : {adresseMail : mail}});
+            let user = await userRepo.find({where : {adresseMail : email}});
             for (let i = 0; i < user.length; i++){
                 if (await bcrypt.compare(password, user[i].password))
                     return done(null, user[i])

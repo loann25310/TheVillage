@@ -11,7 +11,8 @@ body {
     display: grid;
     grid-template-columns: 50% 50%;
     grid-template-rows: 20% 30% 48% 2%;
-    background-color: #280000;
+    background: rgb(65,0,0);
+    background: linear-gradient(25deg, rgba(65,0,0,1) 0%, rgba(92,0,0,1) 51%, rgba(154,0,0,1) 100%) no-repeat top;
     color: white;
 }
 
