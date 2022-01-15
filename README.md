@@ -1,5 +1,5 @@
 # [The Village](https://thevillage.lagardedev.fr)
-###Projet Tutoré S3-S4 2021-2022
+### Projet Tutoré S3-S4 2021-2022
 [Github](https://github.com/loann25310/TheVillage)
 ## Tuteur
 Jérôme HILDENBRAND
