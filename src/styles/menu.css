@@ -56,6 +56,7 @@ h2{
     /*transition-duration: 500ms;*/
 }
 .bt#connexion{
+    word-wrap: break-word;
     width: 10%;
     height: 30px;
     border-radius: 30px;
