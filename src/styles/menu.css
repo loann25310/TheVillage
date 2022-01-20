@@ -20,6 +20,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+
 }
 
 h2{
@@ -60,6 +61,10 @@ h2{
     width: 10%;
     height: 30px;
     border-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 
 }
 .bt#options{
