@@ -17,7 +17,7 @@ export class Player extends Displayable {
     constructor(ctx, environment, positon: Coordinate, size) {
         super(ctx, positon, size, null );
         this.environment = environment;
-        this.cord = { x: 0, y: 0};
+        this.cord = { x: positon.x, y: positon.y};
         this.image = document.createElement("img");
         this.image.src = "/img/Bonhomme.gif";
         this.callbacks = [];
