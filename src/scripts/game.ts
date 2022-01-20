@@ -1,6 +1,6 @@
 import * as $ from 'jquery';
 import {Displayable} from "../entity/Displayable";
-import {Buisson} from "../entity/Props/Buisson";
+import {Bush} from "../entity/Props/Bush";
 import {Player} from "../entity/Props/Player";
 import {Grass} from "../entity/Grounds/Grass";
 import {Environment} from "../entity/Environment";
@@ -16,12 +16,15 @@ const environment: Environment = new Environment();
 let canvas = $('#mainCanvas')[0] as HTMLCanvasElement;
 let ctx = canvas.getContext('2d');
 
-const map = environment.create();
-
 canvas.width  = window.innerWidth;
 canvas.height = window.innerHeight;
 
 let player = new Player(ctx, environment, { x: (canvas.width-100) / 2, y: (canvas.height-152) / 2 }, Player.defaultSize);
+
+async function init(){
+    await environment.create(ctx);
+}
+init().then();
 
 let personnage = new Image();
 
@@ -35,19 +38,6 @@ function draw() {
 
 draw();
 
-
-for (let i = 0; i < 50; i++) {
-    let size = { w: 175, h: 130 };
-    let buisson = new Buisson(ctx, { x: (size.w * i), y: 0 }, size);
-    environment.addToLayer(5, buisson);
-}
-
-for (let i = 0; i < 15; i++) {
-    for (let j = 0; j < 10; j++) {
-        let ground = new Grass(ctx, { x: (i * Grass.defaultSize.w ), y: (j * Grass.defaultSize.h ) });
-        environment.addToLayer(0, ground);
-    }
-}
 
 const keys = [];
 window.addEventListener("keydown",function(e){ keys["KEY_" + e.key.toUpperCase()] = true },false);

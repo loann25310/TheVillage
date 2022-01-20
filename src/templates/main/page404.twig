@@ -1,0 +1,15 @@
+{% block title %}
+The Village - 404
+{% endblock %}
+{% extends "body.twig" %}
+
+{% block body %}
+    <div id="container">
+        <h1 id="title">404 not found</h1>
+        <span id="text"><p>Vous êtes sorti du Village, et vous vous êtes perdu. Vous entendez des Loups Garous au loin.</p><p> Préférez vous <a href="/">revenir en lieu sûr</a> ou <span id="explo">continuer à explorer</span> ?</p></span>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/dist/page404.js"></script>
+{% endblock %}

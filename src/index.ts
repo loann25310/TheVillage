@@ -5,7 +5,6 @@ import {readdirSync, readFileSync} from "fs";
 import {resolve as resolvePath, extname} from "path";
 import * as express from "express";
 import {Express, Router} from "express";
-import {Route} from "./routes/Menu";
 import {Config} from "./entity/Config";
 import * as nunjucks from "nunjucks";
 import * as cookieParser from "cookie-parser";
@@ -17,8 +16,6 @@ const passport = require("passport");
 import {User} from "./entity/User";
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require('bcrypt');
-//pour hash le mdp
-const saltRounds = 10;
 
 /**
  * Pour autoriser une route sans être authentifié :
@@ -68,6 +65,7 @@ createConnection().then(async connection => {
         logger.debug(` - Loading : ${file}`);
         require(resolvePath(__dirname, 'routes/', file)).Route(router, io);
     }
+
     app.use(session({
         secret: "azerty",
         resave: false,
@@ -78,24 +76,28 @@ createConnection().then(async connection => {
 
     app.use((req, res, next) => {
         if (!req.session["passport"]?.user){
-        for (let i = 0; i < urlWithoutAuth.length; i++) {
-            if (urlWithoutAuth[i].split(" ").length === 1) {
-                if (req["_parsedOriginalUrl"].pathname === urlWithoutAuth[i]) {
-                    return next();
+            for (let i = 0; i < urlWithoutAuth.length; i++) {
+                if (urlWithoutAuth[i].split(" ").length === 1) {
+                    if (req["_parsedOriginalUrl"].pathname === urlWithoutAuth[i]) {
+                        return next();
+                    }
+                }
+                if (urlWithoutAuth[i].split(" ")[1] === "*") {
+                    if (req["_parsedOriginalUrl"].pathname.startsWith(urlWithoutAuth[i].split(" ")[0])) {
+                        return next();
+                    }
                 }
             }
-            if (urlWithoutAuth[i].split(" ")[1] === "*") {
-                if (req["_parsedOriginalUrl"].pathname.startsWith(urlWithoutAuth[i].split(" ")[0])) {
-                    return next();
-                }
-            }
+            res.redirect("/auth")
         }
-        res.redirect("/auth")
-    }
         else next();
     })
 
     app.use(router);
+
+    app.use((req, res) => {
+        res.render("main/page404");
+    });
 
     passport.use(new LocalStrategy({
             usernameField: 'mail'
@@ -113,7 +115,6 @@ createConnection().then(async connection => {
     ))
     passport.serializeUser(function(user, done) {
         done(null, user.id);
-
     });
     passport.deserializeUser(async function(id, done) {
         let userRepo = getRepository(User);

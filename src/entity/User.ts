@@ -18,24 +18,40 @@ export class User {
     adresseMail: string;
 
     @Column("date")
-    dateDeNaissance :string;
+    dateDeNaissance: string;
 
-    @Column()
+    @Column({
+        default: 1
+    })
     niveau :number;
 
-    @Column()
-    argent :number;
+    @Column({
+        default: 0
+    })
+    argent: number;
+
+    @Column({
+        default: 0
+    })
+    nbPartiesGagnees: number;
+
+    @Column({
+        default: 0
+    })
+    nbPartiesJouees: number;
+
+    @Column({
+        default: ""
+    })
+    partie: string;
 
     @Column()
-    nbPartiesGagnees :number;
-
-    @Column()
-    nbPartiesJouees :number;
+    avatar: string;
 
     @ManyToMany(() => Succes)
-    succes :Succes[];
+    succes: Succes[];
 
     @ManyToMany(() => Skin)
-    skins : Skin[];
+    skins: Skin[];
 }
 

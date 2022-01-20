@@ -7,8 +7,8 @@ html, body{
 body{
     background-image: url("/public/img/spooky.png");
     background-size: cover;
-
 }
+
 #container{
     top:0;
     position: relative;
@@ -29,7 +29,7 @@ h1{
     bottom: 0;
     color: white;
     animation: goUp linear;
-    animation-duration: 7.2s;
+    animation-duration: 9s;
     animation-fill-mode: forwards;
 }
 
@@ -55,4 +55,10 @@ div{
 
 small{
     font-size: 0.7em !important;
+}
+
+.paused {
+    animation-play-state: paused !important;
+    -webkit-animation-play-state: paused !important;
+    -moz-animation-play-state: paused !important;
 }

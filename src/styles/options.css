@@ -71,3 +71,97 @@ button:hover {
     align-items: center;
     justify-items: center;
 }
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
+
+.fond_blanc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #00000088;
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    transform: translateY(-20%);
+    padding: 0 !important;
+}
+
+.popup {
+    width: max-content;
+    height: max-content;
+    background: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: solid #003366 2px;
+    border-radius: 7px;
+    padding: 2em;
+    color: black;
+}
+
+.innerPopup {
+    font-size: 1.5em;
+    white-space: nowrap;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#text_popup {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 20% 30% 30% 20%;
+    grid-template-rows: 20% 30% 50%;
+    column-gap: 10px;
+    row-gap: 10px;
+}
+
+.disappear {
+    animation: disappear linear;
+    animation-duration: 0.3s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes disappear {
+    from {
+        opacity: initial;
+        display: initial;
+    }
+    to {
+        opacity: 0;
+        display: none;
+    }
+}
+
+#submit_avatar {
+    outline: none;
+    background-color: #BAC8F7;
+    border: none;
+    font-size: 0.7em;
+    padding: 0.3em;
+    border-radius: 5px;
+}
+
+.innerPopup > h2 {
+    font-size: 1em;
+}
+
+.innerPopup > form >  input[type="file"] {
+    padding: 0.5em;
+    border-radius: 5px;
+    background-color: #BAC8F7;
+}

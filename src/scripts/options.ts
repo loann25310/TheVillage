@@ -1,16 +1,21 @@
 import * as $ from 'jquery';
 import Swal from "sweetalert2";
 import "../styles/options.css";
-import '@fortawesome/fontawesome-free/js/fontawesome'
-import '@fortawesome/fontawesome-free/js/solid'
-import '@fortawesome/fontawesome-free/js/regular'
-import '@fortawesome/fontawesome-free/js/brands'
+import '@fortawesome/fontawesome-free/js/fontawesome';
+import '@fortawesome/fontawesome-free/js/solid';
+import '@fortawesome/fontawesome-free/js/regular';
+import '@fortawesome/fontawesome-free/js/brands';
+import '../entity/Tools';
+import {Tools} from "../entity/Tools";
+// @ts-ignore
+let user = _user;
+let uid = user.id;
 
-$("#retour").click(() => {
-    history.back();
+$("#retour").on("click", () => {
+    window.location.replace("/");
 });
 
-$("#son").click(function(){
+$("#son").on("click", () => {
     let icon = $(this).children();
    if($(icon).hasClass("fa-volume-up")) {
        $(icon).removeClass("fa-volume-up").addClass("fa-volume-mute");
@@ -21,11 +26,11 @@ $("#son").click(function(){
    }
 });
 
-$("#changepassword").click(() => {
+$("#changepassword").on("click", () => {
     window.location.href = "../auth/getPassword?email="+$("#email").text();
 });
 
-$("#changeusername").click(async () => {
+$("#changeusername").on("click", async () => {
     let result = await Swal.fire({
        title: 'Modifier votre pseudo',
        input: "text",
@@ -44,7 +49,7 @@ $("#changeusername").click(async () => {
     $("#pseudo").text(result.value);
 });
 
-$("#changeemail").click(async () => {
+$("#changeemail").on("click", async () => {
     let resultEmail = await Swal.fire({
         title: 'Modifier votre adresse mail',
         input: "email",
@@ -85,4 +90,53 @@ $("#changeemail").click(async () => {
             text: 'Mot de passe incorrect !',
         })
     }
-})
+});
+
+$("#changeavatar").on("click", async function() {
+    let {value: type} = await Swal.fire({
+        title: 'Selectionnez le type d\'avatar',
+        input: "radio",
+        inputOptions: {
+            "color" : "Couleur",
+            "image" : "Image"
+        },
+        inputValidator: (value) => {
+            if (!value) {
+                return 'Choisissez une option'
+            }
+        },
+        confirmButtonText: "<i class=\"fas fa-save color-blue\"></i> Valider",
+        showCancelButton: true,
+        cancelButtonText: "<i class=\"fas fa-times color-red\"></i> Annuler"
+    });
+    if (type) {
+        let popup = Tools.popup();
+        $(document.body).append(popup.div);
+        let html = type === "image" ? `
+            <h2>Choisissez un fichier</h2>
+            <form id="form_avatar" action="/options/avatar_pic" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="userId" value='${uid}'>
+                <input id="avatar_input" required type="file" accept=".png, .jpg, .jpeg, .gif" name="avatar">
+                <button form="form_avatar" id="submit_avatar"><i class="fas fa-save color-blue"></i> Valider</input>
+            </form>
+        ` : `
+            <h2>Choisissez une couleur</h2>
+            <form id="form_avatar" action="/options/avatar_col" method="post">
+                <input type="hidden" name="userId" value='${uid}'>
+                <input type="color" name="avatar" required>
+                <button form="form_avatar" id="submit_avatar"><i class="fas fa-save color-blue"></i> Valider</input>
+            </form>
+        `;
+        popup.text.html(html);
+    }
+});
+
+let avatar = $(`#avatar_pic`);
+let html = "";
+html += user.avatar.startsWith("#")
+    ? `<div id="avatar_color" class="avatar"></div>`
+    : `<img src="/avatars/${user.avatar}" width="80" alt=" ">`;
+html += `</div>`
+avatar.html(html);
+if (user.avatar.startsWith("#"))
+    $("#avatar_color").css("background-color", user.avatar);

@@ -1,0 +1,533 @@
+html, body{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 20% 30% 48% 2%;
+    background-color: #280000;
+    color: white;
+}
+
+p {
+    margin: 0.5em 0;
+    padding-top: 0;
+}
+
+#pseudo {
+    font-size: 2.5em;
+}
+
+#profile {
+    grid-column-start: 1;
+    grid-row-start: 1;
+    grid-column-end: 2;
+    grid-row-end: 2;
+    margin-left: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.center {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.center > h2 {
+    margin-top: 0.5em;
+}
+
+#form {
+    display: flex;
+    flex-direction: row-reverse;
+    background: rgba(0, 0, 0, 0.15);
+    padding: 0.25rem;
+    width: 100%;
+    height: 3rem;
+    box-sizing: border-box;
+    backdrop-filter: blur(10px);
+    border-radius: 5px;
+}
+
+label {
+    width: 100%;
+    height: 100%;
+}
+
+input[type="text"]{
+    border: none;
+    border-radius: 2rem;
+    width: 96%;
+    height: 100%;
+    font-size: 1.2em;
+    padding: 0 2%;
+    background-color: transparent;
+    color: white;;
+    overflow-wrap: break-word;
+    overflow: hidden;
+}
+
+input[type="text"]:focus {
+    outline: none
+}
+
+#share, #start, #form > button{
+    background: #333;
+    border: none;
+    margin: 0 0 0 15px;
+    border-radius: 3px;
+    outline: none;
+    color: #fff;
+    width: 10%;
+    cursor: pointer;
+}
+
+#share {
+    margin: 1em 1em 0 0;
+    width: unset;
+    height: max-content;
+    padding: 0.4em 1em;
+    font-size: 1.5em;
+    border-radius: 10px;
+    transition-duration: 0.5s;
+}
+
+#lien {
+    resize: none;
+    white-space: nowrap;
+    border: none;
+    font-family: inherit;
+    font-size: 1.2em;
+}
+
+#lien:focus {
+    border: none;
+    font-family: inherit;
+    outline: none;
+}
+
+#share:hover {
+    background-color: #222;
+}
+
+#messages {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: scroll;
+    overflow-x: hidden;
+    overflow-wrap: break-word;
+}
+
+#messages > li {
+    padding: 0.5rem 1rem;
+    border: #FFFFFF44 solid 0;
+    border-top-width: 1px;
+}
+
+#chat{
+    grid-column-start: 2;
+    grid-row-start: 3;
+    grid-column-end: 3;
+    grid-row-end: 4;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+#users {
+    grid-column-start: 2;
+    grid-row-start: 1;
+    grid-column-end: 3;
+    grid-row-end: 3;
+    display: grid;
+    grid-template-columns: 50%;
+    grid-template-rows: 20% 20% 20% 20%;
+}
+
+.user {
+    cursor: pointer;
+    border: 3px black solid;
+    position: relative;
+}
+
+.pseudo {
+    position: absolute;
+    font-size: 1.4em;
+    left: 25%;
+    top: 30%;
+    transform: translateY(-50%);
+    font-weight: bolder;
+}
+
+.avatar {
+    position: absolute;
+    border-radius: 50%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.container {
+    top: 50%;
+    transform: translate(20%, -50%);
+    position: relative;
+    display: inline-block;
+    height: 70%;
+}
+
+.container > img {
+    height: 100%;
+}
+
+.level {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10%;
+}
+
+#user_0 {
+    grid-column-start: 1;
+    grid-row-start: 1;
+    grid-column-end: 2;
+    grid-row-end: 2;
+}
+
+#user_1 {
+    grid-column-start: 2;
+    grid-row-start: 1;
+    grid-column-end: 3;
+    grid-row-end: 2;
+}
+
+#user_2 {
+    grid-column-start: 1;
+    grid-row-start: 2;
+    grid-column-end: 2;
+    grid-row-end: 3;
+}
+
+#user_3 {
+    grid-column-start: 2;
+    grid-row-start: 2;
+    grid-column-end: 3;
+    grid-row-end: 3;
+}
+
+#user_4 {
+    grid-column-start: 1;
+    grid-row-start: 3;
+    grid-column-end: 2;
+    grid-row-end: 4;
+}
+
+#user_5 {
+    grid-column-start: 2;
+    grid-row-start: 3;
+    grid-column-end: 3;
+    grid-row-end: 4;
+}
+
+#user_6 {
+    grid-column-start: 1;
+    grid-row-start: 4;
+    grid-column-end: 2;
+    grid-row-end: 5;
+}
+
+#user_7 {
+    grid-column-start: 2;
+    grid-row-start: 4;
+    grid-column-end: 3;
+    grid-row-end: 5;
+}
+
+#user_8 {
+    grid-column-start: 1;
+    grid-row-start: 5;
+    grid-column-end: 2;
+    grid-row-end: 6;
+}
+
+#user_9 {
+    grid-column-start: 2;
+    grid-row-start: 5;
+    grid-column-end: 3;
+    grid-row-end: 6;
+}
+
+.invisible {
+    display: none;
+}
+
+.fond_blanc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #00000088;
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    transform: translateY(-20%);
+    padding: 0 !important;
+}
+
+.popup {
+    width: max-content;
+    height: max-content;
+    background: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: solid #003366 2px;
+    border-radius: 7px;
+    padding: 2em;
+    color: black;
+}
+
+.innerPopup {
+    font-size: 1.5em;
+    white-space: nowrap;
+    width: 100%;
+    height: 100%;
+}
+
+#text_popup {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 20% 30% 30% 20%;
+    grid-template-rows: 20% 30% 50%;
+    column-gap: 10px;
+    row-gap: 10px;
+}
+
+.show_pseudo {
+    font-weight: bolder;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 2;
+}
+
+.show_level {
+    grid-column-start: 3;
+    grid-column-end: 5;
+    grid-row-start: 1;
+    grid-row-end: 2;
+}
+
+.show_camembert{
+    grid-column-start: 1;
+    grid-column-end: 5;
+    grid-row-start: 2;
+    grid-row-end: 3;
+}
+
+#ban {
+    margin-top: 1em;
+}
+
+.banned_player {
+    display: flex;
+    flex-direction: row;
+}
+
+.banned_player > p {
+    margin-right: 1em;
+}
+
+.banned_player > span {
+    margin-top: 0.45em;
+    cursor: pointer;
+}
+
+.red_btn {
+    background-color: #B11000BF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5em 1em;
+    transition-duration: 0.5s;
+}
+
+.red_btn:hover {
+    background-color: #B11000;
+}
+
+.msg_pseudo {
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.never_played {
+    grid-column-start: 1;
+    grid-column-end: 5;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    margin-bottom: 1em;
+}
+
+.ban_message {
+    color: #B11000;
+    background-color: #FF000022;
+}
+
+.unban_message {
+    color: #10B100;
+    background-color: #00FF0022;
+}
+
+.disappear {
+    animation: disappear linear;
+    animation-duration: 0.3s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes disappear {
+    from {
+        opacity: initial;
+        display: initial;
+    }
+    to {
+        opacity: 0;
+        display: none;
+    }
+}
+
+#nbPlayers, #maxPlayers {
+    font-weight: bold;
+}
+
+#game_settings {
+    grid-column-start: 1;
+    grid-row-start: 2;
+    grid-column-end: 2;
+    grid-row-end: 5;
+    flex-wrap: nowrap;
+    border-collapse: collapse;
+    padding: 2em;
+    overflow-y: scroll;
+}
+
+#game_master_settings {
+    width: 100%;
+    height: max-content;
+    padding-bottom: 2em;
+}
+
+#locker {
+    font-size: 2em;
+    margin-left: 5%;
+    color: darkgoldenrod;
+}
+
+#label_visibility {
+    cursor: pointer;
+}
+
+#label_visibility > input{
+    cursor: pointer;
+}
+
+#change_max_players {
+    width: 80%;
+}
+
+#list_config_partie {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    border-radius: 5px;
+    border-collapse: collapse;
+}
+
+#list_config_partie > li > h3 {
+    margin-top: 0;
+    width: 100%;
+    border-bottom: 1px solid lightgrey;
+}
+
+#list_config_partie > li {
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    margin: 1em 0;
+    padding: 1em;
+}
+
+.sous-liste {
+    list-style-type: none;
+}
+
+.sous-liste > li {
+    margin: 1em 2em;
+}
+
+fieldset {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+#nbJoueurs {
+    font-size: 2em;
+}
+
+#joueursMin {
+    font-size: 1.4em;
+}
+
+#nbJoueursMin {
+    font-weight: bold;
+}
+
+#joueursBan {
+    cursor: pointer;
+}
+
+.yellow {
+    color: gold;
+}
+
+.info {
+    position: absolute;
+    top : 5vh;
+    right: 5vh;
+    background-color: #10B10088;
+    border-radius: 12px;
+    border: none;
+}
+
+select {
+    margin-left: 1em;
+    border-radius: 5px;
+    padding: 0.2em 0.5em;
+    font-size: 1em;
+}
+
+select:focus, select {
+    border: none;
+    outline: none;
+}
+
+::-webkit-scrollbar {
+    width: 0;  /* Remove scrollbar space */
+}

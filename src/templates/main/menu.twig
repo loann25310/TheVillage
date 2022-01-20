@@ -1,14 +1,52 @@
 {% extends "body.twig" %}
 
-{% block title %}Test{% endblock %}
+{% block title %}{% endblock %}
 
 {% block body %}
-    123 456 : {{ variable }}
-    {% if connected is defined %}
-         <a href="/logout">Se déconnecter</a>
-    {% else %}
-        <a href="/auth">Se connecter</a>
-    {% endif %}
-    <a href="/options">Options</a>
-    <a href="/profil">Profil</a>
+
+
+
+        <div class="header">
+            <div class="container">
+                {% if user is not defined %}
+                <button class="bt" id="connexion" onclick="location.href='/auth'">Se Connecter</button>
+
+                {% else %}
+                    <button class="bt" id="connexion"  onclick="location.href='/logout'">Se Déconnecter</button>
+                    <button class="bt" id="options"></button>
+                    <p id="uid" style="display: none">{{ user }}</p>
+                {% endif %}
+
+            </div>
+        </div>
+        <div class="title">
+            <div class="container" id="title">
+                <h2>The Village Don't Trust Anyone</h2>
+            </div>
+        </div>
+        <div class="section">
+            <div class="container" id="middle">
+                {% if user is defined %}
+                <button class="bt" id="play">Jouer</button>
+                <button class="bt" onclick="location.href='/options'">Options</button>
+                <button class="bt"  onclick="location.href='/profil'">Profil</button>
+                {% endif %}
+                <button class="bt" onclick="location.href='/credits'">Crédits</button>
+                <button class="bt" onclick="window.close()">Quitter</button>
+
+            </div>
+        </div>
+        <div class="footer">
+            <img src="/img/iut.png">
+            <p>&copy; 2021 The Village</p>
+        </div>
+
+
+
+
+{% endblock %}
+{% block javascripts %}
+    <script src="/dist/menu.js"></script>
+    <script src="/dist/menu_jouer.js"></script>
+    <script></script>
 {% endblock %}

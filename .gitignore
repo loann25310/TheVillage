@@ -7,4 +7,6 @@ temp/
 ormconfig.json
 package-lock.json
 /public/dist/
+/public/avatars/*
+!/public/avatars/.gitkeep
 config.json

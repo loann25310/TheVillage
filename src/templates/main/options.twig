@@ -11,6 +11,11 @@
             <i class="fas fa-volume-up color-green"></i>
         </button>
 
+        <h1>Avatar</h1>
+            <span id="avatar"></span>
+            <span id="avatar_pic"></span>
+            <button id="changeavatar" class="changement_information" type="button">changer l'avatar</button>
+
         <h1>Pseudo</h1>
             <span id="pseudo">{{ user.pseudo }}</span>
             <button id="changeusername" class="changement_information" type="button">changer le pseudo</button>
@@ -25,5 +30,11 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script>
+        var _user = {
+            id: {{ user.id }},
+            avatar: "{{ user.avatar }}"
+        }
+    </script>
     <script src="/dist/options.js" type="text/javascript"></script>
 {% endblock %}

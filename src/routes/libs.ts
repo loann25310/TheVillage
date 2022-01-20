@@ -3,7 +3,9 @@ import * as fs from "fs";
 const libs = require(`../../package.json`).dependencies
 const libs2 = require(`../../package.json`).devDependencies
 
-export function getLibs(){
+export function Route(){}
+
+export async function getLibs(){
     let l = {
         titre: "Librairies utilisées",
         values: []
@@ -11,7 +13,7 @@ export function getLibs(){
 
     for (const lib in libs){
         try {
-            let file = fs.readFileSync(`${__dirname}/../../node_modules/${lib}/LICENSE`, {
+            let file = await fs.readFileSync(`${__dirname}/../../node_modules/${lib}/LICENSE`, {
                 encoding: 'utf-8',
                 flag: 'r'
             }).replace(/\r/g, "").replace("  ", "");
@@ -23,7 +25,7 @@ export function getLibs(){
     }
     for (const lib in libs2){
         try {
-            let file = fs.readFileSync(`${__dirname}/../../node_modules/${lib}/LICENSE`, {
+            let file = await fs.readFileSync(`${__dirname}/../../node_modules/${lib}/LICENSE`, {
                 encoding: 'utf-8',
                 flag: 'r'
             });
