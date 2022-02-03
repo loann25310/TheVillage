@@ -5,6 +5,7 @@ import * as console from "console";
 import {envoyerMail} from "./Mail";
 import {verifMdp} from "../scripts/VerifMdp"
 import {RecuperationEmail} from "../entity/RecuperationEmail";
+import {escapeSelector, htmlPrefilter} from "jquery";
 const passport = require("passport");
 const bcrypt = require('bcrypt');
 //pour hash le mdp
@@ -27,7 +28,7 @@ export function Route(router: Router) {
     })
 
     router.get('/auth/inscription', (req, res) => {
-        if (req.session['passport'] && req.session["passport"].user){
+        if (req.user){
             return res.redirect('/');
         }
         res.render('auth/inscription', {
@@ -36,20 +37,20 @@ export function Route(router: Router) {
             mail: req.query.mail,
             ddn: req.query.ddn,
             missed: req.query.missed
-        })
-    })
+        });
+    });
 
     router.post("/auth/verifInscription", (req, res) => {
-        let _ = req.body;
         let email_regex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
         if (
-            verifMdp(_.password) !== "" ||
-            _.password !== _.password2 ||
-            _.pseudo.length === 0 ||
-            !(email_regex.test(_.mail)) ||
-            _.ddn.length !== 10
+            verifMdp(req.body.password) !== "" ||
+            req.body.password !== req.body.password2 ||
+            req.body.pseudo.length === 0 ||
+            /<|>| /g.test(req.body.pseudo) ||
+            !(email_regex.test(req.body.mail)) ||
+            req.body.ddn.length !== 10
         ) {
-            return res.redirect(`/auth/inscription?missed=1&pseudo=${req.body.pseudo}&mail=${req.body.mail}&ddn=${req.body.ddn}`)
+            return res.redirect(`/auth/inscription?missed=1&pseudo=${/"/g.test(req.body.pseudo) ? "" : req.body.pseudo}&mail=${req.body.mail}&ddn=${req.body.ddn}`)
         }
 
         bcrypt.hash(req.body.password, saltRounds, async (err, hash) =>{

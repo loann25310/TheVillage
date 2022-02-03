@@ -36,12 +36,19 @@ export function Route(router: Router) {
     });
 
     router.put('/options/pseudo', async (req, res) => {
-       let user = req.user as User;
-       user.pseudo = req.body.pseudo;
-       await getRepository(User).save(user);
-       res.send({
-           result: "ok"
-       });
+        if (/<|>| /g.test(req.body.pseudo)) {
+            return res.send({
+                result: "bad characters : < >",
+                status: 400
+            });
+        }
+        let user = req.user as User;
+        user.pseudo = req.body.pseudo;
+        await getRepository(User).save(user);
+        res.send({
+            result: "ok",
+            status: 200
+        });
    });
 
     router.put('/options/email', async (req, res) => {

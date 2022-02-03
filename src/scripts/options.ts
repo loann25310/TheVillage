@@ -39,14 +39,22 @@ $("#changeusername").on("click", async () => {
        cancelButtonText: "<i class=\"fas fa-times color-red\"></i> Annuler"
    });
     if(!result.isConfirmed) return;
-    await $.ajax({
+    const res = await $.ajax({
        url: "/options/pseudo",
        method: "PUT",
         data: {
             pseudo: result.value
         }
     });
-    $("#pseudo").text(result.value);
+    if (res.status === 200)
+        $("#pseudo").text(result.value);
+    else {
+        await Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: res.result,
+        });
+    }
 });
 
 $("#changeemail").on("click", async () => {
