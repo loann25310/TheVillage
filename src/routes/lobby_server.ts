@@ -28,9 +28,9 @@ export async function getAvailableRoom(uid): Promise<string>{
 
     let newGame = new Partie();
     newGame.players = [];
-    newGame.bans = [];
+    newGame.bans = [0];
     await save_game(newGame);
-    return newGame.id
+    return newGame.id;
 }
 
 async function save_game(game: Partie) {
@@ -50,9 +50,7 @@ export async function joinRoom(uid, room): Promise<Partie>{
     }
     //Si la partie s'est remplie entre le dernier test et maintenant,
     //le joueur ne peut pas rejoindre, on le renvoie au menu
-    if (!room.addPlayer(uid)) {
-        return null;
-    }
+    if (!room.addPlayer(uid)) return null;
     let p = await userRepo.findOne(uid);
     p.partie = room.id;
     if (room.status === PartieStatus.CREATING)
@@ -62,28 +60,25 @@ export async function joinRoom(uid, room): Promise<Partie>{
     return room;
 }
 
-export function disconnect(uid, io) {
-    if (!uid)
-        return
-    userRepo.findOne(uid).then(u=>{
-        if (!u)
-            return;
-        gameRepo.findOne(u.partie).then(room => {
-            if (!room || room.status === PartieStatus.STARTING) return;
+export async function disconnect(uid, io) {
+    if (!uid) return;
+    const u = await userRepo.findOne(uid);
+    if (!u) return;
+    const room = await gameRepo.findOne(u.partie)
+    if (!room || room.status === PartieStatus.STARTING) return;
 
-            let index = room.players.indexOf(u.id);
-            if (index === -1) return;
+    let index = room.players.indexOf(u.id);
+    if (index === -1) return;
 
-            room.players.splice(index, 1);
-            if (room.gameMaster === u.id) {
-                room.gameMaster = room.players[0] || 0;
-                io.to(room.id).emit("game_master", room.gameMaster);
-            }
-            gameRepo.save(room).then(()=>{
-                room.getPlayers().then(p => {
-                    io.to(`${room.id}`).emit("players", p);
-                });
-            });
-        });
-    });
+    room.players.splice(index, 1);
+    if (room.players.length === 0) {
+        return await gameRepo.delete(room.id);
+    }
+    if (room.gameMaster === u.id) {
+        room.gameMaster = room.players[0] || 0;
+        io.to(room.id).emit("game_master", room.gameMaster);
+    }
+    await gameRepo.save(room)
+    const p = await room.getPlayers();
+    io.to(`${room.id}`).emit("players", p);
 }

@@ -176,34 +176,28 @@ share.on("click", () => {
 })
 
 visibility.on("change", function() {
-    if (uid === game.gameMaster)
-        socket.emit("private", roomName, (visibility[0] as HTMLInputElement).checked);
+    socket.emit("private", roomName, uid, (visibility[0] as HTMLInputElement).checked);
 });
 
 dureeVote.on("change", (element)=>{
-    if (uid !== game.gameMaster)
-        return;
     let val = +($(element.target).val());
     if ([30, 45, 60, 90, 120, 150].includes(val))
-        socket.emit("duree_vote", game.id, val);
+        socket.emit("duree_vote", game.id, uid, val);
 })
 
 nuit.on("change", (element) => {
-    if (uid !== game.gameMaster)
-        return;
     let val = +($(element.target).val());
     if ([180, 210, 240, 300, 420, 600].includes(val))
-        socket.emit("duree_nuit", game.id, val);
+        socket.emit("duree_nuit", game.id, uid, val);
 });
 
 $("#start").on("click", function () {
-    if (uid === game.gameMaster)
-        start_game();
-})
+    start_game();
+});
 
 function start_game() {
     if (players.length >= Partie.nbJoueursMin)
-        socket.emit("start_game", `${game.id}`);
+        socket.emit("start_game", `${game.id}`, uid);
     else
         alert("Vous n'êtes pas assez nombreux");
 }
@@ -272,7 +266,8 @@ function display_user_info(player) {
     $(document.body).append(p.div);
     let ban = $("#ban");
     ban.on("click", function() {
-        socket.emit("ban", roomName, player.id);
+        p.div[0].click();
+        socket.emit("ban", roomName, uid, player.id);
     });
     if (player.nbPartiesJouees === 0)
         return;
@@ -305,7 +300,7 @@ function update_max_players() {
         (change_max_players[0] as HTMLInputElement).max = `15`;
         return alert("Stop messing with this *(-_-)*");
     }
-    socket.emit("change_max_players", game.id, change_max_players.val());
+    socket.emit("change_max_players", game.id, uid, change_max_players.val());
 }
 
 function sendMessageBan(id) {
@@ -328,7 +323,7 @@ function addBans(ban) {
         let close = $("<span>").addClass("unban").text("✖");
         div.append(close);
         close.on("click", function() {
-            socket.emit("unban", roomName, b);
+            socket.emit("unban", roomName, uid, b);
         });
         bans.append(div);
     })
