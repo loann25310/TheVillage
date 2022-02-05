@@ -73,19 +73,25 @@ socket.on("new_player", function (userId, sockId){
     //(il joue avec le dernier appareil connecté
     if (uid === userId && sockId !== socket.id)
         window.location.replace("/?otherDevice=1");
-})
+});
 
 socket.on("players", function (p){
     players = p;
+    //checks that the current player is in the room
+    let s = false;
+    for (let i = 0; i < p.length; i++) {
+        if (p[i].id === uid) s = true;
+    }
+    if (!s) socket.emit('new_guy', uid, roomName);
     $("#nbPlayers").text(p.length);
     create_players(p);
-})
+});
 
 socket.on("change_max_players", max_players => {
     maxPlayers.text(`${max_players}`);
     game.nbJoueursMax = max_players;
     change_max_players.val(max_players);
-})
+});
 
 socket.on("duree_vote", (duree) => {
     game.dureeVote = duree;
@@ -227,8 +233,7 @@ function create_user_tag(p, index :number) {
     let div = $(`<div id="user_${index}">`);
     div.addClass("user");
 
-    let html = `
-        <div class="container">`;
+    let html = `<div class="container">`;
     html += p.avatar.startsWith("#")
         ? `<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt=" "><div id="avatar_${index}" class="avatar"></div>`
         : `<img src="/avatars/${p.avatar}" alt=" ">`;

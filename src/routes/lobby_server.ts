@@ -64,7 +64,7 @@ export async function disconnect(uid, io) {
     if (!uid) return;
     const u = await userRepo.findOne(uid);
     if (!u) return;
-    const room = await gameRepo.findOne(u.partie)
+    const room = await gameRepo.findOne(u.partie);
     if (!room || room.status === PartieStatus.STARTING) return;
 
     let index = room.players.indexOf(u.id);
@@ -78,7 +78,7 @@ export async function disconnect(uid, io) {
         room.gameMaster = room.players[0] || 0;
         io.to(room.id).emit("game_master", room.gameMaster);
     }
-    await gameRepo.save(room)
+    await gameRepo.save(room);
     const p = await room.getPlayers();
     io.to(`${room.id}`).emit("players", p);
 }
