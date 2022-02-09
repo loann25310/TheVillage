@@ -1,62 +1,99 @@
-import {Router} from "express";
+import {RequestHandler, Router} from "express";
 import {Server as SocketIOServer, Socket} from "socket.io";
 import * as logger from "node-color-log";
 import {Coordinate} from "../entity/types/Coordinate";
 import {Box} from "../entity/Props/Box";
+import {getRepository} from "typeorm";
+import {Partie} from "../entity/Partie";
+import {User} from "../entity/User";
+const session = require("express-session");
+const passport = require("passport");
 
-export function Route(router: Router, io: SocketIOServer) {
+export function Route(router: Router, io: SocketIOServer, sessionMiddleware: RequestHandler) {
 
-    router.get('/play/:id', (req, res) => {
-        res.render("game/main")
+    router.get('/play/:id', async (req, res) => {
+        res.render("game/main", {
+            partie: await getRepository(Partie).findOne(req.params.id)
+        });
     });
 
-    let players: {
-        pid: number,
-        cord: Coordinate
-    }[] = [];
-
-    let boxes: {
-        by: number,
-        cord: Coordinate
-    }[] = [];
-
-/*    io.on("connection", (socket) => {
-
-        let pid = players.push({
-            pid: players.length,
-            cord: { x: 0, y: 0 }
-        }) - 1;
-
-        logger.info("New Client Connected !");
-
-        socket.emit("ppid", { pid });
-        io.emit("newPlayer", { remotePlayer: players[pid] });
-
-        for (const player of players) {
-            socket.emit("newPlayer", { remotePlayer: player });
+    const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+    io.use(wrap(sessionMiddleware));
+    io.use(wrap(passport.initialize()));
+    io.use(wrap(passport.session()));
+    io.use((socket, next) => {
+        if (socket.request["user"]) {
+            next();
+        } else {
+            next(new Error("unauthorized"))
         }
-        for (const box of boxes) {
-            socket.emit("boxPlaced", box);
+    });
+
+    getRepository(Partie).find().then(async (parties) => {
+        for (const party of parties) {
+            party.inGamePlayers = [];
+            await getRepository(Partie).save(parties);
+        }
+    });
+
+    const PARTIES: Partie[] = [];
+
+    function monitorPartie(partie: Partie): Partie {
+        if(!isMonitoredPartie(partie))
+            PARTIES.push(partie);
+        return findPartie(partie.id);
+    }
+
+    function isMonitoredPartie(partie: Partie): boolean {
+        return findPartie(partie.id) !== null;
+    }
+
+    function findPartie(partieId: string): Partie {
+        for (const monitoredPartie of PARTIES)
+            if(monitoredPartie.id === partieId) return monitoredPartie;
+        return null;
+    }
+
+    io.on("connection", (socket) => {
+        let partie: Partie,
+            user: User = socket.request["user"];
+
+        function sendError(msg: string) {
+            socket.emit("error", {
+                type: 'error',
+                message: msg
+            });
+            socket.disconnect();
         }
 
-        socket.on("move", (cord: Coordinate) => {
-            players[pid].cord = cord;
-            io.emit("movePlayer", { pid, cord });
+        socket.on("joinPartie", async (data) => {
+            console.log(user, data);
+            partie = monitorPartie(await getRepository(Partie).findOne(data.gameId));
+            if(!partie) return sendError("Game not found");
+            if(partie.isInGame(user)) return sendError("Is already in this game");
+            partie.addInGamePlayer(user);
+            socket.join(partie.id);
+            io.to(partie.id).emit("playerJoin", {
+                id: user.id,
+                pseudo: user.pseudo,
+                position: data.position
+            });
         });
 
-        socket.on("box", (cord: Coordinate) => {
-            boxes.push({ by: pid, cord });
-            io.emit("boxPlaced", { by: pid, cord });
+        socket.on("disconnect", (reason) => {
+            if(!partie) return;
+            partie.removeInGamePlayer(user);
         });
 
-        socket.on("disconnect", () => {
-            io.emit("removePlayer", { remotePlayer: players[pid] });
-            players[pid] = null;
+        socket.on("playerMove", async (data) => {
+            if(!partie) return;
+            io.to(partie.id).emit("playerMove", {
+                id: user.id,
+                position: data.position
+            });
         });
 
     });
-    */
-
 
 
 }

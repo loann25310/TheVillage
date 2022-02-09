@@ -1,8 +1,7 @@
 import "reflect-metadata";
 import {createConnection, getRepository} from "typeorm";
-import logger = require("node-color-log");
 import {readdirSync, readFileSync} from "fs";
-import {resolve as resolvePath, extname} from "path";
+import {extname, resolve as resolvePath} from "path";
 import * as express from "express";
 import {Express, Router} from "express";
 import {Config} from "./entity/Config";
@@ -10,10 +9,12 @@ import * as nunjucks from "nunjucks";
 import * as cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
 import * as http from "http";
-import { Server } from "socket.io";
-const session = require("express-session");
-const passport = require("passport");
+import {Server} from "socket.io";
 import {User} from "./entity/User";
+import logger = require("node-color-log");
+import * as session from "express-session";
+
+const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require('bcrypt');
 
@@ -60,19 +61,22 @@ createConnection().then(async connection => {
 
     logger.info("Loading routes...");
     let router = Router();
-    for (const file of readdirSync(resolvePath(__dirname, 'routes/'))) {
-        if(extname(file) !== '.ts') continue;
-        logger.debug(` - Loading : ${file}`);
-        require(resolvePath(__dirname, 'routes/', file)).Route(router, io);
-    }
 
-    app.use(session({
-        secret: "azerty",
-        resave: false,
-        saveUninitialized: true
-    }));
+    const sessionMiddleware = session({ secret: "azerty", resave: false, saveUninitialized: false });
+    app.use(sessionMiddleware);
     app.use(passport.initialize());
-    app.use(passport.session())
+    app.use(passport.session());
+    app.use(async (req, res, next) => {
+        if(req.user){
+            let user = req.user as User;
+            user.password = undefined;
+            res.locals.currentUser = user;
+        }else{
+            res.locals.currentUser = null;
+        }
+        res.locals.currentRoute = req.path;
+        next();
+    });
 
     app.use((req, res, next) => {
         if (!req.session["passport"]?.user){
@@ -122,6 +126,13 @@ createConnection().then(async connection => {
         return user === undefined ? done("User is undefined") : done(null, user);
 
     });
+
+    for (const file of readdirSync(resolvePath(__dirname, 'routes/'))) {
+        if(extname(file) !== '.ts') continue;
+        logger.debug(` - Loading : ${file}`);
+        require(resolvePath(__dirname, 'routes/', file)).Route(router, io, sessionMiddleware);
+    }
+
     logger.info("Routes loaded !");
 
 
