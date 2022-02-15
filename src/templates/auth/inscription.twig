@@ -4,70 +4,53 @@
 
 {% block stylesheets %}
 
-    <style rel="stylesheet">
-        input{
-            margin: 10px;
-        }
-    </style>
-
 {% endblock %}
 
 {% block body %}
     <div class="grid">
+        <div class="popup-over">
+            <div class="loader-container"></div>
+        </div>
         <div class="authentification">
-            <form method="post" action="/auth/verifInscription" id="form">
-                <h1>Inscription</h1>
+            <form method="post" action="/auth/verifInscription">
+                <h1 class="toUpper">Inscription</h1>
 
-                <label>Pseudo<br>
-                    <input type="text" id="pseudo" name="pseudo" placeholder="Pseudo" {% if pseudo is defined %} value="{{ pseudo }}" {% endif %}>
-                </label><br>
+                <div id="error-container" class="error-container">
+                        <div id="display-error" class="display-error">
+                            {% if erreur is defined or missed is defined %}
+                                {% if erreur == 1 %}
+                                    Une erreur est survenue, veuillez réessayer.
+                                {% elseif erreur == 2 %}
+                                    Cette adresse mail est déjà utilisée.
+                                {% elseif missed == 1 %}
+                                    Vérifiez que le pseudo ne contient pas de caractères spéciaux autres que <code>_</code> et <code>-</code> et que tous les champs sont remplis
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                </div>
 
-                <label>Adresse mail<br>
-                    <input type="text" id="email" name="mail" placeholder="Adresse mail" {% if mail is defined %} value="{{ mail }}" {% endif %}>
-                </label><br>
+                <label for="pseudo" class="block-label">Pseudo</label>
+                    <input type="text" id="pseudo" name="pseudo" class="login-input" placeholder="Pseudo" {% if pseudo is defined %} value="{{ pseudo }}" {% endif %}>
 
-                <label>Date de naissance<br>
-                    <input type="date" id="ddn" name="ddn" {% if ddn is defined %} value="{{ ddn }}" {% endif %}>
-                </label><br>
+                <label for="email" class="block-label">Adresse mail</label>
+                    <input type="text" id="email" name="mail" class="login-input" placeholder="Adresse mail" {% if mail is defined %} value="{{ mail }}" {% endif %}>
 
-                <label>Mot de passe<br>
-                    <input type="password" id="password" name="password" placeholder="Mot de passe">
-                </label><br>
+                <label for="ddn" class="block-label">Date de naissance</label>
+                    <input type="date" id="ddn" class="login-input" name="ddn" {% if ddn is defined %} value="{{ ddn }}" {% endif %}>
 
-                <label>Confirmer mot de passe<br>
-                    <input type="password" id="password2" name="password2" placeholder="Confirmer mot de passe">
-                </label>
-                <input type="submit" value="valider">
+                <label for="password" class="block-label">Mot de passe</label>
+                    <input type="password" id="password" name="password" class="login-input" placeholder="Mot de passe">
+
+
+                <label for="password2" class="block-label">Confirmer mot de passe</label>
+                    <input type="password" id="password2" name="password2" class="login-input" placeholder="Confirmer mot de passe">
+
+                <button type="confirm" id="inscription" class="btn btn-login">Valider</button>
             </form>
-            <span id="password_verif"></span>
-
-            {%  if erreur == 1 %}
-
-                <div class="erreur">
-                    Une erreur est intervenue, veuillez réessayer.
-                </div>
-            {% endif %}
-            {% if erreur == 2 %}
-
-                <div class="erreur">
-                    Adresse mail déjà liée à un autre compte.
-                </div>
-
-        {%  endif %}
-
-            {% if missed is defined %}
-
-                <div style="color: red">
-                    Vérifiez que tous les champs soient remplis comme il faut.
-                </div>
-
-            {% endif %}
         </div>
     </div>
 {% endblock %}
 
 {% block javascripts %}
-
     <script src="/dist/inscription.js"></script>
-
 {% endblock %}

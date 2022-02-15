@@ -75,7 +75,7 @@ createConnection().then(async connection => {
     app.use(passport.session())
 
     app.use((req, res, next) => {
-        if (!req.session["passport"]?.user){
+        if (!req.user){
             for (let i = 0; i < urlWithoutAuth.length; i++) {
                 if (urlWithoutAuth[i].split(" ").length === 1) {
                     if (req["_parsedOriginalUrl"].pathname === urlWithoutAuth[i]) {
@@ -110,7 +110,6 @@ createConnection().then(async connection => {
                     return done(null, user[i])
             }
             return done(null, false);
-
         }
     ))
     passport.serializeUser(function(user, done) {
@@ -119,8 +118,7 @@ createConnection().then(async connection => {
     passport.deserializeUser(async function(id, done) {
         let userRepo = getRepository(User);
         let user = await userRepo.findOne(id);
-        return user === undefined ? done("User is undefined") : done(null, user);
-
+        return user === undefined ? done("User is undefined", null) : done(null, user);
     });
     logger.info("Routes loaded !");
 
