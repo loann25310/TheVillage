@@ -14,11 +14,14 @@ import {PineTree} from "./Props/PineTree";
 import {Fork} from "./Props/Fork";
 import {Wood} from "./Grounds/Wood";
 import {Cobblestone} from "./Grounds/Cobblestone";
+import {Dirt} from "./Grounds/Dirt";
 
 export class Environment {
 
     origine: Coordinate;
     layers: Displayable[][];
+    size: { w: number, h: number };
+    ctx: CanvasRenderingContext2D;
 
     constructor() {
         this.layers = [];
@@ -55,6 +58,8 @@ export class Environment {
     async create(ctx: CanvasRenderingContext2D){
         try {
             let value = await axios.get('/map.json');
+            this.ctx = ctx;
+            this.size = value.data.size;
             for (const object  of value.data.objects as { type: ObjectType, coordonnees: Coordinate, size: Size }[]) {
                 switch (object.type){
                     case ObjectType.buisson:
@@ -93,6 +98,10 @@ export class Environment {
                         let grass = new Grass(ctx, object.coordonnees, object.size);
                         this.addToLayer(0, grass);
                         break;
+                    case ObjectType.terre:
+                        let terre = new Dirt(ctx, object.coordonnees, object.size);
+                        this.addToLayer(0, terre);
+                        break;
                     case ObjectType.pave:
                         let pave = new Cobblestone(ctx, object.coordonnees, object.size);
                         this.addToLayer(0, pave);
@@ -101,6 +110,13 @@ export class Environment {
                         let bois = new Wood(ctx, object.coordonnees, object.size);
                         this.addToLayer(0, bois);
                         break;
+                }
+            }
+            console.log(this.size);
+            for (let i = 0; i < this.size.w / 1000; i++) {
+                for (let j = 0; j < this.size.h / 1000; j++) {
+                    let terre = new Dirt(ctx, { x: i * 1000, y: j * 1000 }, { w: 1000, h: 1000 });
+                    this.addToLayer(0, terre);
                 }
             }
         }catch (error){

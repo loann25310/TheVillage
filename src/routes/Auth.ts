@@ -46,13 +46,11 @@ export function Route(router: Router) {
         if (
             req.body.password !== req.body.password2 ||
             req.body.pseudo.length === 0 ||
-            !Tools.regex_pseudo.test(req.body.pseudo) ||
+            /<|>| /g.test(req.body.pseudo) ||
             !(email_regex.test(req.body.mail)) ||
             req.body.ddn.length !== 10
         ) {
-            return res.redirect(`/auth/inscription?missed=1&pseudo=${/"/g.test(req.body.pseudo) ? "" : req.body.pseudo}&mail=${req.body.mail}&ddn=${req.body.ddn}`);
-        } if (verifMdp(req.body.password) !== "") {
-            return res.redirect(`/auth/inscription?missed=2&pseudo=${/"/g.test(req.body.pseudo) ? "" : req.body.pseudo}&mail=${req.body.mail}&ddn=${req.body.ddn}}`);
+            return res.redirect(`/auth/inscription?missed=1&pseudo=${/"/g.test(req.body.pseudo) ? "" : req.body.pseudo}&mail=${req.body.mail}&ddn=${req.body.ddn}`)
         }
 
         bcrypt.hash(req.body.password, saltRounds, async (err, hash) =>{

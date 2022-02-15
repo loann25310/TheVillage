@@ -1,11 +1,6 @@
 {
   "objects" : [
     {
-      "type": "herbe",
-      "coordonnees" : {"x" :10, "y" :10},
-      "size": {"w": 1000, "h": 1000}
-    },
-    {
       "type": "buisson",
       "coordonnees" : {"x" :100, "y" :50},
       "size": {"w": 175, "h": 130}
@@ -57,6 +52,10 @@
       "size": {"w": 175, "h": 130}
     }
   ],
+  "size": {
+    "w": 5000,
+    "h": 5000
+  },
   "players_spawn" : [
     {"x" :0, "y" :0},
     {"x" : 10, "y" : 10},

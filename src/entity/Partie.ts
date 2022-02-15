@@ -48,7 +48,7 @@ export class Partie {
     @Column({
         default: 0
     })
-    gameMaster :number;
+    gameMaster: number;
 
     @Column({
         type: "simple-json",
@@ -57,6 +57,11 @@ export class Partie {
 
     @Column({
         type: "simple-json",
+    })
+    inGamePlayers: number[];
+
+    @Column({
+        type: "simple-json"
     })
     bans: number[];
 
@@ -73,6 +78,24 @@ export class Partie {
         if (this.gameMaster === 0 || !this.players.includes(this.gameMaster))
             this.gameMaster = userId;
         return true;
+    }
+
+    addInGamePlayer(user: User) {
+        if(this.inGamePlayers.includes(user.id))
+            return;
+        this.inGamePlayers.push(user.id);
+        getRepository(Partie).save(this).then(r => {});
+    }
+
+    removeInGamePlayer(user: User) {
+        if(!this.inGamePlayers.includes(user.id))
+            return;
+        this.inGamePlayers.splice(this.inGamePlayers.indexOf(user.id), 1);
+        getRepository(Partie).save(this).then(r => {});
+    }
+
+    isInGame(user: User): boolean {
+        return this.inGamePlayers.includes(user.id);
     }
 
     start(){

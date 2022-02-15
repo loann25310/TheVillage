@@ -1,11 +1,10 @@
 import {Displayable} from "../Displayable";
 import {PlayerMove} from "../types/PlayerMove";
 import {Coordinate} from "../types/Coordinate";
-import {Environment} from "../Environment";
 
 export class Player extends Displayable {
 
-    public static readonly defaultSize = { w: 100, h: 152 };
+    public static readonly defaultSize = { w: 80, h: 186 };
     private readonly image: HTMLImageElement;
     private readonly callbacks;
     public isLocal;
@@ -14,12 +13,12 @@ export class Player extends Displayable {
     public x;
     public y;
 
-    constructor(ctx, environment, positon: Coordinate, size) {
-        super(ctx, positon, size, null );
+    constructor(ctx, environment, positonDraw: Coordinate, size) {
+        super(ctx, positonDraw, size, null );
         this.environment = environment;
-        this.cord = { x: positon.x, y: positon.y};
+        this.cord = { x: positonDraw.x, y: positonDraw.y};
         this.image = document.createElement("img");
-        this.image.src = "/img/Bonhomme.gif";
+        this.image.src = "/img/Bonhomme.png";
         this.callbacks = [];
         this.x = 0;
         this.y = 0;
@@ -85,6 +84,9 @@ export class Player extends Displayable {
                 this.environment.move({x:condition,y:condition})
                 break;
         }
+        this.x = Math.round(this.x);
+        this.y = Math.round(this.y);
+        this.emit("move");
     }
 
     on(eventName: string, callback: ((data) => void)) {
@@ -92,7 +94,7 @@ export class Player extends Displayable {
         this.callbacks[eventName].push(callback);
     }
 
-    private emit(eventName: string, data) {
+    private emit(eventName: string, data: any = {}) {
         if(!this.callbacks[eventName]) return;
         for (const callback of this.callbacks[eventName]) {
             callback(data);
@@ -108,24 +110,36 @@ export class Player extends Displayable {
     }
 
     getPosition(): Coordinate {
-        const result = super.getPosition();
-        result.x += -(this.size.w / 2);
-        result.y += -(this.size.h / 2);
+        return {
+            x: this.x,
+            y: this.y
+        };
+    }
+    
+    getDrawnPosition(): Coordinate {
+        const result = {
+            x: this.environment.origine.x + this.x,
+            y: this.environment.origine.y + this.y
+        };
+        // result.x += -(this.size.w / 2);
+        // result.y += -(this.size.h / 2);
         return result;
     }
 
     draw() {
-        this.ctx.drawImage(this.image, this.getPosition().x, this.getPosition().y, this.size.w, this.size.h);
+        this.ctx.fillStyle = "#f00";
+        this.ctx.fillRect( this.getDrawnPosition().x, this.getDrawnPosition().y, this.size.w, this.size.h);
+        this.ctx.drawImage(this.image, this.getDrawnPosition().x, this.getDrawnPosition().y, this.size.w, this.size.h);
         this.ctx.fillStyle = "#fff";
-        this.ctx.fillRect(this.getPosition().x, this.getPosition().y + this.size.h - 5, this.size.w, 40 );
+        this.ctx.fillRect(this.getDrawnPosition().x, this.getDrawnPosition().y + this.size.h - 5, this.size.w, 40 );
         this.ctx.textAlign = "center";
         if(this.isLocal)
             this.ctx.fillStyle = "#0080ff";
         else
             this.ctx.fillStyle = "#f00";
-        this.ctx.fillText(`[ PID : ${this.pid} ]`, this.getPosition().x + (this.size.w / 2), this.getPosition().y + this.size.h + 5);
-        this.ctx.fillText(`{ x: ${this.cord.x}, y: ${this.cord.y} }`, this.getPosition().x + (this.size.w / 2), this.getPosition().y + this.size.h + 18);
-        this.ctx.fillText(`{ x: ${this.getPosition().x}, y: ${this.getPosition().y} }`, this.getPosition().x + (this.size.w / 2), this.getPosition().y + this.size.h + 29);
+        this.ctx.fillText(`[ PID : ${this.pid} ]`, this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y + this.size.h + 5);
+        this.ctx.fillText(`{ x: ${this.cord.x}, y: ${this.cord.y} }`, this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y + this.size.h + 18);
+        this.ctx.fillText(`{ x: ${this.getDrawnPosition().x}, y: ${this.getDrawnPosition().y} }`, this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y + this.size.h + 29);
     }
 
 }
