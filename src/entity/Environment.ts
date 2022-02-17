@@ -15,6 +15,7 @@ import {Fork} from "./Props/Fork";
 import {Wood} from "./Grounds/Wood";
 import {Cobblestone} from "./Grounds/Cobblestone";
 import {Dirt} from "./Grounds/Dirt";
+import {Player} from "./Props/Player";
 
 export class Environment {
 
@@ -60,6 +61,7 @@ export class Environment {
             let value = await axios.get('/map.json');
             this.ctx = ctx;
             this.size = value.data.size;
+            this.setOrigine({x: -value.data.players_spawn[0].x+ctx.canvas.width/2, y: -value.data.players_spawn[0].y+ctx.canvas.height/2});
             for (const object  of value.data.objects as { type: ObjectType, coordonnees: Coordinate, size: Size }[]) {
                 switch (object.type){
                     case ObjectType.buisson:

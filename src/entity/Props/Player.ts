@@ -1,6 +1,7 @@
 import {Displayable} from "../Displayable";
 import {PlayerMove} from "../types/PlayerMove";
 import {Coordinate} from "../types/Coordinate";
+import axios from "axios";
 
 export class Player extends Displayable {
 
@@ -22,6 +23,13 @@ export class Player extends Displayable {
         this.callbacks = [];
         this.x = 0;
         this.y = 0;
+        this.initSpawn();
+    }
+
+    async initSpawn() {
+        let value = await axios.get('/map.json');
+        this.x = value.data.players_spawn[0].x;
+        this.y = value.data.players_spawn[0].y;
     }
 
     initLocal(pid: number, canvas: HTMLCanvasElement) {
@@ -52,40 +60,38 @@ export class Player extends Displayable {
                 this.environment.move({x:0,y:condition})
                 break;
             case PlayerMove.moveNE:
-                this.y -= condition*0.707;
-                this.x += condition*0.707;
-                this.environment.move({x:-condition,y:condition})
+                this.y -= Math.round(condition * 0.707);
+                this.x += Math.round(condition * 0.707);
+                this.environment.move({x:-Math.round(condition * 0.707),y:Math.round(condition * 0.707)})
                 break;
             case PlayerMove.moveE:
                 this.x += condition;
                 this.environment.move({x:-condition,y:0})
                 break;
             case PlayerMove.moveSE:
-                this.x += condition*0.707;
-                this.y += condition*0.707;
-                this.environment.move({x:-condition,y:-condition})
+                this.x += Math.round(condition * 0.707);
+                this.y += Math.round(condition * 0.707);
+                this.environment.move({x:-Math.round(condition * 0.707),y:-Math.round(condition * 0.707)})
                 break;
             case PlayerMove.moveS:
                 this.y += condition;
                 this.environment.move({x:0,y:-condition})
                 break;
             case PlayerMove.moveSW:
-                this.y += condition*0.707;
-                this.x -= condition*0.707;
-                this.environment.move({x:condition,y:-condition})
+                this.y += Math.round(condition * 0.707);
+                this.x -= Math.round(condition * 0.707);
+                this.environment.move({x:Math.round(condition * 0.707),y:-Math.round(condition * 0.707)})
                 break;
             case PlayerMove.moveW:
                 this.x -= condition;
                 this.environment.move({x:condition,y:0})
                 break;
             case PlayerMove.moveNW:
-                this.x -= condition*0.707;
-                this.y -= condition*0.707;
-                this.environment.move({x:condition,y:condition})
+                this.x -= Math.round(condition * 0.707);
+                this.y -= Math.round(condition * 0.707);
+                this.environment.move({x:Math.round(condition * 0.707),y:Math.round(condition * 0.707)})
                 break;
         }
-        this.x = Math.round(this.x);
-        this.y = Math.round(this.y);
         this.emit("move");
     }
 
