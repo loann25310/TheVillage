@@ -9,6 +9,7 @@ export class Player extends Displayable {
     private readonly callbacks;
     public isLocal;
     pid: number;
+    public objectInteract: Displayable = null;
 
     public x;
     public y;
@@ -87,6 +88,7 @@ export class Player extends Displayable {
         this.x = Math.round(this.x);
         this.y = Math.round(this.y);
         this.emit("move");
+        this.checkInteractions();
     }
 
     on(eventName: string, callback: ((data) => void)) {
@@ -142,4 +144,21 @@ export class Player extends Displayable {
         this.ctx.fillText(`{ x: ${this.getDrawnPosition().x}, y: ${this.getDrawnPosition().y} }`, this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y + this.size.h + 29);
     }
 
+    checkInteractions() {
+        let seen = false;
+        for (const object of this.environment.interactions) {
+            const dist = Math.sqrt(((this.x + (this.size.w / 2) - object.cord.x - (object.size.w / 2)) ** 2) + ((this.y + (this.size.h / 2) - object.cord.y - (object.size.h / 2)) ** 2));
+            if (dist <= 200) {
+                seen = true;
+                // Won't fire the event if we are already next to the object.
+                if (this.objectInteract === object) break;
+                this.objectInteract = object;
+                this.emit("task", object);
+            }
+        }
+        if (!seen && this.objectInteract !== null) {
+            this.emit("no_task");
+            this.objectInteract = null;
+        }
+    }
 }

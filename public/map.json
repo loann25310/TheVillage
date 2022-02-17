@@ -52,6 +52,18 @@
       "size": {"w": 175, "h": 130}
     }
   ],
+  "interactions": [
+    {
+      "type": "caisse",
+      "coordonnees": {"x" : 300, "y" : 300},
+      "size": {"w": 130, "h": 130}
+    },
+    {
+      "type": "fourche",
+      "coordonnees": {"x" : 800, "y" : 300},
+      "size": {"w": 130, "h": 130}
+    }
+  ],
   "size": {
     "w": 5000,
     "h": 5000

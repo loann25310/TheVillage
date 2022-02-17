@@ -66,6 +66,15 @@ async function init(){
             position: player.getPosition()
         });
     });
+
+    player.on("task", (data) => {
+        console.log(data);
+    });
+
+    player.on("no_task", () => {
+        console.log(false);
+        miniJeu = false;
+    });
 }
 init().then();
 
@@ -77,6 +86,12 @@ function draw() {
     personnage.src = "/img/Bonhomme.png";
     environment.update();
     ctx.drawImage(personnage, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
+    if (player.objectInteract !== null) {
+        ctx.textAlign = "center";
+        ctx.font = "30px sans-serif";
+        ctx.fillStyle = "red";
+        ctx.fillText(`[E] pour interagir avec ${/*Trouver un moyen d'afficher ce que c'est*/1}`, window.innerWidth / 2, window.innerHeight - 300);
+    }
 }
 draw();
 
@@ -84,10 +99,17 @@ const keys = [];
 window.addEventListener("keydown",function(e){ keys["KEY_" + e.key.toUpperCase()] = true },false);
 window.addEventListener('keyup',function(e){ keys["KEY_" + e.key.toUpperCase()] = false },false);
 let lock_key_u = false;
+let miniJeu = false;
 let playerCount = 1;
 
 setInterval(() => {
     let shift = keys["KEY_SHIFT"] == true;
+
+    if (keys["KEY_E"] && !miniJeu && player.objectInteract !== null) {
+        miniJeu = true;
+        console.log("ouverture de mini-jeu");
+        // todo: @Yohann tu peux t'amuser ici c:
+    }
 
     if(keys["KEY_U"] && !lock_key_u){
         lock_key_u = true;

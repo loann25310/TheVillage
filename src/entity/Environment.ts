@@ -22,9 +22,11 @@ export class Environment {
     layers: Displayable[][];
     size: { w: number, h: number };
     ctx: CanvasRenderingContext2D;
+    interactions: Displayable[];
 
     constructor() {
         this.layers = [];
+        this.interactions = [];
         this.setOrigine({x:0,y:0});
     }
 
@@ -57,61 +59,19 @@ export class Environment {
 
     async create(ctx: CanvasRenderingContext2D){
         try {
-            let value = await axios.get('/map.json');
+            const value = await axios.get('/map.json');
             this.ctx = ctx;
             this.size = value.data.size;
-            for (const object  of value.data.objects as { type: ObjectType, coordonnees: Coordinate, size: Size }[]) {
-                switch (object.type){
-                    case ObjectType.buisson:
-                        let buisson = new Bush(ctx, object.coordonnees, object.size);
-                        this.addToLayer(1, buisson);
-                        break;
-                    case ObjectType.arbre:
-                        let arbre = new Tree(ctx, object.coordonnees, object.size);
-                        this.addToLayer(1, arbre);
-                        break;
-                    case ObjectType.caisse:
-                        let box = new Box(ctx, object.coordonnees, object.size);
-                        this.addToLayer(1, box);
-                        break;
-                    case ObjectType.maison:
-                        let maison = new House(ctx, object.coordonnees, object.size);
-                        this.addToLayer(1, maison);
-                        break;
-                    case ObjectType.sapin:
-                        let sapin = new PineTree(ctx, object.coordonnees, object.size);
-                        this.addToLayer(1, sapin);
-                        break;
-                    case ObjectType.fourche:
-                        let fourche = new Fork(ctx, object.coordonnees, object.size);
-                        this.addToLayer(1, fourche);
-                        break;
-                    case ObjectType.souche:
-                        let souche = new TreeStump(ctx, object.coordonnees, object.size);
-                        this.addToLayer(1, souche);
-                        break;
-                    case ObjectType.fleurs:
-                        let fleur = new Flower(ctx, object.coordonnees, object.size);
-                        this.addToLayer(0, fleur);
-                        break;
-                    case ObjectType.herbe:
-                        let grass = new Grass(ctx, object.coordonnees, object.size);
-                        this.addToLayer(0, grass);
-                        break;
-                    case ObjectType.terre:
-                        let terre = new Dirt(ctx, object.coordonnees, object.size);
-                        this.addToLayer(0, terre);
-                        break;
-                    case ObjectType.pave:
-                        let pave = new Cobblestone(ctx, object.coordonnees, object.size);
-                        this.addToLayer(0, pave);
-                        break;
-                    case ObjectType.bois:
-                        let bois = new Wood(ctx, object.coordonnees, object.size);
-                        this.addToLayer(0, bois);
-                        break;
-                }
+            for (const object of value.data.objects as { type: ObjectType, coordonnees: Coordinate, size: Size }[]) {
+                this.createObject(object);
             }
+
+            for (const object of value.data.interactions as { type: ObjectType, coordonnees: Coordinate, size: Size }[]) {
+                const o = this.createObject(object);
+                //todo:  create a way to add a specific game linked to the object. (in the JSON, or add a random one);
+                this.interactions.push(o);
+            }
+
             console.log(this.size);
             for (let i = 0; i < this.size.w / 1000; i++) {
                 for (let j = 0; j < this.size.h / 1000; j++) {
@@ -119,8 +79,8 @@ export class Environment {
                     this.addToLayer(0, terre);
                 }
             }
-        }catch (error){
-            console.log(error);
+        } catch (error) {
+            console.error(error);
         }
     }
 
@@ -139,6 +99,59 @@ export class Environment {
             for (const object of layer) {
                 object.speed = speed;
             }
+        }
+    }
+
+    createObject(object: { type: ObjectType, coordonnees: Coordinate, size: Size }): Displayable {
+        switch (object.type){
+            case ObjectType.buisson:
+                let buisson = new Bush(this.ctx, object.coordonnees, object.size);
+                this.addToLayer(1, buisson);
+                return buisson;
+            case ObjectType.arbre:
+                let arbre = new Tree(this.ctx, object.coordonnees, object.size);
+                this.addToLayer(1, arbre);
+                return arbre;
+            case ObjectType.caisse:
+                let box = new Box(this.ctx, object.coordonnees, object.size);
+                this.addToLayer(1, box);
+                return box;
+            case ObjectType.maison:
+                let maison = new House(this.ctx, object.coordonnees, object.size);
+                this.addToLayer(1, maison);
+                return maison;
+            case ObjectType.sapin:
+                let sapin = new PineTree(this.ctx, object.coordonnees, object.size);
+                this.addToLayer(1, sapin);
+                return sapin;
+            case ObjectType.fourche:
+                let fourche = new Fork(this.ctx, object.coordonnees, object.size);
+                this.addToLayer(1, fourche);
+                return fourche;
+            case ObjectType.souche:
+                let souche = new TreeStump(this.ctx, object.coordonnees, object.size);
+                this.addToLayer(1, souche);
+                return souche;
+            case ObjectType.fleurs:
+                let fleur = new Flower(this.ctx, object.coordonnees, object.size);
+                this.addToLayer(0, fleur);
+                return fleur;
+            case ObjectType.herbe:
+                let grass = new Grass(this.ctx, object.coordonnees, object.size);
+                this.addToLayer(0, grass);
+                return grass;
+            case ObjectType.terre:
+                let terre = new Dirt(this.ctx, object.coordonnees, object.size);
+                this.addToLayer(0, terre);
+                return terre;
+            case ObjectType.pave:
+                let pave = new Cobblestone(this.ctx, object.coordonnees, object.size);
+                this.addToLayer(0, pave);
+                return pave;
+            case ObjectType.bois:
+                let bois = new Wood(this.ctx, object.coordonnees, object.size);
+                this.addToLayer(0, bois);
+                return bois;
         }
     }
 }
