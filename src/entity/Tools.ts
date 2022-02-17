@@ -10,8 +10,6 @@ export class Tools {
         return result;
     }
 
-
-
     static popup() {
         let div = $("<div>");
         div.addClass("popup");
@@ -35,4 +33,6 @@ export class Tools {
         });
         return {div: outer, text};
     }
+
+    static regex_pseudo = /([A-Za-z0-9\-_]*)/g;
 }
