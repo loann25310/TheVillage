@@ -15,12 +15,15 @@ export class Displayable {
 
     color: string;
 
+    name: string;
+
     constructor(ctx, cord: Coordinate, size, color) {
         this.ctx = ctx;
         this.cord = cord;
         this.size = size;
         this.color = color;
         this.speed = 10;
+        this.name = "";
     }
 
     getPosition(): Coordinate {

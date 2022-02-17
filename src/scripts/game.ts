@@ -90,7 +90,7 @@ function draw() {
         ctx.textAlign = "center";
         ctx.font = "30px sans-serif";
         ctx.fillStyle = "red";
-        ctx.fillText(`[E] pour interagir avec ${/*Trouver un moyen d'afficher ce que c'est*/1}`, window.innerWidth / 2, window.innerHeight - 300);
+        ctx.fillText(`[E] pour interagir avec ${player.objectInteract.name}`, window.innerWidth / 2, window.innerHeight - 300);
     }
 }
 draw();

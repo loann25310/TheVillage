@@ -70,7 +70,7 @@ export class Environment {
 
             for (const object of value.data.interactions as { type: ObjectType, coordonnees: Coordinate, size: Size }[]) {
                 const o = this.createObject(object);
-                //todo:  create a way to add a specific game linked to the object. (in the JSON, or add a random one);
+                o.name = object.type;
                 this.interactions.push(o);
             }
 

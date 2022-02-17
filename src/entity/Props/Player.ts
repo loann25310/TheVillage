@@ -153,6 +153,7 @@ export class Player extends Displayable {
     checkInteractions() {
         let seen = false;
         for (const object of this.environment.interactions) {
+            // J'ai l'impression des fois que ça ne prend pas le milieu du perso / de l'objet, mais le point en haut à droite, jsp pourquoi
             const dist = Math.sqrt(((this.x + (this.size.w / 2) - object.cord.x - (object.size.w / 2)) ** 2) + ((this.y + (this.size.h / 2) - object.cord.y - (object.size.h / 2)) ** 2));
             if (dist <= 200) {
                 seen = true;
