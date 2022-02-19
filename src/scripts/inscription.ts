@@ -16,7 +16,6 @@ const displayError = $("#display-error");
 const password = $("#password");
 const password2 = $("#password2");
 const pseudo = $("#pseudo");
-const ddn = $("#ddn");
 
 const errors = {
     pseudo: "",

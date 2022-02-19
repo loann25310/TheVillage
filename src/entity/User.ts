@@ -17,9 +17,6 @@ export class User {
     @Column()
     adresseMail: string;
 
-    @Column("date")
-    dateDeNaissance: string;
-
     @Column({
         default: 1
     })

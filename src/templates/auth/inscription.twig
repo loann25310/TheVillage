@@ -35,9 +35,6 @@
                 <label for="email" class="block-label">Adresse mail</label>
                     <input type="text" id="email" name="mail" class="login-input" placeholder="Adresse mail" {% if mail is defined %} value="{{ mail }}" {% endif %}>
 
-                <label for="ddn" class="block-label">Date de naissance</label>
-                    <input type="date" id="ddn" class="login-input" name="ddn" {% if ddn is defined %} value="{{ ddn }}" {% endif %}>
-
                 <label for="password" class="block-label">Mot de passe</label>
                     <input type="password" id="password" name="password" class="login-input" placeholder="Mot de passe">
 

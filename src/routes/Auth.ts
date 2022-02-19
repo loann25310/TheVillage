@@ -46,9 +46,8 @@ export function Route(router: Router) {
         if (
             req.body.password !== req.body.password2 ||
             req.body.pseudo.length === 0 ||
-            /<|>| /g.test(req.body.pseudo) ||
-            !(email_regex.test(req.body.mail)) ||
-            req.body.ddn.length !== 10
+            /<|>| |'|"|`/g.test(req.body.pseudo) ||
+            !(email_regex.test(req.body.mail))
         ) {
             return res.redirect(`/auth/inscription?missed=1&pseudo=${/"/g.test(req.body.pseudo) ? "" : req.body.pseudo}&mail=${req.body.mail}&ddn=${req.body.ddn}`)
         }
@@ -63,13 +62,12 @@ export function Route(router: Router) {
             const repo = getRepository(User)
             let u = await repo.find({adresseMail: req.body.mail})
             if (u.length !== 0){
-                return res.redirect(`/auth/inscription?erreur=2&pseudo=${req.body.pseudo}&mail=${req.body.mail}&ddn=${req.body.ddn}`)
+                return res.redirect(`/auth/inscription?erreur=2&pseudo=${req.body.pseudo}&mail=${req.body.mail}`)
             }
             let user = new User();
             user.pseudo = req.body.pseudo;
             user.password = hash;
             user.adresseMail = req.body.mail;
-            user.dateDeNaissance = req.body.ddn;
             user.succes = [];
             user.skins = [];
             user.partie = "";
@@ -81,7 +79,6 @@ export function Route(router: Router) {
     })
 
     router.get('/auth/getPassword', (req, res) => {
-        console.log("TEST");
         let email = req.query.email;
         res.render("auth/getPassword", {
             erreur: req.query.erreur,
