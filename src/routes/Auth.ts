@@ -48,7 +48,7 @@ export function Route(router: Router) {
             /<|>| |'|"|`/g.test(req.body.pseudo) ||
             !(email_regex.test(req.body.mail))
         ) {
-            return res.redirect(`/auth/inscription?missed=1&pseudo=${/"/g.test(req.body.pseudo) ? "" : req.body.pseudo}&mail=${req.body.mail}&ddn=${req.body.ddn}`)
+            return res.redirect(`/auth/inscription?missed=1&pseudo=${/"/g.test(req.body.pseudo) ? "" : req.body.pseudo}&mail=${req.body.mail}`)
         }
 
         bcrypt.hash(req.body.password, saltRounds, async (err, hash) =>{
