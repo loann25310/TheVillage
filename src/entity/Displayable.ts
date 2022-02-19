@@ -1,9 +1,16 @@
 import {Coordinate} from "./types/Coordinate";
 import {Environment} from "./Environment";
+import {Player} from "./Props/Player";
 
 export class Displayable {
 
     ctx: CanvasRenderingContext2D;
+
+    miniJeuCanvas: HTMLCanvasElement;
+
+    protected jeu;
+
+    protected player: Player;
 
     cord: Coordinate;
 
@@ -24,6 +31,9 @@ export class Displayable {
         this.color = color;
         this.speed = 10;
         this.name = "";
+        this.miniJeuCanvas = null;
+        this.jeu = null;
+        this.player = null;
     }
 
     getPosition(): Coordinate {
@@ -48,5 +58,35 @@ export class Displayable {
 
     setCord(cord: Coordinate) {
         this.cord = cord;
+    }
+
+    /**
+     * Fonction implémentée dans les classes filles
+     * Initialise le canvas, et l'ajoute au body.
+     * @param player
+     * utilisé pour avertir de la fin du mini-jeu
+     */
+    public miniJeu(player: Player): void {}
+    /**
+     * Fonction implémentée dans les classes filles
+     * Affiche une nouvelle frame du jeu
+     */
+    public drawJeu(): void{}
+    /**
+     * Fonction implémentée dans les classes filles
+     * Initialise la variable `jeu` contenant toutes les informations nécessaires au jeu.
+     */
+    public initJeu(): void{}
+
+    /**
+     * Fin du jeu, enlève le canvas, etc.
+     * (j'aurais dûn l'appeler `endgame` tsss
+     */
+    public endJeu() {
+        this.jeu = null;
+        document.body.removeChild(this.miniJeuCanvas);
+        this.miniJeuCanvas = null;
+        this.player.environment.interactions.splice(this.player.environment.interactions.indexOf(this), 1);
+        this.player.objectInteract = null;
     }
 }

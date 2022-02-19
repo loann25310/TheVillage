@@ -30,9 +30,6 @@ const environment: Environment = new Environment();
 let canvas = $('#mainCanvas')[0] as HTMLCanvasElement;
 let ctx = canvas.getContext('2d');
 
-let mj_ctx;
-let mj_canvas;
-
 canvas.width  = window.innerWidth;
 canvas.height = window.innerHeight;
 
@@ -60,7 +57,7 @@ async function init(){
     socket.on("playerMove", (data) => {
         let remotePlayer = getPlayerById(data.id);
         if(!remotePlayer) return;
-        console.log(data);
+        //console.log(data);
         remotePlayer.x = data.position.x;
         remotePlayer.y = data.position.y;
     });
@@ -71,13 +68,13 @@ async function init(){
         });
     });
 
-    player.on("task", (data) => {
-        console.log(data);
+    /* useless ? */
+    player.on("task", (/* object */) => {
     });
 
     player.on("no_task", () => {
-        console.log(false);
         miniJeu = false;
+        player.objectInteract.endJeu();
     });
 }
 init().then();
@@ -96,13 +93,11 @@ function draw() {
         ctx.fillStyle = "red";
         ctx.fillText(`[E] pour interagir avec ${player.objectInteract.name}`, window.innerWidth / 2, window.innerHeight - 300);
     }
-    if(miniJeu){
-        mj_ctx.globalAlpha = 0.5;
-        mj_ctx.fillStyle = "rgb(200,200,200,0.5)";
-        mj_ctx.fillRect(0,0, 500,500);
-    }
-    if(!miniJeu && remove){
-        document.body.removeChild(mj_canvas);
+
+    if (!player.objectInteract) miniJeu = false;
+
+    if (miniJeu) {
+        requestAnimationFrame(() => {player.objectInteract?.drawJeu()});
     }
 }
 draw();
@@ -113,21 +108,12 @@ window.addEventListener('keyup',function(e){ keys["KEY_" + e.key.toUpperCase()] 
 let lock_key_u = false;
 let miniJeu = false;
 let playerCount = 1;
-let remove = false;
 setInterval(() => {
     let shift = keys["KEY_SHIFT"] == true;
 
     if (keys["KEY_E"] && !miniJeu && player.objectInteract !== null) {
         miniJeu = true;
-        remove = true;
-        console.log("ouverture de mini-jeu");
-        // todo: @Yohann tu peux t'amuser ici c:
-        mj_canvas = document.createElement('canvas');
-        mj_canvas.width =  500;
-        mj_canvas.height = 500;
-        $(mj_canvas).addClass("task");
-        document.body.appendChild(mj_canvas);
-        mj_ctx = mj_canvas.getContext("2d");
+        player.objectInteract.miniJeu(player);
     }
 
     if(keys["KEY_U"] && !lock_key_u){
