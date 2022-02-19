@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email template</title>
+    <style>
+        body, html {
+            margin: 0;
+        }
+        h1 {
+            min-width: 30%;
+            max-width: 50%;
+            text-align: center;
+            color: white;
+            border-bottom: solid 2px #20c4c4;
+            padding: 1em;
+            overflow: visible;
+        }
+        #container {
+            background: rgb(65,0,0);
+            background: linear-gradient(25deg, rgba(65,0,0,1) 0%, rgba(92,0,0,1) 51%, rgba(154,0,0,1) 100%) no-repeat top;
+            height: min(500px, 100vh);
+            display: flex;
+            flex-flow: column !important;
+            flex-direction: column !important;
+            justify-items: center;
+            align-items: center;
+        }
+        #text {
+            width: max-content;
+            text-align: center;
+            font-size: 1.5em;
+            color: white;
+            white-space: nowrap;
+        }
+        .inline {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>The Village</h1>
+        <div id="text">
+            <p>Utilisez ce code <span class="inline">[ {{code}} ]</span> pour changer votre mot de passe en retournant sur la page web ou utilisez ce <a href="{{ lien }}">lien</a>.</p>
+        </div>
+    </div>
+<script>
+    document.getElementById("copyright").innerHTML = `&copy; ${new Date().getFullYear()} The Village`;
+</script>
+</body>
+</html>
