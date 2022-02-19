@@ -1,0 +1,9 @@
+.task {
+    position: absolute;
+    left: 1vw;
+    top: 1vw;
+    width: 98vw;
+    height: 96vh;
+    opacity: 0.9;
+    border: 2px solid black;
+}

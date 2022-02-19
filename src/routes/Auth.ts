@@ -35,7 +35,6 @@ export function Route(router: Router) {
             erreur: req.query.erreur,
             pseudo: req.query.pseudo,
             mail: req.query.mail,
-            ddn: req.query.ddn,
             missed: req.query.missed,
             err: req.query.err
         });

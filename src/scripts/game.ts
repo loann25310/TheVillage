@@ -1,4 +1,5 @@
 import * as $ from 'jquery';
+import "../styles/task.css";
 import {Player} from "../entity/Props/Player";
 import {Environment} from "../entity/Environment";
 import {PlayerMove} from "../entity/types/PlayerMove";
@@ -7,9 +8,9 @@ import {Partie} from "../entity/Partie";
 import {User} from "../entity/User";
 
 // @ts-ignore
-const partie = _partie as Partie;
+const partie = new Partie();
 // @ts-ignore
-const user = _user as User;
+const user = new User();
 
 const socket = io();
 const OTHER_PLAYERS: Player[] = [];
@@ -28,6 +29,9 @@ socket.on("error", (data) => {
 const environment: Environment = new Environment();
 let canvas = $('#mainCanvas')[0] as HTMLCanvasElement;
 let ctx = canvas.getContext('2d');
+
+let mj_ctx;
+let mj_canvas;
 
 canvas.width  = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -86,11 +90,19 @@ function draw() {
     personnage.src = "/img/Bonhomme.png";
     environment.update();
     ctx.drawImage(personnage, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
-    if (player.objectInteract !== null) {
+    if (player.objectInteract !== null && !miniJeu) {
         ctx.textAlign = "center";
         ctx.font = "30px sans-serif";
         ctx.fillStyle = "red";
         ctx.fillText(`[E] pour interagir avec ${player.objectInteract.name}`, window.innerWidth / 2, window.innerHeight - 300);
+    }
+    if(miniJeu){
+        mj_ctx.globalAlpha = 0.5;
+        mj_ctx.fillStyle = "rgb(200,200,200,0.5)";
+        mj_ctx.fillRect(0,0, 500,500);
+    }
+    if(!miniJeu && remove){
+        document.body.removeChild(mj_canvas);
     }
 }
 draw();
@@ -101,14 +113,21 @@ window.addEventListener('keyup',function(e){ keys["KEY_" + e.key.toUpperCase()] 
 let lock_key_u = false;
 let miniJeu = false;
 let playerCount = 1;
-
+let remove = false;
 setInterval(() => {
     let shift = keys["KEY_SHIFT"] == true;
 
     if (keys["KEY_E"] && !miniJeu && player.objectInteract !== null) {
         miniJeu = true;
+        remove = true;
         console.log("ouverture de mini-jeu");
         // todo: @Yohann tu peux t'amuser ici c:
+        mj_canvas = document.createElement('canvas');
+        mj_canvas.width =  500;
+        mj_canvas.height = 500;
+        $(mj_canvas).addClass("task");
+        document.body.appendChild(mj_canvas);
+        mj_ctx = mj_canvas.getContext("2d");
     }
 
     if(keys["KEY_U"] && !lock_key_u){
