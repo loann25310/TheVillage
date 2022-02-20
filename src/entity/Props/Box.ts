@@ -1,6 +1,7 @@
 import {Displayable} from "../Displayable";
 import {Coordinate} from "../types/Coordinate";
 import {Player} from "./Player";
+import {toDegrees} from "chart.js/helpers";
 
 export class Box extends Displayable {
 
@@ -76,7 +77,7 @@ export class Box extends Displayable {
             const opposite = (this.jeu.coords[this.jeu.dragged].yMin + 20 - this.jeu.mouseY);
             const adjacent = (this.jeu.mouseX - this.jeu.coords[this.jeu.dragged].xMax);
             const hypotenuse = Math.sqrt((opposite * opposite) + (adjacent * adjacent));
-            const angle = Math.atan( opposite / hypotenuse);
+            const angle = Math.atan(opposite / adjacent);
             ctx.save();
             ctx.fillStyle = this.jeu.gauche[this.jeu.dragged];
             ctx.translate(this.jeu.coords[this.jeu.dragged].xMax, angle < 0 ? this.jeu.coords[this.jeu.dragged].yMin : this.jeu.coords[this.jeu.dragged].yMax);
@@ -89,8 +90,10 @@ export class Box extends Displayable {
             ctx.fillStyle = this.jeu.gauche[this.jeu.linked[i][0]];
             const opposite = (this.jeu.coords[this.jeu.linked[i][0]].yMin - this.jeu.coords[this.jeu.linked[i][1]].yMin);
             const adjacent = (this.miniJeuCanvas.width - 80 - this.jeu.coords[this.jeu.linked[i][0]].xMax);
+            //pas de calculs à faire si le trait est tout droit
+            if (opposite === 0) {ctx.fillRect(this.jeu.coords[this.jeu.linked[i][0]].xMax, this.jeu.coords[this.jeu.linked[i][0]].yMin, adjacent,40 ); continue}
             const hypotenuse = Math.sqrt(opposite * opposite + adjacent * adjacent);
-            const angle = Math.atan( opposite / hypotenuse);
+            const angle = Math.atan( opposite / adjacent);
             ctx.save();
             ctx.translate(this.jeu.coords[this.jeu.linked[i][0]].xMax, angle < 0 ? this.jeu.coords[this.jeu.linked[i][0]].yMin : this.jeu.coords[this.jeu.linked[i][0]].yMax)
             ctx.rotate(-angle);
@@ -136,7 +139,7 @@ export class Box extends Displayable {
             if (this.jeu.gauche[this.jeu.dragged] === this.jeu.droite[d]) {
                 this.jeu.linked.push([this.jeu.dragged, d]);
                 if (this.jeu.linked.length === this.jeu.gauche.length) {
-                    this.endJeu();
+                    this.endJeu(true);
                 }
             }
         }

@@ -73,8 +73,8 @@ async function init(){
     });
 
     player.on("no_task", () => {
+        player.objectInteract?.endJeu(false);
         miniJeu = false;
-        player.objectInteract.endJeu();
     });
 }
 init().then();

@@ -80,13 +80,18 @@ export class Displayable {
 
     /**
      * Fin du jeu, enlève le canvas, etc.
-     * (j'aurais dûn l'appeler `endgame` tsss
+     * (j'aurais dûn l'appeler `endgame` tsss)
+     * @param reussi
+     * `true` si le joueur a fini le mini-jeu, `false` sinon (il le ferme ou va trop loin sans l'avoir fini)
      */
-    public endJeu() {
+    public endJeu(reussi: boolean) {
         this.jeu = null;
-        document.body.removeChild(this.miniJeuCanvas);
+        if (this.miniJeuCanvas)
+            document.body.removeChild(this.miniJeuCanvas);
         this.miniJeuCanvas = null;
-        this.player.environment.interactions.splice(this.player.environment.interactions.indexOf(this), 1);
-        this.player.objectInteract = null;
+        if (reussi) {
+            this.player.environment.interactions.splice(this.player.environment.interactions.indexOf(this), 1);
+            this.player.objectInteract = null;
+        }
     }
 }
