@@ -57,11 +57,12 @@ export class Partie {
 
     @Column({
         type: "simple-json",
+
     })
     inGamePlayers: number[];
 
     @Column({
-        type: "simple-json"
+        type: "simple-json",
     })
     bans: number[];
 

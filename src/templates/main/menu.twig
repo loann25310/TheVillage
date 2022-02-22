@@ -8,14 +8,7 @@
 
         <div class="header">
             <div class="container">
-                {% if user is not defined %}
-                <button class="bt" id="connexion" onclick="location.href='/auth'">Se Connecter</button>
 
-                {% else %}
-                    <button class="bt" id="connexion"  onclick="location.href='/logout'">Se Déconnecter</button>
-                    <button class="bt" id="options"></button>
-                    <p id="uid" style="display: none">{{ user }}</p>
-                {% endif %}
 
             </div>
         </div>
@@ -27,9 +20,19 @@
         <div class="section">
             <div class="container" id="middle">
                 {% if user is defined %}
-                <button class="bt" id="play">Jouer</button>
+
+                <button class="bt"  onclick="location.href='/choix'">Jouer</button>
                 <button class="bt" onclick="location.href='/options'">Options</button>
                 <button class="bt"  onclick="location.href='/profil'">Profil</button>
+                    <button class="bt" onclick="location.href='/logout'">Se Déconnecter</button>
+                    <button class="bt" id="play">Jouer</button>
+                    <p id="uid" style="display: none">{{ user }}</p>
+                {% else %}
+                    <button class="bt" id="play" onclick="location.href='/auth'">Jouer</button>
+                    <button class="bt" onclick="location.href='/auth'">Options</button>
+                    <button class="bt"  onclick="location.href='/auth'">Profil</button>
+                    <button class="bt" onclick="location.href='/auth'">Se Connecter</button>
+
                 {% endif %}
                 <button class="bt" onclick="location.href='/credits'">Crédits</button>
 

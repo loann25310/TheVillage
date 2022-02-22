@@ -16,7 +16,8 @@ module.exports = {
         credits: "./src/scripts/credits.ts",
         menu: "./src/scripts/menu.ts",
         menu_jouer: "./src/scripts/menu_jouer.ts",
-        page404: "./src/scripts/page404.ts"
+        page404: "./src/scripts/page404.ts",
+        choix:"./src/scripts/choix.ts"
     },
     output: {
         path: path.resolve(__dirname, 'public/dist'),

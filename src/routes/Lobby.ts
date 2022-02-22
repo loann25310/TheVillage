@@ -1,7 +1,7 @@
 import {Router} from "express";
 import {User} from "../entity/User";
 import {Server} from "socket.io";
-import {disconnect, getAvailableRoom, joinRoom} from "./lobby_server";
+import {createRoom, disconnect, getAvailableRoom, joinRoom, show_Room} from "./lobby_server";
 import {getRepository} from "typeorm";
 import {Partie} from "../entity/Partie";
 
@@ -53,8 +53,18 @@ export function Route(router: Router, io: Server) {
 
     io.on("connection", async (socket) =>{
         socket.on("ask_room", async (userId) =>{
+            console.log("room_requested");
             socket.emit("room_found", await getAvailableRoom(userId));
         });
+        socket.on("create_room", async (userId) =>{
+            console.log("room_requested");
+            socket.emit("room_found", await createRoom(userId));
+        });
+        socket.on("show_room", async (userId) =>{
+            console.log("room_showed");
+            socket.emit("room_showing", await show_Room());
+        });
+
 
         socket.on("chat_message", (user, msg, room) =>{
             io.to(room).emit("chat_message", user, msg);

@@ -34,6 +34,12 @@ export function Route(router: Router) {
             user: req.user
         });
     });
+    router.get('/choix', (req, res) => {
+        res.render('main/choix', {
+            user: req.user
+        });
+    });
+
 
     router.put('/options/pseudo', async (req, res) => {
         if (/<|>| /g.test(req.body.pseudo)) {

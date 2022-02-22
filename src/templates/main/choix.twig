@@ -1,0 +1,44 @@
+{% extends "body.twig" %}
+
+{% block title %}Choix{% endblock %}
+
+{% block body %}
+
+
+
+    <div class="header">
+        <div class="container">
+            <button class="retour" onclick="location.href='/'">retour</button>
+        </div>
+    </div>
+    <div class="section">
+        <div class="grid-container">
+            <div class="grid-container" id="popup">
+                <button class="bt" id="play">rejoindre partie aleatoire</button>
+                <button class="bt" id="btCode">Via code</button>
+                <form id="formCode">
+                    <input type="text" id="inputCode" placeholder="Code of the game" value="">
+                    <input type="submit" value="Validate" id="validate">
+                </form>
+                <button class="bt" id="parties">
+                    Show parties
+                </button>
+                <div id="show_parties">
+
+                </div>
+            </div>
+                <button class="bt" id="join">Rejoindre une partie</button>
+                <button class="bt" id="createGame">Créer une partie</button>
+        </div>
+    </div>
+  {#  <div class="footer">
+        <img src="/img/iut.png">
+        <p>&copy; 2021 The Village</p>
+    </div>#}
+
+{% endblock %}
+{% block javascripts %}
+    <script src="/dist/choix.js"></script>
+    <script src="/dist/menu_jouer.js"></script>
+    <script></script>
+{% endblock %}

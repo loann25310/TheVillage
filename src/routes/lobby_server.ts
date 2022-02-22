@@ -29,6 +29,16 @@ export async function getAvailableRoom(uid): Promise<string>{
     let newGame = new Partie();
     newGame.players = [];
     newGame.bans = [0];
+    newGame.inGamePlayers = [];
+    await save_game(newGame);
+    return newGame.id;
+}
+export async function createRoom(uid): Promise<string>{
+    let user = await userRepo.findOne(uid);
+    let newGame = new Partie();
+    newGame.players = [];
+    newGame.bans = [0];
+    newGame.inGamePlayers = [];
     await save_game(newGame);
     return newGame.id;
 }
@@ -39,6 +49,7 @@ async function save_game(game: Partie) {
         await gameRepo.save(game);
     }
     catch (e) {
+        console.log(e)
         await save_game(game);
     }
 }
@@ -81,4 +92,10 @@ export async function disconnect(uid, io) {
     await gameRepo.save(room);
     const p = await room.getPlayers();
     io.to(`${room.id}`).emit("players", p);
+}
+export async function show_Room(){
+    let parties = await gameRepo.find({
+        publique:true,
+    });
+    return parties;
 }

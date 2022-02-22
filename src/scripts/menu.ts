@@ -1,3 +1,4 @@
+
 import "../styles/menu.css"
 
 function displayButtonAfterConnection(){
