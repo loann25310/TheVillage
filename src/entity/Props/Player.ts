@@ -135,8 +135,9 @@ export class Player extends Displayable {
     }
 
     draw() {
-        this.ctx.fillStyle = "#f00";
-        this.ctx.fillRect( this.getDrawnPosition().x, this.getDrawnPosition().y, this.size.w, this.size.h);
+        this.ctx.font = "10px sans-serif";
+        //this.ctx.fillStyle = "#f00";
+        //this.ctx.fillRect( this.getDrawnPosition().x, this.getDrawnPosition().y, this.size.w, this.size.h);
         this.ctx.drawImage(this.image, this.getDrawnPosition().x, this.getDrawnPosition().y, this.size.w, this.size.h);
         this.ctx.fillStyle = "#fff";
         this.ctx.fillRect(this.getDrawnPosition().x, this.getDrawnPosition().y + this.size.h - 5, this.size.w, 40 );
