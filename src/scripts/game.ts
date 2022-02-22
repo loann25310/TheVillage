@@ -47,8 +47,8 @@ async function init(){
         console.log(data);
         if(data.id === user.id) return;
         let remotePlayer = new Player(ctx, environment, data.position, Player.defaultSize);
-        remotePlayer.x = data.position.x;
-        remotePlayer.y = data.position.y;
+        remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
+        remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
         remotePlayer.pid = data.id;
         OTHER_PLAYERS.push(remotePlayer);
         environment.addToLayer(100, remotePlayer);
@@ -59,8 +59,8 @@ async function init(){
         let remotePlayer = getPlayerById(data.id);
         if(!remotePlayer) return;
         //console.log(data);
-        remotePlayer.x = data.position.x;
-        remotePlayer.y = data.position.y;
+        remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
+        remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
     });
 
     player.on("move", () => {
