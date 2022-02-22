@@ -6,6 +6,7 @@ import {PlayerMove} from "../entity/types/PlayerMove";
 import {io} from "socket.io-client";
 import {Partie} from "../entity/Partie";
 import {User} from "../entity/User";
+import {Coordinate} from "../entity/types/Coordinate";
 
 // @ts-ignore
 const partie = _partie as Partie;
@@ -39,6 +40,17 @@ player.y = (canvas.height-152) / 2;
 
 async function init(){
     await environment.create(ctx);
+
+    function addRemotePlayer(data: {id: number, position: Coordinate}): Player {
+        let remotePlayer = new Player(ctx, environment, data.position, Player.defaultSize);
+        remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
+        remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
+        remotePlayer.pid = data.id;
+        OTHER_PLAYERS.push(remotePlayer);
+        environment.addToLayer(100, remotePlayer);
+        return remotePlayer;
+    }
+
     socket.emit("joinPartie", {
         gameId: partie.id,
         position: player.getPosition()
@@ -46,18 +58,13 @@ async function init(){
     socket.on("playerJoin", (data) => {
         console.log(data);
         if(data.id === user.id) return;
-        let remotePlayer = new Player(ctx, environment, data.position, Player.defaultSize);
-        remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
-        remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
-        remotePlayer.pid = data.id;
-        OTHER_PLAYERS.push(remotePlayer);
-        environment.addToLayer(100, remotePlayer);
+        addRemotePlayer(data);
     });
     socket.on("playerMove", (data) => {
         console.log(data, data.id === user.id);
         if(data.id === user.id) return;
         let remotePlayer = getPlayerById(data.id);
-        if(!remotePlayer) return;
+        if(!remotePlayer) remotePlayer = addRemotePlayer(data);
         //console.log(data);
         remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
         remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
