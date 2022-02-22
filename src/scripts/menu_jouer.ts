@@ -50,7 +50,7 @@ socket.on("room_showing",(party)=>{
     })
     party.forEach(function (arrayItem) {
         var x = arrayItem.id;
-        var inPartyPlayers = arrayItem.players.size - 1;
+        var inPartyPlayers = arrayItem.players.length - 1;
         var gameCapacity = arrayItem.nbJoueursMax;
         var value = "";
         console.log(arrayItem)
