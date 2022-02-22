@@ -50,10 +50,18 @@ socket.on("room_showing",(party)=>{
     })
     party.forEach(function (arrayItem) {
         var x = arrayItem.id;
+        var inPartyPlayers = arrayItem.players.size - 1;
+        var gameCapacity = arrayItem.nbJoueursMax;
+        var value = "";
+        console.log(arrayItem)
         console.log(x);
+        console.log(inPartyPlayers);
+        console.log(gameCapacity);
+        value += x +  " " + inPartyPlayers;
+        value += "/" + gameCapacity;
         var button= $('<input type="button" value="" class="bt" style="margin-top: 5px; display: block"/>');
-        button.attr("value",x)
-        button.attr("action",window.location.href=`/lobby/${x}`);
+        button.attr("value",value)
+        button.attr("onclick",window.location.href=`/lobby/${x}`);
         showParties.append(button);
     });
 
