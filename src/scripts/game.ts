@@ -8,9 +8,9 @@ import {Partie} from "../entity/Partie";
 import {User} from "../entity/User";
 
 // @ts-ignore
-const partie = new Partie();
+const partie = _partie as Partie;
 // @ts-ignore
-const user = new User();
+const user = _user as User;
 
 const socket = io();
 const OTHER_PLAYERS: Player[] = [];
@@ -52,9 +52,10 @@ async function init(){
         remotePlayer.pid = data.id;
         OTHER_PLAYERS.push(remotePlayer);
         environment.addToLayer(100, remotePlayer);
-        console.log(`New user joined : ${data.pseudo}`);
     });
     socket.on("playerMove", (data) => {
+        console.log(data, data.id === user.id);
+        if(data.id === user.id) return;
         let remotePlayer = getPlayerById(data.id);
         if(!remotePlayer) return;
         //console.log(data);
