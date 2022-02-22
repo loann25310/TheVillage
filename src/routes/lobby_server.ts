@@ -96,6 +96,7 @@ export async function disconnect(uid, io) {
 export async function show_Room(){
     let parties = await gameRepo.find({
         publique:true,
+
     });
     return parties;
 }
