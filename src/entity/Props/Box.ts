@@ -1,7 +1,5 @@
 import {Displayable} from "../Displayable";
 import {Coordinate} from "../types/Coordinate";
-import {Player} from "./Player";
-import {toDegrees} from "chart.js/helpers";
 
 export class Box extends Displayable {
 
@@ -17,21 +15,10 @@ export class Box extends Displayable {
         this.ctx.drawImage(this.image, this.getPosition().x, this.getPosition().y, this.size.w, this.size.h);
     }
 
-    miniJeu(player: Player): void {
-        this.player = player;
-        this.miniJeuCanvas = document.createElement("canvas");
-        this.miniJeuCanvas.width = (window.innerWidth / 10) * 9;
-        this.miniJeuCanvas.height = (window.innerHeight / 10) * 9;
-        document.body.appendChild(this.miniJeuCanvas);
-        const c = $(this.miniJeuCanvas);
-        c.addClass("task");
+    initJeu() {
         this.miniJeuCanvas.addEventListener("mousedown", () => {this.handleMouseDown()});
         this.miniJeuCanvas.addEventListener("mouseup", () => {this.handleMouseUp()});
         this.miniJeuCanvas.addEventListener("mousemove", (e) => {this.handleMouseMove(e)});
-        this.initJeu();
-    }
-
-    initJeu() {
         this.jeu = {
             gauche: [],
             droite: [],
@@ -57,9 +44,6 @@ export class Box extends Displayable {
                 yMax : (this.miniJeuCanvas.height / 5) * (i + 1) + 20
             });
         }
-        console.log(this.jeu.coords);
-        console.log(this.miniJeuCanvas.width, this.miniJeuCanvas.height);
-        console.log(this.miniJeuCanvas.offsetWidth, this.miniJeuCanvas.offsetHeight);
     }
 
     drawJeu() {
@@ -73,6 +57,18 @@ export class Box extends Displayable {
             ctx.fillStyle = this.jeu.droite[i];
             ctx.fillRect(this.miniJeuCanvas.width - 80, (this.miniJeuCanvas.height / 5) * (i + 1) - 20, 60, 40);
         }
+
+        for (let i = 0; i < this.jeu.linked.length; i++) {
+            ctx.fillStyle = this.jeu.gauche[this.jeu.linked[i][0]];
+            const trait = this.getLinkedPosition(this.jeu.coords[this.jeu.linked[i][0]], this.jeu.coords[this.jeu.linked[i][1]]);
+            console.log(trait);
+            if (trait.opposite === 0){ctx.fillRect(this.jeu.coords[this.jeu.linked[i][0]].xMax, this.jeu.coords[this.jeu.linked[i][0]].yMin, trait.adjacent,40 ); continue;}
+            ctx.save();
+            ctx.translate(this.jeu.coords[this.jeu.linked[i][0]].xMax, trait.angle < 0 ? this.jeu.coords[this.jeu.linked[i][0]].yMin : this.jeu.coords[this.jeu.linked[i][0]].yMax)
+            ctx.rotate(- trait.angle);
+            ctx.fillRect(0, 0, trait.hypotenuse, trait.angle < 0 ? 40 : -40);
+            ctx.restore();
+        }
         if (this.jeu.dragged !== null) {
             const opposite = (this.jeu.coords[this.jeu.dragged].yMin + 20 - this.jeu.mouseY);
             const adjacent = (this.jeu.mouseX - this.jeu.coords[this.jeu.dragged].xMax);
@@ -81,21 +77,6 @@ export class Box extends Displayable {
             ctx.save();
             ctx.fillStyle = this.jeu.gauche[this.jeu.dragged];
             ctx.translate(this.jeu.coords[this.jeu.dragged].xMax, angle < 0 ? this.jeu.coords[this.jeu.dragged].yMin : this.jeu.coords[this.jeu.dragged].yMax);
-            ctx.rotate(-angle);
-            ctx.fillRect(0, 0, hypotenuse, angle < 0 ? 40 : -40);
-            ctx.restore();
-        }
-
-        for (let i = 0; i < this.jeu.linked.length; i++) {
-            ctx.fillStyle = this.jeu.gauche[this.jeu.linked[i][0]];
-            const opposite = (this.jeu.coords[this.jeu.linked[i][0]].yMin - this.jeu.coords[this.jeu.linked[i][1]].yMin);
-            const adjacent = (this.miniJeuCanvas.width - 80 - this.jeu.coords[this.jeu.linked[i][0]].xMax);
-            //pas de calculs à faire si le trait est tout droit
-            if (opposite === 0) {ctx.fillRect(this.jeu.coords[this.jeu.linked[i][0]].xMax, this.jeu.coords[this.jeu.linked[i][0]].yMin, adjacent,40 ); continue}
-            const hypotenuse = Math.sqrt(opposite * opposite + adjacent * adjacent);
-            const angle = Math.atan( opposite / adjacent);
-            ctx.save();
-            ctx.translate(this.jeu.coords[this.jeu.linked[i][0]].xMax, angle < 0 ? this.jeu.coords[this.jeu.linked[i][0]].yMin : this.jeu.coords[this.jeu.linked[i][0]].yMax)
             ctx.rotate(-angle);
             ctx.fillRect(0, 0, hypotenuse, angle < 0 ? 40 : -40);
             ctx.restore();
@@ -140,6 +121,7 @@ export class Box extends Displayable {
                 this.jeu.linked.push([this.jeu.dragged, d]);
                 if (this.jeu.linked.length === this.jeu.gauche.length) {
                     this.endJeu(true);
+                    return;
                 }
             }
         }
@@ -150,5 +132,39 @@ export class Box extends Displayable {
         const rect = this.miniJeuCanvas.getBoundingClientRect();
         this.jeu.mouseX = (e.clientX - rect.left) / this.miniJeuCanvas.offsetWidth * this.miniJeuCanvas.width;
         this.jeu.mouseY = (e.clientY - rect.top) / this.miniJeuCanvas.offsetHeight * this.miniJeuCanvas.height;
+    }
+
+    getLinkedPosition(left: {
+    fil: number,
+    xMin: number,
+    xMax: number,
+    yMin: number,
+    yMax : number}, right:  {
+        fil: number,
+        xMin: number,
+        xMax: number,
+        yMin: number,
+        yMax : number}): {opposite: number, adjacent: number, hypotenuse: number, angle: number} {
+        if (left.yMax === right.yMax) {
+            return {
+                opposite: 0,
+                //twice xMax because I only saved the left parts (so the Xs are the same for both right and left)
+                adjacent: (this.miniJeuCanvas.width -  2 * right.xMax),
+                hypotenuse: 0,
+                angle: 0
+            }
+        }
+        const largeur = (left.yMax - left.yMin);
+
+        const diagonale = Math.sqrt(((this.miniJeuCanvas.width - 2 * right.xMax) ** 2) + (((left.yMax > right.yMax) ? ((left.yMax - right.yMin)) : (left.yMin - right.yMax)) ** 2));
+        const longueur = Math.sqrt(Math.abs((largeur * largeur) - (diagonale * diagonale)));
+        //const yPoint = Math.atan((left.yMax - right.yMax) / (this.miniJeuCanvas.width - 2 * left.xMax));
+        const angle = Math.atan((left.yMin - right.yMin) / longueur);
+        return {
+            opposite: largeur,
+            adjacent: longueur,
+            hypotenuse: diagonale,
+            angle
+        };
     }
 }

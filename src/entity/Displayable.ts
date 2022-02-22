@@ -24,6 +24,8 @@ export class Displayable {
 
     name: string;
 
+    protected readonly callbacks;
+
     constructor(ctx, cord: Coordinate, size, color) {
         this.ctx = ctx;
         this.cord = cord;
@@ -34,6 +36,19 @@ export class Displayable {
         this.miniJeuCanvas = null;
         this.jeu = null;
         this.player = null;
+        this.callbacks = [];
+    }
+
+    on(eventName: string, callback: ((data) => void)) {
+        if(!this.callbacks[eventName]) this.callbacks[eventName] = [];
+        this.callbacks[eventName].push(callback);
+    }
+
+    protected emit(eventName: string, data: any = {}) {
+        if(!this.callbacks[eventName]) return;
+        for (const callback of this.callbacks[eventName]) {
+            callback(data);
+        }
     }
 
     getPosition(): Coordinate {
@@ -61,12 +76,20 @@ export class Displayable {
     }
 
     /**
-     * Fonction implémentée dans les classes filles
      * Initialise le canvas, et l'ajoute au body.
      * @param player
      * utilisé pour avertir de la fin du mini-jeu
      */
-    public miniJeu(player: Player): void {}
+    public miniJeu(player: Player): void {
+        this.player = player;
+        this.miniJeuCanvas = document.createElement("canvas");
+        this.miniJeuCanvas.width = (window.innerWidth / 10) * 9;
+        this.miniJeuCanvas.height = (window.innerHeight / 10) * 9;
+        document.body.appendChild(this.miniJeuCanvas);
+        const c = $(this.miniJeuCanvas);
+        c.addClass("task");
+        this.initJeu();
+    }
     /**
      * Fonction implémentée dans les classes filles
      * Affiche une nouvelle frame du jeu
