@@ -64,8 +64,16 @@ form{
 #parties{
     margin-top: 20px;
 
+
 }
 #show_parties{
     display: none;
+    background-color: black;
+    margin-top: 20px;
+    padding: 20px;
+}
+.games_list{
+    color: white;
+    background-color: #9a0507;
 }
 

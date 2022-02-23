@@ -46,7 +46,9 @@ socket.on("room_found", (roomId) => {
 socket.on("room_showing",(party)=>{
     console.log(party);
     showParties.css({
-        'display':'block'
+        'display':'flex',
+        'flex-direction':'column',
+        'justify-content':'space-around'
     })
     party.forEach(function (arrayItem) {
         var x = arrayItem.id;
@@ -59,9 +61,11 @@ socket.on("room_showing",(party)=>{
         console.log(gameCapacity);
         value += x +  " " + inPartyPlayers;
         value += "/" + gameCapacity;
-        var button= $('<input type="button" value="" class="bt" style="margin-top: 5px; display: block"/>');
+        var button= $('<input type="button" value="" class="games_list" style="margin-top: 5px; display: block"/>');
         button.attr("value",value)
-        button.attr("onclick",window.location.href=`/lobby/${x}`);
+        button.click(function (){
+            window.location.href=`/lobby/${x}`
+        });
         showParties.append(button);
     });
 
