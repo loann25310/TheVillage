@@ -61,7 +61,6 @@ async function init(){
         addRemotePlayer(data);
     });
     socket.on("playerMove", (data) => {
-        console.log(data, data.id === user.id);
         if(data.id === user.id) return;
         let remotePlayer = getPlayerById(data.id);
         if(!remotePlayer) remotePlayer = addRemotePlayer(data);
@@ -98,7 +97,7 @@ let personnage = new Image();
 function draw() {
     requestAnimationFrame(draw);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    personnage.src = "/img/Bonhomme.png";
+    personnage.src = player.link;
     environment.update();
     ctx.drawImage(personnage, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
     if (player.objectInteract !== null && !miniJeu) {
@@ -137,19 +136,19 @@ setInterval(() => {
         setTimeout(() => lock_key_u = false, 400);
     }
 
-    if(keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && !keys["KEY_Q"])
+    if((keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && !keys["KEY_Q"]) || (keys["KEY_Z"] && keys["KEY_D"] && !keys["KEY_S"] && keys["KEY_Q"]))
         player.move(PlayerMove.moveN, shift);
     if(keys["KEY_Z"] && keys["KEY_D"] && !keys["KEY_S"] && !keys["KEY_Q"])
         player.move(PlayerMove.moveNE, shift);
-    if(!keys["KEY_Z"] && keys["KEY_D"] && !keys["KEY_S"] && !keys["KEY_Q"])
+    if((!keys["KEY_Z"] && keys["KEY_D"] && !keys["KEY_S"] && !keys["KEY_Q"]) || (keys["KEY_Z"] && keys["KEY_D"] && keys["KEY_S"] && !keys["KEY_Q"]))
         player.move(PlayerMove.moveE, shift);
     if(!keys["KEY_Z"] && keys["KEY_D"] && keys["KEY_S"] && !keys["KEY_Q"])
         player.move(PlayerMove.moveSE, shift);
-    if(!keys["KEY_Z"] && !keys["KEY_D"] && keys["KEY_S"] && !keys["KEY_Q"])
+    if((!keys["KEY_Z"] && !keys["KEY_D"] && keys["KEY_S"] && !keys["KEY_Q"]) || (!keys["KEY_Z"] && keys["KEY_D"] && keys["KEY_S"] && keys["KEY_Q"]))
         player.move(PlayerMove.moveS, shift);
     if(!keys["KEY_Z"] && !keys["KEY_D"] && keys["KEY_S"] && keys["KEY_Q"])
         player.move(PlayerMove.moveSW, shift);
-    if(!keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && keys["KEY_Q"])
+    if((!keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && keys["KEY_Q"]) || (keys["KEY_Z"] && !keys["KEY_D"] && keys["KEY_S"] && keys["KEY_Q"]))
         player.move(PlayerMove.moveW, shift);
     if(keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && keys["KEY_Q"])
         player.move(PlayerMove.moveNW, shift);

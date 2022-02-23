@@ -10,16 +10,22 @@ export class Player extends Displayable {
     public isLocal;
     pid: number;
     public objectInteract: Displayable = null;
+    private url;
+    public goesRight: boolean;
+    public link;
 
     public x;
     public y;
 
     constructor(ctx, environment, positonDraw: Coordinate, size) {
         super(ctx, positonDraw, size, null );
+        this.url = this.getUrl();
         this.environment = environment;
         this.cord = { x: positonDraw.x, y: positonDraw.y};
         this.image = document.createElement("img");
-        this.image.src = "/img/Bonhomme.png";
+        this.goesRight = true;
+        this.link = this.url.next().value;
+        this.image.src = this.link;
         this.x = 0;
         this.y = 0;
         this.initSpawn();
@@ -50,6 +56,7 @@ export class Player extends Displayable {
     }
 
     move(type: PlayerMove, sprint: boolean) {
+        this.link = this.url.next().value as string;
         let pixelSprint = 4;
         let pixelNoSprint = 1;
         let condition = (sprint) ? pixelSprint : pixelNoSprint;
@@ -59,15 +66,18 @@ export class Player extends Displayable {
                 this.environment.move({x:0,y:condition})
                 break;
             case PlayerMove.moveNE:
+                this.goesRight = true;
                 this.y -= Math.round(condition * 0.707);
                 this.x += Math.round(condition * 0.707);
                 this.environment.move({x:-Math.round(condition * 0.707),y:Math.round(condition * 0.707)})
                 break;
             case PlayerMove.moveE:
+                this.goesRight = true;
                 this.x += condition;
                 this.environment.move({x:-condition,y:0})
                 break;
             case PlayerMove.moveSE:
+                this.goesRight = true;
                 this.x += Math.round(condition * 0.707);
                 this.y += Math.round(condition * 0.707);
                 this.environment.move({x:-Math.round(condition * 0.707),y:-Math.round(condition * 0.707)})
@@ -77,15 +87,18 @@ export class Player extends Displayable {
                 this.environment.move({x:0,y:-condition})
                 break;
             case PlayerMove.moveSW:
+                this.goesRight = false;
                 this.y += Math.round(condition * 0.707);
                 this.x -= Math.round(condition * 0.707);
                 this.environment.move({x:Math.round(condition * 0.707),y:-Math.round(condition * 0.707)})
                 break;
             case PlayerMove.moveW:
+                this.goesRight = false;
                 this.x -= condition;
                 this.environment.move({x:condition,y:0})
                 break;
             case PlayerMove.moveNW:
+                this.goesRight = false;
                 this.x -= Math.round(condition * 0.707);
                 this.y -= Math.round(condition * 0.707);
                 this.environment.move({x:Math.round(condition * 0.707),y:Math.round(condition * 0.707)})
@@ -153,6 +166,19 @@ export class Player extends Displayable {
         if (!seen && this.objectInteract !== null) {
             this.emit("no_task");
             this.objectInteract = null;
+        }
+    }
+
+    public *getUrl() {
+        while(true) {
+            for (let i = 0; i < 20; i++)
+                yield `/img/Bonhomme2${this.goesRight ? "R" : "L"}.png`;
+            for (let i = 0; i < 20; i++)
+                yield `/img/Bonhomme3${this.goesRight ? "R" : "L"}.png`;
+            for (let i = 0; i < 20; i++)
+                yield `/img/Bonhomme4${this.goesRight ? "R" : "L"}.png`;
+            for (let i = 0; i < 20; i++)
+                yield `/img/Bonhomme1${this.goesRight ? "R" : "L"}.png`;
         }
     }
 }
