@@ -1,6 +1,7 @@
 import {Coordinate} from "./types/Coordinate";
 import {Environment} from "./Environment";
 import {Player} from "./Props/Player";
+import {Size} from "./types/Size";
 
 export class Displayable {
 
@@ -26,7 +27,7 @@ export class Displayable {
 
     protected readonly callbacks;
 
-    constructor(ctx, cord: Coordinate, size, color) {
+    constructor(ctx: CanvasRenderingContext2D, cord: Coordinate, size: Size, color: string) {
         this.ctx = ctx;
         this.cord = cord;
         this.size = size;
@@ -83,8 +84,8 @@ export class Displayable {
     public miniJeu(player: Player): void {
         this.player = player;
         this.miniJeuCanvas = document.createElement("canvas");
-        this.miniJeuCanvas.width = (window.innerWidth / 10) * 9;
-        this.miniJeuCanvas.height = (window.innerHeight / 10) * 9;
+        this.miniJeuCanvas.width = window.innerWidth;
+        this.miniJeuCanvas.height = window.innerHeight;
         document.body.appendChild(this.miniJeuCanvas);
         const c = $(this.miniJeuCanvas);
         c.addClass("task");

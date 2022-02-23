@@ -15,7 +15,7 @@ import {Fork} from "./Props/Fork";
 import {Wood} from "./Grounds/Wood";
 import {Cobblestone} from "./Grounds/Cobblestone";
 import {Dirt} from "./Grounds/Dirt";
-import {Player} from "./Props/Player";
+import {HayBale} from "./Props/HayBale";
 
 export class Environment {
 
@@ -154,6 +154,10 @@ export class Environment {
                 let bois = new Wood(this.ctx, object.coordonnees, object.size);
                 this.addToLayer(0, bois);
                 return bois;
+            case ObjectType.foin:
+                const foin = new HayBale(this.ctx, object.coordonnees, object.size, false);
+                this.addToLayer(1, foin);
+                return foin;
         }
     }
 }

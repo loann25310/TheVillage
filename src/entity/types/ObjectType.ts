@@ -10,5 +10,6 @@ export enum ObjectType {
     herbe = "herbe",
     pave = "pave",
     bois = "bois",
-    terre = "terre"
+    terre = "terre",
+    foin = "foin"
 }

@@ -7,7 +7,6 @@ export class Player extends Displayable {
 
     public static readonly defaultSize = { w: 80, h: 186 };
     private readonly image: HTMLImageElement;
-    private readonly callbacks;
     public isLocal;
     pid: number;
     public objectInteract: Displayable = null;
@@ -21,7 +20,6 @@ export class Player extends Displayable {
         this.cord = { x: positonDraw.x, y: positonDraw.y};
         this.image = document.createElement("img");
         this.image.src = "/img/Bonhomme.png";
-        this.callbacks = [];
         this.x = 0;
         this.y = 0;
         this.initSpawn();
@@ -95,18 +93,6 @@ export class Player extends Displayable {
         }
         this.emit("move");
         this.checkInteractions();
-    }
-
-    on(eventName: string, callback: ((data) => void)) {
-        if(!this.callbacks[eventName]) this.callbacks[eventName] = [];
-        this.callbacks[eventName].push(callback);
-    }
-
-    private emit(eventName: string, data: any = {}) {
-        if(!this.callbacks[eventName]) return;
-        for (const callback of this.callbacks[eventName]) {
-            callback(data);
-        }
     }
 
     setCord(cord: Coordinate) {
