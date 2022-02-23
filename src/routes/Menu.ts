@@ -34,8 +34,8 @@ export function Route(router: Router) {
             user: req.user
         });
     });
-    router.get('/choix', (req, res) => {
-        res.render('main/choix', {
+    router.get('/choice', (req, res) => {
+        res.render('main/choice', {
             user: req.user
         });
     });
