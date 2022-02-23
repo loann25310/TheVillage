@@ -136,19 +136,19 @@ setInterval(() => {
         setTimeout(() => lock_key_u = false, 400);
     }
 
-    if(keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && !keys["KEY_Q"])
+    if((keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && !keys["KEY_Q"]) || (keys["KEY_Z"] && keys["KEY_D"] && !keys["KEY_S"] && keys["KEY_Q"]))
         player.move(PlayerMove.moveN, shift);
     if(keys["KEY_Z"] && keys["KEY_D"] && !keys["KEY_S"] && !keys["KEY_Q"])
         player.move(PlayerMove.moveNE, shift);
-    if(!keys["KEY_Z"] && keys["KEY_D"] && !keys["KEY_S"] && !keys["KEY_Q"])
+    if((!keys["KEY_Z"] && keys["KEY_D"] && !keys["KEY_S"] && !keys["KEY_Q"]) || (keys["KEY_Z"] && keys["KEY_D"] && keys["KEY_S"] && !keys["KEY_Q"]))
         player.move(PlayerMove.moveE, shift);
     if(!keys["KEY_Z"] && keys["KEY_D"] && keys["KEY_S"] && !keys["KEY_Q"])
         player.move(PlayerMove.moveSE, shift);
-    if(!keys["KEY_Z"] && !keys["KEY_D"] && keys["KEY_S"] && !keys["KEY_Q"])
+    if((!keys["KEY_Z"] && !keys["KEY_D"] && keys["KEY_S"] && !keys["KEY_Q"]) || (!keys["KEY_Z"] && keys["KEY_D"] && keys["KEY_S"] && keys["KEY_Q"]))
         player.move(PlayerMove.moveS, shift);
     if(!keys["KEY_Z"] && !keys["KEY_D"] && keys["KEY_S"] && keys["KEY_Q"])
         player.move(PlayerMove.moveSW, shift);
-    if(!keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && keys["KEY_Q"])
+    if((!keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && keys["KEY_Q"]) || (keys["KEY_Z"] && !keys["KEY_D"] && keys["KEY_S"] && keys["KEY_Q"]))
         player.move(PlayerMove.moveW, shift);
     if(keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && keys["KEY_Q"])
         player.move(PlayerMove.moveNW, shift);
