@@ -77,8 +77,14 @@ async function init(){
     });
 
     /* useless ? */
-    player.on("task", (/* object */) => {
-    });
+    player.on("task", (/* object */) => {});
+
+    for (const o of player.environment.interactions) {
+        o.on("end_game", (completed) => {
+            o.endJeu(completed);
+            miniJeu = false;
+        });
+    }
 
     player.on("no_task", () => {
         player.objectInteract?.endJeu(false);
@@ -101,8 +107,6 @@ function draw() {
         ctx.fillStyle = "red";
         ctx.fillText(`[E] pour interagir avec ${player.objectInteract.name}`, window.innerWidth / 2, window.innerHeight - 300);
     }
-
-    if (!player.objectInteract) miniJeu = false;
 
     if (miniJeu) {
         requestAnimationFrame(() => {player.objectInteract?.drawJeu()});

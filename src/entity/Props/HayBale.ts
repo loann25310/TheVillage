@@ -2,7 +2,7 @@ import {Displayable} from "../Displayable";
 import {Coordinate} from "../types/Coordinate";
 
 export class HayBale extends Displayable {
-    public static readonly NB_HAY_BALES = 20;
+    public static readonly NB_HAY_BALES = 15;
     public passed: boolean;
     public inside: boolean;
     public correct: boolean;
@@ -42,7 +42,7 @@ export class HayBale extends Displayable {
             diffY: 0
         };
         mainLoop: for (let i = 0; i < HayBale.NB_HAY_BALES; i++) {
-            const coord = {x: Math.floor(Math.random() * (this.miniJeuCanvas.width - 70)), y: Math.floor(Math.random() * (this.miniJeuCanvas.height - 50))} as Coordinate;
+            const coord = {x: Math.floor(Math.random() * (this.miniJeuCanvas.width - 70 - 2 * HayBale.rectWidth()) + HayBale.rectWidth()), y: Math.floor(Math.random() * (this.miniJeuCanvas.height - 50))} as Coordinate;
             const h = new HayBale(this.miniJeuCanvas.getContext("2d"), coord, {w: 70, h: 50}, Math.random() < 0.5);
             for (const hay of this.jeu.hayBales)
                 if (h.hit(hay)) continue mainLoop;
@@ -55,6 +55,11 @@ export class HayBale extends Displayable {
         ctx.clearRect(0, 0, this.miniJeuCanvas.width, this.miniJeuCanvas.height);
         ctx.fillStyle = "#000";
         ctx.fillRect(0, 0, this.miniJeuCanvas.width, this.miniJeuCanvas.height);
+        const TAILLE_RECT = HayBale.rectWidth();
+        ctx.fillStyle = "#E6A51A";
+        ctx.fillRect(this.miniJeuCanvas.width - TAILLE_RECT, 0, TAILLE_RECT, window.innerHeight);
+        ctx.fillStyle = "#009D6F";
+        ctx.fillRect(0, 0, TAILLE_RECT, window.innerHeight);
         for (const h of this.jeu.hayBales) {
             if (h === this.jeu.dragged) {
                 this.moveDragged(h);
@@ -69,19 +74,27 @@ export class HayBale extends Displayable {
         h.vy = this.jeu.mouseY - this.jeu.diffY - h.cord.y;
         h.cord.x = this.jeu.mouseX - this.jeu.diffX;
         h.cord.y = this.jeu.mouseY - this.jeu.diffY;
+        if (h.cord.x < HayBale.rectWidth()) {
+            if (!h.passed) h.cord.x = HayBale.rectWidth() + 1;
+        } else if (h.cord.x > this.miniJeuCanvas.width - HayBale.rectWidth()) {
+            if (h.passed) h.cord.x = this.miniJeuCanvas.width - HayBale.rectWidth() - h.size.w - 1;
+        }
+        h.cord.y = Math.max(0, h.cord.y);
+        h.cord.y = Math.min(this.miniJeuCanvas.height - h.size.h, h.cord.y);
+
         h.draw();
     }
 
     handleMouseDown() {
         this.jeu.mouse = true;
         for (const h of this.jeu.hayBales){
+            if (h.correct) continue;
             if (this.jeu.mouseX >= h.cord.x &&
                 this.jeu.mouseX <= h.cord.x + h.size.w &&
                 this.jeu.mouseY >= h.cord.y &&
                 this.jeu.mouseY <= h.cord.y + h.size.h
             ) {
                 this.jeu.dragged = h;
-                console.log(h);
                 this.jeu.diffX = this.jeu.mouseX - h.cord.x;
                 this.jeu.diffY = this.jeu.mouseY - h.cord.y;
                 break;
@@ -90,14 +103,35 @@ export class HayBale extends Displayable {
     }
 
     handleMouseUp() {
+        if (this.jeu.dragged.cord.x < HayBale.rectWidth()) {
+            if (this.jeu.dragged.passed) {
+                this.jeu.dragged.correct = true;
+                this.jeu.dragged.cord.x = (HayBale.rectWidth() - this.jeu.dragged.size.w) / 2;
+                this.jeu.dragged.vx = 0;
+            }
+        }else if (this.jeu.dragged.cord.x + this.jeu.dragged.size.w > this.miniJeuCanvas.width - HayBale.rectWidth()) {
+            if (!this.jeu.dragged.passed) {
+                this.jeu.dragged.correct = true;
+                this.jeu.dragged.cord.x = this.miniJeuCanvas.width - (HayBale.rectWidth() + this.jeu.dragged.size.w) / 2;
+                this.jeu.dragged.vx = 0;
+            }
+        }
+        let finished = true;
+        for (const h of this.jeu.hayBales) {
+            if (!h.correct) {
+                finished = false;
+                break;
+            }
+        }
+        if (finished) this.emit("end_game", true);
         this.jeu.mouse = false;
         this.jeu.dragged = null;
     }
 
-    handleMouseMove(e) {
+    handleMouseMove(event) {
         const rect = this.miniJeuCanvas.getBoundingClientRect();
-        this.jeu.mouseX = (e.clientX - rect.left) / this.miniJeuCanvas.offsetWidth * this.miniJeuCanvas.width;
-        this.jeu.mouseY = (e.clientY - rect.top) / this.miniJeuCanvas.offsetHeight * this.miniJeuCanvas.height;
+        this.jeu.mouseX = (event.clientX - rect.left) / this.miniJeuCanvas.offsetWidth * this.miniJeuCanvas.width;
+        this.jeu.mouseY = (event.clientY - rect.top) / this.miniJeuCanvas.offsetHeight * this.miniJeuCanvas.height;
     }
 
     move(hayBales, canvas) {
@@ -105,7 +139,7 @@ export class HayBale extends Displayable {
         this.vx = this.vx < 0 ? Math.max(-5, this.vx) : Math.min(5, this.vx);
         this.vy = this.vy < 0 ? Math.max(-5, this.vy) : Math.min(5, this.vy);
         for (const h of hayBales) {
-            if (h.correct || h === this) continue;
+            if (h.correct || h === this || this.correct) continue;
             if (this.hit(h)) {
                 hits.push(h);
                 if (h.vx === 0){
@@ -124,7 +158,7 @@ export class HayBale extends Displayable {
                 }
             }
         }
-        if (this.cord.x + this.vx <= 0 || this.cord.x + this.size.w + this.vx > canvas.width) this.vx *= -1;
+        if (!this.correct && this.cord.x + this.vx <= HayBale.rectWidth() || this.cord.x + this.size.w + this.vx > canvas.width - HayBale.rectWidth()) this.vx *= -1;
         if (this.cord.y + this.vy <= 0 || this.cord.y + this.size.h + this.vy > canvas.height) this.vy *= -1;
         do {
             this.cord.y += this.vy;
@@ -159,5 +193,9 @@ export class HayBale extends Displayable {
         for (const h of bales)
             if (this.hit(h)) return true;
         return false;
+    }
+
+    static rectWidth() {
+        return window.innerWidth / 10;
     }
 }
