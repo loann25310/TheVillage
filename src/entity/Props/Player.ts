@@ -23,8 +23,9 @@ export class Player extends Displayable {
         this.environment = environment;
         this.cord = { x: positonDraw.x, y: positonDraw.y};
         this.image = document.createElement("img");
-        this.image.src = "/img/Bonhomme1R.png";
         this.goesRight = true;
+        this.link = this.url.next().value;
+        this.image.src = this.link;
         this.x = 0;
         this.y = 0;
         this.initSpawn();
@@ -171,13 +172,13 @@ export class Player extends Displayable {
     public *getUrl() {
         while(true) {
             for (let i = 0; i < 20; i++)
-                yield `/img/Bonhomme1${this.goesRight ? "R" : "L"}.png`;
-            for (let i = 0; i < 20; i++)
                 yield `/img/Bonhomme2${this.goesRight ? "R" : "L"}.png`;
             for (let i = 0; i < 20; i++)
                 yield `/img/Bonhomme3${this.goesRight ? "R" : "L"}.png`;
             for (let i = 0; i < 20; i++)
                 yield `/img/Bonhomme4${this.goesRight ? "R" : "L"}.png`;
+            for (let i = 0; i < 20; i++)
+                yield `/img/Bonhomme1${this.goesRight ? "R" : "L"}.png`;
         }
     }
 }
