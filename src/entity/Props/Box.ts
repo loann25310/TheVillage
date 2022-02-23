@@ -120,7 +120,7 @@ export class Box extends Displayable {
             if (this.jeu.gauche[this.jeu.dragged] === this.jeu.droite[d]) {
                 this.jeu.linked.push([this.jeu.dragged, d]);
                 if (this.jeu.linked.length === this.jeu.gauche.length) {
-                    this.endJeu(true);
+                    this.emit('end_game', true);
                     return;
                 }
             }
