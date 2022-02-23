@@ -16,4 +16,21 @@ export class Tree extends Displayable {
         this.ctx.drawImage(this.image, this.getPosition().x, this.getPosition().y, this.size.w, this.size.h);
     }
 
+    initJeu() {
+        this.jeu = {
+            birds: [],
+            mouseX: 0,
+            mouseY: 0
+        };
+    }
+
+    drawJeu() {
+
+    }
+
+    handleMouseMove(event) {
+        const rect = this.miniJeuCanvas.getBoundingClientRect();
+        this.jeu.mouseX = (event.clientX - rect.left) / this.miniJeuCanvas.offsetWidth * this.miniJeuCanvas.width;
+        this.jeu.mouseY = (event.clientY - rect.top) / this.miniJeuCanvas.offsetHeight * this.miniJeuCanvas.height;
+    }
 }

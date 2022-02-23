@@ -10,12 +10,15 @@ export class Player extends Displayable {
     public isLocal;
     pid: number;
     public objectInteract: Displayable = null;
+    private url;
+    public link;
 
     public x;
     public y;
 
     constructor(ctx, environment, positonDraw: Coordinate, size) {
         super(ctx, positonDraw, size, null );
+        this.url = this.getUrl();
         this.environment = environment;
         this.cord = { x: positonDraw.x, y: positonDraw.y};
         this.image = document.createElement("img");
@@ -50,6 +53,7 @@ export class Player extends Displayable {
     }
 
     move(type: PlayerMove, sprint: boolean) {
+        this.link = this.url.next().value as string;
         let pixelSprint = 4;
         let pixelNoSprint = 1;
         let condition = (sprint) ? pixelSprint : pixelNoSprint;
@@ -153,6 +157,19 @@ export class Player extends Displayable {
         if (!seen && this.objectInteract !== null) {
             this.emit("no_task");
             this.objectInteract = null;
+        }
+    }
+
+    public *getUrl() {
+        while(true) {
+            for (let i = 0; i < 20; i++)
+                yield `/img/Bonhomme1.png`;
+            for (let i = 0; i < 20; i++)
+                yield `/img/Bonhomme2.png`;
+            for (let i = 0; i < 20; i++)
+                yield `/img/Bonhomme3.png`;
+            for (let i = 0; i < 20; i++)
+                yield `/img/Bonhomme4.png`;
         }
     }
 }

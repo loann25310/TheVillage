@@ -61,7 +61,6 @@ async function init(){
         addRemotePlayer(data);
     });
     socket.on("playerMove", (data) => {
-        console.log(data, data.id === user.id);
         if(data.id === user.id) return;
         let remotePlayer = getPlayerById(data.id);
         if(!remotePlayer) remotePlayer = addRemotePlayer(data);
@@ -98,7 +97,7 @@ let personnage = new Image();
 function draw() {
     requestAnimationFrame(draw);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    personnage.src = "/img/Bonhomme.png";
+    personnage.src = player.link;
     environment.update();
     ctx.drawImage(personnage, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
     if (player.objectInteract !== null && !miniJeu) {
