@@ -72,6 +72,11 @@
       "type": "arbre",
       "coordonnees": {"x" : 300, "y" : 700},
       "size": {"w": 180, "h": 130}
+    },
+    {
+      "type": "maison",
+      "coordonnees" : {"x" :300, "y" :800},
+      "size": {"w": 175, "h": 130}
     }
   ],
   "size": {
