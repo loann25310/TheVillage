@@ -11,6 +11,7 @@ export class Player extends Displayable {
     public static imgL1: HTMLImageElement;
     public static imgL2: HTMLImageElement;
     public static imgL3: HTMLImageElement;
+    private readonly decalage: number;
     public static readonly defaultSize = { w: 80, h: 186 };
     image: HTMLImageElement;
     public isLocal;
@@ -31,6 +32,7 @@ export class Player extends Displayable {
         this.image = this.getImg.next().value;
         this.x = 0;
         this.y = 0;
+        this.decalage = Math.random() * 1000;
         this.initSpawn().then();
     }
 
@@ -174,7 +176,7 @@ export class Player extends Displayable {
 
     public *GeneratorGetImg() {
         while(true) {
-            const millis = new Date().getMilliseconds();
+            const millis = (new Date().getMilliseconds() + this.decalage) % 1000;
             if (millis < 250)
                 yield this.goesRight ? Player.imgR1 : Player.imgL1; //Bonhomme2
             else if (millis < 500)
