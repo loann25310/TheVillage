@@ -27,7 +27,8 @@ export class House extends Displayable {
             mouseX: 0,
             mouseY: 0,
             caseAttendue: null,
-            click: false
+            click: false,
+            tromper: false
         };
         for (let i = 0; i < 5; i++) {
             this.jeu.ecran.push(Math.floor(Math.random() * 9))
@@ -51,8 +52,12 @@ export class House extends Displayable {
             ctx.fill();
         }
         ctx.beginPath();
+        ctx.fillStyle = "#16ef1e";
+        if(this.jeu.tromper) {
+            ctx.fillStyle = "#fc0000";
+            if(this.jeu.maxTemps < this.jeu.day.getTime()) this.initJeu();
+        }
         for(let i = 0; i < this.jeu.compteur; i++) {
-            ctx.fillStyle = "#16ef1e";
             ctx.ellipse(i * 100 + 315, 200, 5, 5, Math.PI, 0, 2*Math.PI);
             ctx.fill();
         }
@@ -92,12 +97,18 @@ export class House extends Displayable {
     }
 
     handleMouseUp() {
-        if (this.jeu.mouseY >= Math.floor(this.jeu.caseAttendue / 3) * 150 + 280 &&
-            this.jeu.mouseY <= Math.floor(this.jeu.caseAttendue / 3) * 150 + 280 + 140 &&
-            this.jeu.mouseX >= this.jeu.caseAttendue%3 * 150 + 925 &&
-            this.jeu.mouseX <= this.jeu.caseAttendue%3 * 150 + 925 + 140
-        ) this.jeu.click = true;
-        console.log(this.jeu.caseAttendue);
+        if(!this.jeu.tromper) {
+            if (this.jeu.mouseY >= Math.floor(this.jeu.caseAttendue / 3) * 150 + 280 &&
+                this.jeu.mouseY <= Math.floor(this.jeu.caseAttendue / 3) * 150 + 280 + 140 &&
+                this.jeu.mouseX >= this.jeu.caseAttendue % 3 * 150 + 925 &&
+                this.jeu.mouseX <= this.jeu.caseAttendue % 3 * 150 + 925 + 140
+            ) {
+                this.jeu.click = true;
+            }else{
+                this.jeu.tromper = true;
+                this.jeu.maxTemps = this.jeu.day.getTime()+500;
+            }
+        }
     }
 
     handleMouseMove(event) {
