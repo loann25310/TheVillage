@@ -42,8 +42,8 @@ export class HayBale extends Displayable {
             diffY: 0
         };
         mainLoop: for (let i = 0; i < HayBale.NB_HAY_BALES; i++) {
-            const coord = {x: Math.floor(Math.random() * (this.miniJeuCanvas.width - 70 - 2 * HayBale.rectWidth()) + HayBale.rectWidth()), y: Math.floor(Math.random() * (this.miniJeuCanvas.height - 50))} as Coordinate;
-            const h = new HayBale(this.miniJeuCanvas.getContext("2d"), coord, {w: 70, h: 50}, Math.random() < 0.5);
+            const cord = {x: Math.floor(Math.random() * (this.miniJeuCanvas.width - 70 - 2 * HayBale.rectWidth()) + HayBale.rectWidth()), y: Math.floor(Math.random() * (this.miniJeuCanvas.height - 50))} as Coordinate;
+            const h = new HayBale(this.miniJeuCanvas.getContext("2d"), cord, {w: 70, h: 50}, Math.random() < 0.5);
             for (const hay of this.jeu.hayBales)
                 if (h.hit(hay)) continue mainLoop;
             this.jeu.hayBales.push(h);
@@ -103,6 +103,7 @@ export class HayBale extends Displayable {
     }
 
     handleMouseUp() {
+        if (!this.jeu.dragged) return;
         if (this.jeu.dragged.cord.x < HayBale.rectWidth()) {
             if (this.jeu.dragged.passed) {
                 this.jeu.dragged.correct = true;

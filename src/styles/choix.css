@@ -21,10 +21,18 @@ html, body{
 
 }
 .retour{
+    outline: none;
+    border: none;
     height: 100%;
     width: 10%;
-    background-color: darkred;
+    background:linear-gradient(-45deg,darkred,black);
+    box-shadow: 5px 5px black;
     color: white;
+}
+.retour:active{
+    box-shadow: 2px 2px black;
+    transform: translateY(3px) translateX(3px);
+    transition-duration: 1.5ms;
 }
 .header{
     height: 10px;
@@ -64,8 +72,16 @@ form{
 #parties{
     margin-top: 20px;
 
+
 }
 #show_parties{
     display: none;
+    background: linear-gradient(45deg,darkred,black);
+    margin-top: 20px;
+    padding: 20px;
+}
+.games_list{
+    color: white;
+    background-color: #9a0507;
 }
 

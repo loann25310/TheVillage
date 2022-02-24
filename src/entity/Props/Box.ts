@@ -135,11 +135,11 @@ export class Box extends Displayable {
     }
 
     getLinkedPosition(left: {
-    fil: number,
-    xMin: number,
-    xMax: number,
-    yMin: number,
-    yMax : number}, right:  {
+        fil: number,
+        xMin: number,
+        xMax: number,
+        yMin: number,
+        yMax : number}, right: {
         fil: number,
         xMin: number,
         xMax: number,
@@ -154,17 +154,19 @@ export class Box extends Displayable {
                 angle: 0
             }
         }
+
         const largeur = (left.yMax - left.yMin);
 
         const diagonale = Math.sqrt(((this.miniJeuCanvas.width - 2 * right.xMax) ** 2) + (((left.yMax > right.yMax) ? ((left.yMax - right.yMin)) : (left.yMin - right.yMax)) ** 2));
         const longueur = Math.sqrt(Math.abs((largeur * largeur) - (diagonale * diagonale)));
-        //const yPoint = Math.atan((left.yMax - right.yMax) / (this.miniJeuCanvas.width - 2 * left.xMax));
-        const angle = Math.atan((left.yMin - right.yMin) / longueur);
+        const angleRectangle = Math.atan(largeur / longueur);
+        const angleDeBase = Math.atan(((left.yMax > right.yMax) ? ((left.yMax - right.yMin)) : (left.yMin - right.yMax)) / (this.miniJeuCanvas.width - 2 * right.xMax));
+        const angle = left.yMax > right.yMax ? angleRectangle - angleDeBase : -angleRectangle - angleDeBase;
         return {
             opposite: largeur,
             adjacent: longueur,
             hypotenuse: diagonale,
-            angle
+            angle: -angle
         };
     }
 }
