@@ -25,13 +25,16 @@ export class PineTree extends Displayable {
         this.jeu = {
             mouseX: null,
             pommes : [] as PineCone[],
-            compteur: 0
+            compteur: 0,
+            hauteur: -50,
+            gain: 10
         };
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 10; i++) {
             this.jeu.pommes.push(new PineCone(this.miniJeuCanvas.getContext("2d"), {
                 x: Math.random() * (this.miniJeuCanvas.width - 100),
-                y: 0 - Math.random()*1500
+                y: this.jeu.hauteur
             }, {w: 70, h: 50}));
+            this.jeu.hauteur -= 700;
         }
     }
 
@@ -44,7 +47,7 @@ export class PineTree extends Displayable {
         ctx.font = "20px sans-serif";
         ctx.textAlign = "center";
         ctx.fillStyle = "#e3bc00";
-        ctx.fillText(`Pommes de pin récupérées : ${this.jeu.compteur} / 20`, this.miniJeuCanvas.width/2, 50);
+        ctx.fillText(`Pommes de pin récupérées : ${this.jeu.compteur} / ${this.jeu.gain}`, this.miniJeuCanvas.width/2, 50);
         ctx.fillStyle = "#9e590a";
         ctx.ellipse(this.jeu.mouseX, this.miniJeuCanvas.height-100, 100, 75, Math.PI, Math.PI, 0);
         ctx.fill();
@@ -52,20 +55,17 @@ export class PineTree extends Displayable {
             pomme.draw();
             pomme.setCord({
                 x: pomme.cord.x,
-                y: pomme.cord.y+5
+                y: pomme.cord.y+10
             });
             if (pomme.cord.y >= this.miniJeuCanvas.height) {
-                pomme.setCord({
-                    x: Math.random() * (this.miniJeuCanvas.width - 100),
-                    y: 0
-                });
+                this.initJeu();
             }
             if(pomme.cord.x >= this.jeu.mouseX-100 && pomme.cord.x <= this.jeu.mouseX+100 && pomme.cord.y >= this.miniJeuCanvas.height-120 && pomme.cord.y <= this.miniJeuCanvas.height-50){
                 this.jeu.pommes.splice(this.jeu.pommes.indexOf(pomme),1);
                 this.jeu.compteur+=1;
             }
         }
-        if(this.jeu.compteur === 20) this.emit("end_game", true);
+        if(this.jeu.compteur === this.jeu.gain) this.emit("end_game", true);
     }
 
     handleMouseMove(e) {
