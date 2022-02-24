@@ -34,6 +34,19 @@ let ctx = canvas.getContext('2d');
 canvas.width  = window.innerWidth;
 canvas.height = window.innerHeight;
 
+Player.imgL1 = document.createElement("img");
+Player.imgL1.src = `/img/Bonhomme2L.png`;
+Player.imgR1 = document.createElement("img");
+Player.imgR1.src = `/img/Bonhomme2R.png`;
+Player.imgL2 = document.createElement("img");
+Player.imgL2.src = `/img/Bonhomme1L.png`;
+Player.imgR2 = document.createElement("img");
+Player.imgR2.src = `/img/Bonhomme1R.png`;
+Player.imgL3 = document.createElement("img");
+Player.imgL3.src = `/img/Bonhomme3L.png`;
+Player.imgR3 = document.createElement("img");
+Player.imgR3.src = `/img/Bonhomme3R.png`;
+Player.imgR3.alt = "oh no"
 let player = new Player(ctx, environment, { x: (canvas.width-100) / 2, y: (canvas.height-152) / 2 }, Player.defaultSize);
 player.x = (canvas.width-100) / 2;
 player.y = (canvas.height-152) / 2;
@@ -92,12 +105,12 @@ async function init(){
 }
 init().then();
 
-let personnage = new Image();
+let personnage: HTMLImageElement;
 
 function draw() {
     requestAnimationFrame(draw);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    personnage.src = player.link;
+    personnage = player.image;
     environment.update();
     ctx.drawImage(personnage, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
     if (player.objectInteract !== null && !miniJeu) {

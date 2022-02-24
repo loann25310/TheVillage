@@ -5,30 +5,33 @@ import axios from "axios";
 
 export class Player extends Displayable {
 
+    public static imgR1: HTMLImageElement;
+    public static imgR2: HTMLImageElement;
+    public static imgR3: HTMLImageElement;
+    public static imgL1: HTMLImageElement;
+    public static imgL2: HTMLImageElement;
+    public static imgL3: HTMLImageElement;
     public static readonly defaultSize = { w: 80, h: 186 };
-    private readonly image: HTMLImageElement;
+    image: HTMLImageElement;
     public isLocal;
     pid: number;
     public objectInteract: Displayable = null;
-    private url;
+    private getImg;
     public goesRight: boolean;
-    public link;
 
     public x;
     public y;
 
     constructor(ctx, environment, positonDraw: Coordinate, size) {
         super(ctx, positonDraw, size, null );
-        this.url = this.getUrl();
+        this.getImg = this.GeneratorGetImg();
         this.environment = environment;
         this.cord = { x: positonDraw.x, y: positonDraw.y};
-        this.image = document.createElement("img");
         this.goesRight = true;
-        this.link = this.url.next().value;
-        this.image.src = this.link;
+        this.image = this.getImg.next().value;
         this.x = 0;
         this.y = 0;
-        this.initSpawn();
+        this.initSpawn().then();
     }
 
     async initSpawn() {
@@ -56,7 +59,7 @@ export class Player extends Displayable {
     }
 
     move(type: PlayerMove, sprint: boolean) {
-        this.link = this.url.next().value as string;
+        this.image = this.getImg.next().value as HTMLImageElement;
         let pixelSprint = 4;
         let pixelNoSprint = 1;
         let condition = (sprint) ? pixelSprint : pixelNoSprint;
@@ -169,16 +172,17 @@ export class Player extends Displayable {
         }
     }
 
-    public *getUrl() {
+    public *GeneratorGetImg() {
         while(true) {
-            for (let i = 0; i < 20; i++)
-                yield `/img/Bonhomme2${this.goesRight ? "R" : "L"}.png`;
-            for (let i = 0; i < 20; i++)
-                yield `/img/Bonhomme3${this.goesRight ? "R" : "L"}.png`;
-            for (let i = 0; i < 20; i++)
-                yield `/img/Bonhomme4${this.goesRight ? "R" : "L"}.png`;
-            for (let i = 0; i < 20; i++)
-                yield `/img/Bonhomme1${this.goesRight ? "R" : "L"}.png`;
+            const millis = new Date().getMilliseconds();
+            if (millis < 250)
+                yield this.goesRight ? Player.imgR1 : Player.imgL1; //Bonhomme2
+            else if (millis < 500)
+                yield this.goesRight ? Player.imgR2 : Player.imgL2; // Bonhomme1
+            else if (millis < 750)
+                yield this.goesRight ? Player.imgR1 : Player.imgL1; // Bonhomme2
+            else
+                yield this.goesRight ? Player.imgR3 : Player.imgL3;  // Bonhomme3
         }
     }
 }
