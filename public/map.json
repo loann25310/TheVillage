@@ -67,6 +67,11 @@
       "type": "sapin",
       "coordonnees": {"x" : 1200, "y" : 300},
       "size": {"w": 180, "h": 130}
+    },
+    {
+      "type": "arbre",
+      "coordonnees": {"x" : 300, "y" : 700},
+      "size": {"w": 180, "h": 130}
     }
   ],
   "size": {
