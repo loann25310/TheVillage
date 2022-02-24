@@ -5,6 +5,7 @@ import {Bird} from "./Bird";
 export class Tree extends Displayable {
     private readonly image: HTMLImageElement;
     public static readonly NB_BIRDS = 5;
+    public static readonly NB_BULLETS = 7;
     public static readonly TAILLE_CROSSHAIR = 80;
 
     constructor(ctx, cord: Coordinate, size) {
@@ -19,12 +20,16 @@ export class Tree extends Displayable {
     }
 
     initJeu() {
+        const bulletImg = document.createElement("img");
+        bulletImg.src = `/img/bullet.png`;
         this.jeu = {
             birds: [],
             mouseX: 0,
             mouseY: 0,
             cx: this.miniJeuCanvas.width / 2 + 40,
-            cy: this.miniJeuCanvas.height / 2 + 40
+            cy: this.miniJeuCanvas.height / 2 + 40,
+            bullets: Tree.NB_BULLETS,
+            bulletImg
         };
         if (!Bird.img1R) {
             Bird.img1R = document.createElement("img");
@@ -84,17 +89,27 @@ export class Tree extends Displayable {
         ctx.rect(this.jeu.cx - 2, this.jeu.cy - 33, 4, 14);
         ctx.rect(this.jeu.cx + 19, this.jeu.cy - 2, 14, 4);
         ctx.rect(this.jeu.cx - 33, this.jeu. cy - 2, 14, 4);
+        ctx.textAlign = "end";
+        ctx.font = "50px sans-serif";
+        ctx.fillStyle = "#AD711C";
+        for (let i = 1; i <= this.jeu.bullets; i++) {
+            ctx.drawImage(this.jeu.bulletImg, this.miniJeuCanvas.width - 40 * i - 60, this.miniJeuCanvas.height-130);
+        }
+        ctx.drawImage(this.jeu.bulletImg, this.miniJeuCanvas.width - 100, this.miniJeuCanvas.height-130);
         ctx.stroke();
     }
 
     handleMouseUp() {
+        this.jeu.bullets --;
         for (const b of this.jeu.birds) {
             if (this.jeu.cx < b.cord.x + b.size.w && this.jeu.cx > b.cord.x && this.jeu.cy > b.cord.y && this.jeu.cy < b.cord.y + b.size.h) {
                 this.jeu.birds.splice(this.jeu.birds.indexOf(b), 1);
                 if (this.jeu.birds.length === 0) this.emit("end_game", true);
+                if (this.jeu.bullets === 0) this.emit("end_game", false);
                 return;
             }
         }
+        if (this.jeu.bullets === 0) this.emit("end_game", false);
     }
 
     handleMouseMove(event) {
