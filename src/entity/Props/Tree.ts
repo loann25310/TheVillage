@@ -105,7 +105,7 @@ export class Tree extends Displayable {
             if (this.jeu.cx < b.cord.x + b.size.w && this.jeu.cx > b.cord.x && this.jeu.cy > b.cord.y && this.jeu.cy < b.cord.y + b.size.h) {
                 this.jeu.birds.splice(this.jeu.birds.indexOf(b), 1);
                 if (this.jeu.birds.length === 0) this.emit("end_game", true);
-                if (this.jeu.bullets === 0) this.emit("end_game", false);
+                else if (this.jeu.bullets === 0) this.emit("end_game", false);
                 return;
             }
         }
