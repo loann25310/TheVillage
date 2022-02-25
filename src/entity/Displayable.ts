@@ -107,15 +107,40 @@ export class Displayable {
      * (j'aurais dûn l'appeler `endgame` tsss)
      * @param reussi
      * `true` si le joueur a fini le mini-jeu, `false` sinon (il le ferme ou va trop loin sans l'avoir fini)
+     * @param delayed
+     * `false` si le jeu doit s'arrêter instantanément (par ex le joueur s'éloigne)
      */
-    public endJeu(reussi: boolean) {
-        this.jeu = null;
-        if (this.miniJeuCanvas)
-            document.body.removeChild(this.miniJeuCanvas);
-        this.miniJeuCanvas = null;
-        if (reussi) {
-            this.player.environment.interactions.splice(this.player.environment.interactions.indexOf(this), 1);
-            this.player.objectInteract = null;
+    public endJeu(reussi: boolean, delayed= true) {
+        if (!delayed) {
+            this.jeu = null;
+            if (this.miniJeuCanvas)
+                document.body.removeChild(this.miniJeuCanvas);
+            this.miniJeuCanvas = null;
+            if (reussi) {
+                this.player.environment.interactions.splice(this.player.environment.interactions.indexOf(this), 1);
+                this.player.objectInteract = null;
+            }
+            return;
+        }
+        const dj = this.drawJeu;
+        setTimeout(() => {
+            this.jeu = null;
+            if (this.miniJeuCanvas)
+                document.body.removeChild(this.miniJeuCanvas);
+            this.miniJeuCanvas = null;
+            if (reussi) {
+                this.player.environment.interactions.splice(this.player.environment.interactions.indexOf(this), 1);
+                this.player.objectInteract = null;
+            } else {
+                this.drawJeu = dj;
+            }
+        }, 1000);
+
+        this.drawJeu = () => {
+            const ctx = this.miniJeuCanvas.getContext("2d");
+            ctx.clearRect(0, 0, this.miniJeuCanvas.width, this.miniJeuCanvas.height);
+            ctx.fillStyle = reussi ? "#0F0" : "#F00";
+            ctx.fillRect(0, 0, this.miniJeuCanvas.width, this.miniJeuCanvas.height);
         }
     }
 }
