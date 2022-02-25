@@ -133,7 +133,7 @@ let lock_key_u = false;
 let miniJeu = false;
 let playerCount = 1;
 setInterval(() => {
-    let shift = keys["KEY_SHIFT"] == true;
+    let shift = keys["KEY_SHIFT"] === true;
 
     if (keys["KEY_E"] && !miniJeu && player.objectInteract !== null) {
         miniJeu = true;
@@ -148,22 +148,26 @@ setInterval(() => {
         console.log(player.getPosition());
         setTimeout(() => lock_key_u = false, 400);
     }
+    const up = keys["KEY_Z"] || keys["KEY_ARROWUP"];
+    const left = keys["KEY_Q"] || keys["KEY_ARROWLEFT"];
+    const down = keys["KEY_S"] || keys["KEY_ARROWDOWN"];
+    const right = keys["KEY_D"] || keys["KEY_ARROWRIGHT"];
 
-    if((keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && !keys["KEY_Q"]) || (keys["KEY_Z"] && keys["KEY_D"] && !keys["KEY_S"] && keys["KEY_Q"]))
+    if((up && !right && !down && !left) || (up && right && !down && left))
         player.move(PlayerMove.moveN, shift);
-    if(keys["KEY_Z"] && keys["KEY_D"] && !keys["KEY_S"] && !keys["KEY_Q"])
+    if(up && right && !down && !left)
         player.move(PlayerMove.moveNE, shift);
-    if((!keys["KEY_Z"] && keys["KEY_D"] && !keys["KEY_S"] && !keys["KEY_Q"]) || (keys["KEY_Z"] && keys["KEY_D"] && keys["KEY_S"] && !keys["KEY_Q"]))
+    if((!up && right && !down && !left) || (up && right && down && !left))
         player.move(PlayerMove.moveE, shift);
-    if(!keys["KEY_Z"] && keys["KEY_D"] && keys["KEY_S"] && !keys["KEY_Q"])
+    if(!up && right && down && !left)
         player.move(PlayerMove.moveSE, shift);
-    if((!keys["KEY_Z"] && !keys["KEY_D"] && keys["KEY_S"] && !keys["KEY_Q"]) || (!keys["KEY_Z"] && keys["KEY_D"] && keys["KEY_S"] && keys["KEY_Q"]))
+    if((!up && !right && down && !left) || (!up && right && down && left))
         player.move(PlayerMove.moveS, shift);
-    if(!keys["KEY_Z"] && !keys["KEY_D"] && keys["KEY_S"] && keys["KEY_Q"])
+    if(!up && !right && down && left)
         player.move(PlayerMove.moveSW, shift);
-    if((!keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && keys["KEY_Q"]) || (keys["KEY_Z"] && !keys["KEY_D"] && keys["KEY_S"] && keys["KEY_Q"]))
+    if((!up && !right && !down && left) || (up && !right && down && left))
         player.move(PlayerMove.moveW, shift);
-    if(keys["KEY_Z"] && !keys["KEY_D"] && !keys["KEY_S"] && keys["KEY_Q"])
+    if(up && !right && !down && left)
         player.move(PlayerMove.moveNW, shift);
     $('.getPosition').text(`{ x: ${player.getPosition().x}, y: ${player.getPosition().y} }`);
     $('.getDrawnPosition').text(`{ x: ${player.getDrawnPosition().x}, y: ${player.getDrawnPosition().y} }`);
