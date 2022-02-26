@@ -173,7 +173,6 @@ share.on("click", () => {
     (w[0] as HTMLTextAreaElement).select();
     try {
         let successful = document.execCommand('copy');
-        console.log(successful);
         let title = $("#title_link");
         title.text(successful ? "Lien copié !" : "Copiez ce lien");
     } catch (err) {

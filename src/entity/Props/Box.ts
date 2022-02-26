@@ -62,7 +62,6 @@ export class Box extends Displayable {
         for (let i = 0; i < this.jeu.linked.length; i++) {
             ctx.fillStyle = this.jeu.gauche[this.jeu.linked[i][0]];
             const trait = this.getLinkedPosition(this.jeu.coords[this.jeu.linked[i][0]], this.jeu.coords[this.jeu.linked[i][1]]);
-            console.log(trait);
             if (trait.opposite === 0){ctx.fillRect(this.jeu.coords[this.jeu.linked[i][0]].xMax, this.jeu.coords[this.jeu.linked[i][0]].yMin, trait.adjacent,40 ); continue;}
             ctx.save();
             ctx.translate(this.jeu.coords[this.jeu.linked[i][0]].xMax, trait.angle < 0 ? this.jeu.coords[this.jeu.linked[i][0]].yMin : this.jeu.coords[this.jeu.linked[i][0]].yMax)

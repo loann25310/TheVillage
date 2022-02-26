@@ -121,7 +121,6 @@ export class Player extends Displayable {
         const hits = (this.environment.getHitBox(this.getPosition(), this.size));
         for (const o of hits) {
             if (this.hit(o)) {
-                console.log(o)
                 return this.move(antiMovement, sprint);
             }
         }
