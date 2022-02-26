@@ -130,6 +130,12 @@ draw();
 const keys = [];
 window.addEventListener("keydown",function(e){ keys["KEY_" + e.key.toUpperCase()] = true },false);
 window.addEventListener('keyup',function(e){ keys["KEY_" + e.key.toUpperCase()] = false },false);
+window.addEventListener("resize", () => {
+    const diff = {w: canvas.width - window.innerWidth, h: canvas.height - window.innerHeight};
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    environment.setCord({x: environment.origine.x - diff.w / 2, y: environment.origine.y - diff.h / 2})
+});
 let lock_key_u = false;
 let miniJeu = false;
 let playerCount = 1;
