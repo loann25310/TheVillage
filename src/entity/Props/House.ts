@@ -86,7 +86,7 @@ export class House extends Displayable {
             this.jeu.maxTemps = this.jeu.date.getTime()+1000;
         }
 
-        if(this.jeu.date.getTime() > this.jeu.maxTemps-100) {
+        if(this.jeu.date.getTime() > this.jeu.maxTemps-100 && !this.jeu.tromper) {
             if (this.jeu.compteurTotal > this.jeu.compteurCase) {
                 this.jeu.compteurCase++;
                 this.jeu.maxTemps = this.jeu.date.getTime() + 1000;
@@ -112,7 +112,14 @@ export class House extends Displayable {
         ctx.stroke();
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
-                ctx.fillStyle = "#293148";
+                if(!this.jeu.clickable) {
+                    ctx.fillStyle = "#293148";
+                }else if(this.jeu.clickable){
+                    ctx.fillStyle = "#6e82b4";
+                }
+                if(this.jeu.tromper){
+                    ctx.fillStyle = "#be0b0b";
+                }
                 ctx.fillRect(j * 150 + 925, i * 150 + 280, 140, 140);
             }
         }
@@ -131,7 +138,7 @@ export class House extends Displayable {
                     this.jeu.click = true;
                 } else {
                     this.jeu.tromper = true;
-                    this.jeu.maxTemps = this.jeu.date.getTime() + 500;
+                    this.jeu.maxTemps = this.jeu.date.getTime() + 1000;
                 }
             }
         }
