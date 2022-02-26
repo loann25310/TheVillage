@@ -58,6 +58,7 @@ export class House extends Displayable {
         ctx.beginPath();
         ctx.fillStyle = "#16ef1e";
         if(this.jeu.tromper) {
+            this.jeu.compteurTotal = 5;
             ctx.fillStyle = "#fc0000";
             if(this.jeu.maxTemps < this.jeu.date.getTime()) this.initJeu();
         }
@@ -95,7 +96,7 @@ export class House extends Displayable {
         }
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
-                if(this.jeu.date.getTime() < this.jeu.maxTemps-100) {
+                if(this.jeu.date.getTime() < this.jeu.maxTemps-100 && !this.jeu.tromper) {
                     if (this.jeu.ecran[this.jeu.compteurCase] == (i * 3 + j)) {
                         ctx.fillStyle = "#16ef1e";
                         ctx.fillRect(j * 150 + 300, i * 150 + 280, 140, 140);
@@ -116,22 +117,35 @@ export class House extends Displayable {
             }
         }
 
-        if (this.jeu.compteurTotal === 5) this.emit("end_game", true);
+        if (this.jeu.compteurTotal === 5 && !this.jeu.tromper) this.emit("end_game", true);
     }
 
     handleMouseUp() {
         if(!this.jeu.tromper && this.jeu.clickable) {
-            if (this.jeu.mouseY >= Math.floor(this.jeu.caseAttendue / 3) * 150 + 280 &&
-                this.jeu.mouseY <= Math.floor(this.jeu.caseAttendue / 3) * 150 + 280 + 140 &&
-                this.jeu.mouseX >= this.jeu.caseAttendue % 3 * 150 + 925 &&
-                this.jeu.mouseX <= this.jeu.caseAttendue % 3 * 150 + 925 + 140
-            ) {
-                this.jeu.click = true;
-            }else{
-                this.jeu.tromper = true;
-                this.jeu.maxTemps = this.jeu.date.getTime()+500;
+            if(this.testZones(this.jeu.mouseX, this.jeu.mouseY)) {
+                if (this.jeu.mouseY >= Math.floor(this.jeu.caseAttendue / 3) * 150 + 280 &&
+                    this.jeu.mouseY <= Math.floor(this.jeu.caseAttendue / 3) * 150 + 280 + 140 &&
+                    this.jeu.mouseX >= this.jeu.caseAttendue % 3 * 150 + 925 &&
+                    this.jeu.mouseX <= this.jeu.caseAttendue % 3 * 150 + 925 + 140
+                ) {
+                    this.jeu.click = true;
+                } else {
+                    this.jeu.tromper = true;
+                    this.jeu.maxTemps = this.jeu.date.getTime() + 500;
+                }
             }
         }
+    }
+
+    testZones(mousex, mousey) {
+        for (let i = 0; i < 9; i++) {
+            if (mousey >= Math.floor(i / 3) * 150 + 280 &&
+                mousey <= Math.floor(i / 3) * 150 + 280 + 140 &&
+                mousex >= i % 3 * 150 + 925 &&
+                mousex <= i % 3 * 150 + 925 + 140
+            ) return true;
+        }
+        return false;
     }
 
     handleMouseMove(event) {
