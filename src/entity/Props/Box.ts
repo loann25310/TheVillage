@@ -9,6 +9,7 @@ export class Box extends Displayable {
         super(ctx, cord, size, null);
         this.image = document.createElement("img");
         this.image.src = "/img/box.png";
+        this.hittable = true;
     }
 
     draw() {

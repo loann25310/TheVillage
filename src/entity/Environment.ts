@@ -24,10 +24,12 @@ export class Environment {
     size: { w: number, h: number };
     ctx: CanvasRenderingContext2D;
     interactions: Displayable[];
+    hitBoxes: Displayable[][][];
 
     constructor() {
         this.layers = [];
         this.interactions = [];
+        this.hitBoxes = [];
         this.setOrigine({x:0,y:0});
     }
 
@@ -65,13 +67,15 @@ export class Environment {
             this.size = value.data.size;
             this.setOrigine({x: -value.data.players_spawn[0].x+ctx.canvas.width/2, y: -value.data.players_spawn[0].y+ctx.canvas.height/2});
             for (const object of value.data.objects as { type: ObjectType, coordonnees: Coordinate, size: Size }[]) {
-                this.createObject(object);
+                const o = this.createObject(object);
+                this.addHitBox(o);
             }
 
             for (const object of value.data.interactions as { type: ObjectType, coordonnees: Coordinate, size: Size }[]) {
                 const o = this.createObject(object);
                 o.name = object.type;
                 this.interactions.push(o);
+                this.addHitBox(o);
             }
 
             console.log(this.size);
@@ -89,6 +93,7 @@ export class Environment {
     move(movement: { x: number, y: number }){
         this.origine.x += movement.x;
         this.origine.y += movement.y;
+
     }
 
     setCord(cord: {x: number; y: number}) {
@@ -159,5 +164,42 @@ export class Environment {
                 this.addToLayer(1, foin);
                 return foin;
         }
+    }
+    
+    addHitBox(o: Displayable) {
+        if (!o.hittable) return;
+        for (let x = (o.cord.x - o.cord.x % 100); x <= (o.cord.x - o.cord.x % 100 + o.size.w - o.size.w % 100); x += 100) {
+            if (!this.hitBoxes[x]) {
+                this.hitBoxes[x] = [];
+            }
+
+            for (let y = o.cord.y - o.cord.y % 100; y <= o.cord.y - o.cord.y % 100 + o.size.h - o.size.h % 100; y += 100) {
+                if (!this.hitBoxes[x][y]) {
+                    this.hitBoxes[x][y] = [];
+                }
+                this.hitBoxes[x][y].push(o);
+            }
+        }
+    }
+
+    getHitBox(cord: Coordinate, size: Size): Displayable[] {
+        const objects = [] as Displayable[];
+        for (let x = (cord.x - cord.x % 100); x <= (cord.x - cord.x % 100 + size.w - size.w % 100); x += 100) {
+            if (!this.hitBoxes[x]) {
+                continue;
+            }
+
+            for (let y = cord.y - cord.y % 100; y <= cord.y - cord.y % 100 + size.h - size.h % 100; y += 100) {
+                if (!this.hitBoxes[x][y]) {
+                    continue;
+                }
+                for (const o of this.hitBoxes[x][y]) {
+                    if (!objects.includes(o)){
+                        objects.push(o);
+                    }
+                }
+            }
+        }
+        return objects;
     }
 }

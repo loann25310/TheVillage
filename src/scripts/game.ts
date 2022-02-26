@@ -53,6 +53,7 @@ player.y = (canvas.height-152) / 2;
 
 async function init(){
     await environment.create(ctx);
+    console.log(environment.hitBoxes);
 
     function addRemotePlayer(data: {id: number, position: Coordinate}): Player {
         let remotePlayer = new Player(ctx, environment, data.position, Player.defaultSize);

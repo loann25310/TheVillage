@@ -10,6 +10,7 @@ export class PineTree extends Displayable {
         super(ctx, cord, size, null);
         this.image = document.createElement("img");
         this.image.src = "/img/sapin.png";
+        this.hittable = true;
     }
 
 

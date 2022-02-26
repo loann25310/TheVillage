@@ -10,6 +10,7 @@ export class Bush extends Displayable {
 
         this.image = document.createElement("img");
         this.image.src = "/img/buisson.png";
+        this.hittable = true;
     }
 
     draw() {

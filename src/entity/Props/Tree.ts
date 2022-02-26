@@ -13,6 +13,7 @@ export class Tree extends Displayable {
 
         this.image = document.createElement("img");
         this.image.src = "/img/arbre.png";
+        this.hittable = true;
     }
 
     draw() {

@@ -1,55 +1,49 @@
 {
   "objects" : [
     {
-      "type": "buisson",
-      "coordonnees" : {"x" :100, "y" :50},
-      "size": {"w": 175, "h": 130}
-    },
-    {
-      "type": "arbre",
-      "coordonnees" : {"x" :100, "y" :100},
-      "size": {"w": 175, "h": 130}
-
-    },
-    {
       "type": "caisse",
-      "coordonnees" : {"x" :100, "y" :10},
-      "size": {"w": 175, "h": 130}
-    },
-    {
-      "type": "maison",
-      "coordonnees" : {"x" :10, "y" :10},
-      "size": {"w": 175, "h": 130}
-    },
-    {
-      "type": "sapin",
-      "coordonnees" : {"x" :10, "y" :10},
-      "size": {"w": 175, "h": 130}
-    },
-    {
-      "type": "fourche",
-      "coordonnees" : {"x" :1000, "y" :10},
-      "size": {"w": 175, "h": 130}
-    },
-    {
-      "type": "souche",
-      "coordonnees" : {"x" :10, "y" :50},
-      "size": {"w": 175, "h": 130}
-    },
-    {
-      "type": "fleurs",
-      "coordonnees" : {"x" :10, "y" :10},
-      "size": {"w": 175, "h": 130}
-    },
-    {
-      "type": "pave",
-      "coordonnees" : {"x" :10, "y" :10},
-      "size": {"w": 175, "h": 130}
-    },
-    {
-      "type": "bois",
-      "coordonnees" : {"x" :500, "y" :10},
-      "size": {"w": 175, "h": 130}
+      "coordonnees": {"x":  500, "y": 500},
+      "size": {"w": 100, "h": 100}
+    },{
+      "type": "caisse",
+      "coordonnees": {"x":  600, "y": 500},
+      "size": {"w": 100, "h": 100}
+    },{
+      "type": "caisse",
+      "coordonnees": {"x":  700, "y": 500},
+      "size": {"w": 100, "h": 100}
+    },{
+      "type": "caisse",
+      "coordonnees": {"x":  800, "y": 500},
+      "size": {"w": 100, "h": 100}
+    },{
+      "type": "caisse",
+      "coordonnees": {"x":  900, "y": 500},
+      "size": {"w": 100, "h": 100}
+    },{
+      "type": "caisse",
+      "coordonnees": {"x":  1000, "y": 500},
+      "size": {"w": 100, "h": 100}
+    },{
+      "type": "caisse",
+      "coordonnees": {"x":  1100, "y": 500},
+      "size": {"w": 100, "h": 100}
+    },{
+      "type": "caisse",
+      "coordonnees": {"x":  1200, "y": 500},
+      "size": {"w": 100, "h": 100}
+    },{
+      "type": "caisse",
+      "coordonnees": {"x":  1300, "y": 500},
+      "size": {"w": 100, "h": 100}
+    },{
+      "type": "caisse",
+      "coordonnees": {"x":  1400, "y": 500},
+      "size": {"w": 100, "h": 100}
+    },{
+      "type": "caisse",
+      "coordonnees": {"x":  1500, "y": 500},
+      "size": {"w": 100, "h": 100}
     }
   ],
   "interactions": [
@@ -75,7 +69,7 @@
     },
     {
       "type": "maison",
-      "coordonnees" : {"x" :300, "y" :800},
+      "coordonnees" : {"x" :500, "y" :800},
       "size": {"w": 175, "h": 130}
     }
   ],
@@ -84,7 +78,7 @@
     "h": 5000
   },
   "players_spawn" : [
-    {"x": 300, "y": 300},
+    {"x": 200, "y": 200},
     {"x": 10, "y": 10},
     {"x": 20,"y": 20}
   ],

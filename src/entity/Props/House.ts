@@ -10,6 +10,7 @@ export class House extends Displayable {
 
         this.image = document.createElement("img");
         this.image.src = "/img/maison.png";
+        this.hittable = true;
     }
 
     draw() {

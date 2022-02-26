@@ -61,56 +61,73 @@ export class Player extends Displayable {
     }
 
     move(type: PlayerMove, sprint: boolean) {
+        let antiMovement;
         this.image = this.getImg.next().value as HTMLImageElement;
         let pixelSprint = 4;
         let pixelNoSprint = 1;
         let condition = (sprint) ? pixelSprint : pixelNoSprint;
         switch (type) {
             case PlayerMove.moveN:
+                antiMovement = PlayerMove.moveS;
                 this.y -= condition;
-                this.environment.move({x:0,y:condition})
+                this.environment.move({x:0,y:condition});
                 break;
             case PlayerMove.moveNE:
+                antiMovement = PlayerMove.moveSW;
                 this.goesRight = true;
                 this.y -= Math.round(condition * 0.707);
                 this.x += Math.round(condition * 0.707);
-                this.environment.move({x:-Math.round(condition * 0.707),y:Math.round(condition * 0.707)})
+                this.environment.move({x:-Math.round(condition * 0.707),y:Math.round(condition * 0.707)});
                 break;
             case PlayerMove.moveE:
+                antiMovement = PlayerMove.moveW;
                 this.goesRight = true;
                 this.x += condition;
-                this.environment.move({x:-condition,y:0})
+                this.environment.move({x:-condition,y:0});
                 break;
             case PlayerMove.moveSE:
+                antiMovement = PlayerMove.moveNW;
                 this.goesRight = true;
                 this.x += Math.round(condition * 0.707);
                 this.y += Math.round(condition * 0.707);
-                this.environment.move({x:-Math.round(condition * 0.707),y:-Math.round(condition * 0.707)})
+                this.environment.move({x:-Math.round(condition * 0.707),y:-Math.round(condition * 0.707)});
                 break;
             case PlayerMove.moveS:
+                antiMovement = PlayerMove.moveN;
                 this.y += condition;
-                this.environment.move({x:0,y:-condition})
+                this.environment.move({x:0,y:-condition});
                 break;
             case PlayerMove.moveSW:
+                antiMovement = PlayerMove.moveNE;
                 this.goesRight = false;
                 this.y += Math.round(condition * 0.707);
                 this.x -= Math.round(condition * 0.707);
-                this.environment.move({x:Math.round(condition * 0.707),y:-Math.round(condition * 0.707)})
+                this.environment.move({x:Math.round(condition * 0.707),y:-Math.round(condition * 0.707)});
                 break;
             case PlayerMove.moveW:
+                antiMovement = PlayerMove.moveE;
                 this.goesRight = false;
                 this.x -= condition;
-                this.environment.move({x:condition,y:0})
+                this.environment.move({x:condition,y:0});
                 break;
             case PlayerMove.moveNW:
+                antiMovement = PlayerMove.moveSE;
                 this.goesRight = false;
                 this.x -= Math.round(condition * 0.707);
                 this.y -= Math.round(condition * 0.707);
-                this.environment.move({x:Math.round(condition * 0.707),y:Math.round(condition * 0.707)})
+                this.environment.move({x:Math.round(condition * 0.707),y:Math.round(condition * 0.707)});
                 break;
+        }
+        const hits = (this.environment.getHitBox(this.getPosition(), this.size));
+        for (const o of hits) {
+            if (this.hit(o)) {
+                console.log(o)
+                return this.move(antiMovement, sprint);
+            }
         }
         this.emit("move");
         this.checkInteractions();
+
     }
 
     setCord(cord: Coordinate) {
@@ -186,5 +203,21 @@ export class Player extends Displayable {
             else
                 yield this.goesRight ? Player.imgR3 : Player.imgL3;  // Bonhomme3
         }
+    }
+
+    hit(o: Displayable): boolean {
+        const pos = this.getPosition();
+        pos.x -= this.size.w / 2;
+        pos.y -= this.size.h / 3 * 2;
+        return ((
+            pos.x + this.size.w >= o.cord.x &&
+            pos.x + this.size.w <= o.cord.x + o.size.w
+        ) || (
+            pos.x >= o.cord.x &&
+            pos.x <= o.cord.x + o.size.w
+        )) && ((
+            pos.y + this.size.h >= o.cord.y &&
+            pos.y + this.size.h <= o.cord.y + o.size.h
+        ));
     }
 }

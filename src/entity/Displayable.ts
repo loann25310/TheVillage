@@ -25,6 +25,8 @@ export class Displayable {
 
     name: string;
 
+    hittable: boolean;
+
     protected readonly callbacks;
 
     constructor(ctx: CanvasRenderingContext2D, cord: Coordinate, size: Size, color: string) {
@@ -38,6 +40,7 @@ export class Displayable {
         this.jeu = null;
         this.player = null;
         this.callbacks = [];
+        this.hittable = false;
     }
 
     on(eventName: string, callback: ((data) => void)) {
@@ -142,5 +145,21 @@ export class Displayable {
             ctx.fillStyle = reussi ? "#0F0" : "#F00";
             ctx.fillRect(0, 0, this.miniJeuCanvas.width, this.miniJeuCanvas.height);
         }
+    }
+
+    hit(o: Displayable): boolean {
+        return ((
+            this.cord.x + this.size.w >= o.cord.x &&
+            this.cord.x + this.size.w <= o.cord.x + o.size.w
+        ) || (
+            this.cord.x >= o.cord.x &&
+            this.cord.x <= o.cord.x + o.size.w
+        )) && ((
+            this.cord.y + this.size.h >= o.cord.y &&
+            this.cord.y + this.size.h <= o.cord.y + o.size.h
+        ) || (
+            this.cord.y >= o.cord.y &&
+            this.cord.y <= o.cord.y + o.size.h
+        ));
     }
 }

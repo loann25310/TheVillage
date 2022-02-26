@@ -10,6 +10,7 @@ export class TreeStump extends Displayable {
 
         this.image = document.createElement("img");
         this.image.src = "/img/tree_stump.png";
+        this.hittable = true;
     }
 
     draw() {

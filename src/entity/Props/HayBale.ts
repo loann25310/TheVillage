@@ -17,6 +17,7 @@ export class HayBale extends Displayable {
         this.image.src = `/img/${passed ? 'Passed':''}HayBale.png`;
         this.vx = Math.random() * 4 - 2;
         this.vy = Math.random() * 4 - 2;
+        this.hittable = true;
     }
 
     getPosition() {
@@ -172,22 +173,6 @@ export class HayBale extends Displayable {
             } else break;
         } while (true);
         this.draw();
-    }
-
-    hit(h: HayBale): boolean {
-        return ((
-            this.cord.x + this.size.w >= h.cord.x &&
-            this.cord.x + this.size.w <= h.cord.x + h.size.w
-        ) || (
-            this.cord.x >= h.cord.x &&
-            this.cord.x <= h.cord.x + h.size.w
-        )) && ((
-            this.cord.y + this.size.h >= h.cord.y &&
-            this.cord.y + this.size.h <= h.cord.y + h.size.h
-        ) || (
-            this.cord.y >= h.cord.y &&
-            this.cord.y <= h.cord.y + h.size.h
-        ));
     }
 
     hitMultiple(bales: HayBale[]) {

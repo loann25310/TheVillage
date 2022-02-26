@@ -10,6 +10,7 @@ export class Fork extends Displayable {
 
         this.image = document.createElement("img");
         this.image.src = "/img/fourche.jpg";
+        this.hittable = true;
     }
 
     draw() {
