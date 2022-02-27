@@ -78,7 +78,7 @@ export class Environment {
         try {
             this.ctx = ctx;
             if (map === undefined) {
-                const value = await axios.get('/maps/testDefault.json');
+                const value = await axios.get('/maps/default.json');
                 map = value.data
             }
             this.size = map.size;

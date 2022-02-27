@@ -9,7 +9,7 @@ export class Flower extends Displayable{
         super(ctx, cord, size, null);
 
         this.image = document.createElement("img");
-        this.image.src = "/img/fleur.jpg";
+        this.image.src = "/img/fleur.svg";
     }
 
     draw() {
