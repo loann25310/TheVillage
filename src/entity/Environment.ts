@@ -47,6 +47,20 @@ export class Environment {
         this.layers[layer].splice(this.layers[layer].indexOf(object), 1);
     }
 
+    removeObject(object: Displayable) {
+        for (let i = 0; i < this.layers.length; i++) {
+            if (this.layers[i].includes(object)) {
+                this.removeFromLayer(i, object);
+                break;
+            }
+        }
+        for (let i = 0; i < this.interactions.length; i++) {
+            if (this.interactions[i] === object) {
+                return this.interactions.splice(i, 1);
+            }
+        }
+    }
+
     setOrigine(origine: Coordinate) {
         this.origine = origine;
     }
@@ -60,18 +74,23 @@ export class Environment {
         }
     }
 
-    async create(ctx: CanvasRenderingContext2D){
+    async create(ctx: CanvasRenderingContext2D, map?){
         try {
-            const value = await axios.get('/map.json');
             this.ctx = ctx;
-            this.size = value.data.size;
-            this.setOrigine({x: -value.data.players_spawn[0].x+ctx.canvas.width/2, y: -value.data.players_spawn[0].y+ctx.canvas.height/2});
-            for (const object of value.data.objects as { type: ObjectType, coordonnees: Coordinate, size: Size }[]) {
+            if (map === undefined) {
+                const value = await axios.get('/maps/testDefault.json');
+                map = value.data
+            }
+            this.size = map.size;
+
+            this.setOrigine({x: -map.players_spawn[0].x+ctx.canvas.width/2, y: -map.players_spawn[0].y+ctx.canvas.height/2});
+            for (const object of map.objects as { type: ObjectType, coordonnees: Coordinate, size: Size }[]) {
                 const o = this.createObject(object);
+                o.name = object.type;
                 this.addHitBox(o);
             }
 
-            for (const object of value.data.interactions as { type: ObjectType, coordonnees: Coordinate, size: Size }[]) {
+            for (const object of map.interactions as { type: ObjectType, coordonnees: Coordinate, size: Size }[]) {
                 const o = this.createObject(object);
                 o.name = object.type;
                 this.interactions.push(o);
@@ -198,6 +217,20 @@ export class Environment {
                         objects.push(o);
                     }
                 }
+            }
+        }
+        return objects;
+    }
+
+    getObjects() {
+        const objects = [];
+        for (const layer of this.layers) {
+            if (layer === this.layers[0]) continue;
+            if (!layer) continue;
+            for (const o of layer){
+                if (!o.name) continue;
+                if (!this.interactions.includes(o))
+                    objects.push(o);
             }
         }
         return objects;

@@ -1,0 +1,23 @@
+{% extends "body.twig" %}
+{% block title %}{{ name }}{% endblock %}
+
+{% block body %}
+    <div id="container">
+        <div id="bar-left">
+            <div id="config">
+                <span>[CTRL] + [SHIFT] + [S] pour sauvegarder</span>
+                <label>Nom de la carte : <input type="text" name="name" id="map_name" value="{{ name }}" maxlength="15"></label>
+            </div>
+            <div id="objects">
+            </div>
+        </div>
+        <canvas id="canvas">Votre navigateur ne supporte pas les canvas, essayez avec un autre navigateur plus récent, comme Mozilla ou Chrome (par exemple)</canvas>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    const _map = {{ map }};
+</script>
+<script src="/dist/creator.js"></script>
+{% endblock %}

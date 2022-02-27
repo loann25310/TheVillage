@@ -9,7 +9,7 @@ export class Fork extends Displayable {
         super(ctx, cord, size, null);
 
         this.image = document.createElement("img");
-        this.image.src = "/img/fourche.jpg";
+        this.image.src = "/img/fourche.png";
         this.hittable = true;
     }
 

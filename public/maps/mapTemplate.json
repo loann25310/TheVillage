@@ -1,0 +1,10 @@
+{
+  "objects" : [],
+  "interactions": [],
+  "size": {"w": 5000,
+    "h": 5000
+  },
+  "players_spawn" : [],
+  "nom_map" : "name",
+  "version" : "v1.0.0"
+}

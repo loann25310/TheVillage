@@ -162,4 +162,12 @@ export class Displayable {
             this.cord.y <= o.cord.y + o.size.h
         ));
     }
+
+    save() {
+        return {
+            type: this.name,
+            coordonnees: this.cord,
+            size: this.size
+        };
+    }
 }
