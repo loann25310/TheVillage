@@ -72,3 +72,18 @@ body, html {
 .red_btn:hover {
     background-color: #B11000;
 }
+
+.green_btn {
+    font-weight: bold;
+    background-color: #0F0B;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5em 1em;
+    transition-duration: 0.5s;
+    margin-top: .5em;
+}
+
+.green_btn:hover {
+    background-color: #0F0;
+}

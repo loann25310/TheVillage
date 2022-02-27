@@ -9,6 +9,7 @@ const map = _map;
 const canvas = $("#canvas")[0] as HTMLCanvasElement;
 const $objects = $("#objects");
 const $name = $("#map_name");
+const $save = $("#save");
 map.nom_map = $name.val();
 const keys = [];
 let mouse = {x : 0, y: 0, click: false};
@@ -21,6 +22,8 @@ let ctrl_z = true;
 let popup = null;
 const objects = [] as {object: Displayable, interaction: boolean}[];
 let zoom = 0;
+const rightClickObjects = [] as {object: Displayable, interaction: boolean}[];
+
 createObjectChoice();
 const env = new Environment();
 if (map.players_spawn.length === 0) map.players_spawn.push({x: 0, y: 0});
@@ -39,19 +42,18 @@ window.addEventListener('keyup',function(e){ keys["KEY_" + e.key.toUpperCase()] 
 window.addEventListener("contextmenu", (e) => {
     if (mouse.x < 0) return;
     e.preventDefault();
-    let object = null;
+    rightClickObjects.splice(0, rightClickObjects.length);
     for (const o of objects) {
         if (mouse.x - env.origine.x >= o.object.cord.x &&
             mouse.x - env.origine.x <= o.object.cord.x + o.object.size.w &&
             mouse.y - env.origine.y >= o.object.cord.y &&
             mouse.y - env.origine.y <= o.object.cord.y + o.object.size.h
         ) {
-            object = o;
-            break;
+            rightClickObjects.push(o);
         }
     }
-    if (!object) return;
-    popup = show_popup(object);
+    if (rightClickObjects.length === 0) return;
+    popup = show_popup(rightClickObjects[0]);
 });
 window.addEventListener("resize", () => {
     const rect = canvas.getBoundingClientRect();
@@ -93,6 +95,7 @@ $objects.on("mousedown", (e)=>{e.preventDefault()});
 $name.on("input", () => {
     if (($name.val() as string).length > 0) map.nom_map = $name.val();
 });
+$save.on("click", saveMap);
 
 function draw() {
     requestAnimationFrame(draw);
@@ -100,7 +103,7 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     update();
 }
-async function update(){
+function update(){
     if (keys["KEY_S"] || keys["KEY_ARROWDOWN"])
         env.move({x: 0, y: - Math.abs(20  -zoom)});
     if (keys["KEY_D"] || keys["KEY_ARROWRIGHT"])
@@ -109,19 +112,6 @@ async function update(){
         env.move({x: Math.abs(20 -zoom), y: 0});
     if (keys["KEY_Z"] || keys["KEY_ARROWUP"])
         env.move({x: 0, y: Math.abs(20 -zoom)});
-    if (keys["KEY_CONTROL"] && keys["KEY_S"] && keys["KEY_SHIFT"] && can_save){
-        can_save = false;
-        setTimeout(() => {can_save = true}, 10_000);
-        map.objects = env.getObjects().map(o => {
-            return o.save();
-        });
-        map.interactions = env.interactions.map(o => {
-            return o.save();
-        });
-        //todo : change player_spawns, version, size
-        const r = await axios.put("/creator/save", map);
-        console.log(r.data.err ? r.data.err : r.data);
-    }
     if (keys["KEY_CONTROL"] && keys["KEY_Z"] && ctrl_z) {
         ctrl_z = false;
         setTimeout(()=>{ctrl_z = true}, 500);
@@ -236,4 +226,24 @@ function drag(o: ObjectType, interaction: boolean) {
     dragged.object.name = o;
     if (interaction) env.interactions.push(dragged.object);
     objects.push({object: dragged.object, interaction});
+}
+async function saveMap() {
+    $save.removeClass("green_btn");
+    $save.addClass("red_btn");
+    can_save = false;
+    setTimeout(() => {
+        can_save = true;
+        $save.removeClass("red_btn");
+        $save.addClass("green_btn");
+    }, 10_000);
+    map.objects = env.getObjects().map(o => {
+        return o.save();
+    });
+    map.interactions = env.interactions.map(o => {
+        return o.save();
+    });
+    //todo : change player_spawns, version, size
+    const r = await axios.put("/creator/save", map);
+    console.log(r.data.err ? r.data.err : r.data);
+
 }
