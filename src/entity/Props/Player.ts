@@ -37,7 +37,7 @@ export class Player extends Displayable {
     }
 
     async initSpawn() {
-        let value = await axios.get('/maps/default.json');
+        let value = await axios.get('/maps/The_village.json');
         this.x = value.data.players_spawn[0].x;
         this.y = value.data.players_spawn[0].y;
     }

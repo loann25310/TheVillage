@@ -78,8 +78,8 @@ export class Environment {
         try {
             this.ctx = ctx;
             if (map === undefined) {
-                const value = await axios.get('/maps/default.json');
-                map = value.data
+                const value = await axios.get('/maps/The_village.json');
+                map = value.data;
             }
             this.size = map.size;
 
