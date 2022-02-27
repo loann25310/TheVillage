@@ -1,5 +1,6 @@
 import {Router} from "express";
 import * as fs from "fs";
+import {User} from "../entity/User";
 
 export function Route(router: Router){
     router.get("/creator", (req, res) => {
@@ -7,23 +8,20 @@ export function Route(router: Router){
     });
 
     router.get("/creator/:name", (req, res) => {
-        let name = req.params.name;
         let fichier;
-        if (name !== "new") {
-            if (!name.endsWith(".json")) name += ".json";
-            try {
-                fichier = fs.readFileSync(`${__dirname}/../../public/maps/${name}`);
-            } catch (e) {}
-        }
+        try {
+            fichier = fs.readFileSync(`${__dirname}/../../public/maps/map_${(req.user as User).id}_${req.params.name}.json`);
+        } catch (e) {}
+
         if (!fichier) {
             fichier = fs.readFileSync(`${__dirname}/../../public/maps/mapTemplate.json`);
         }
-        res.render("map/creator", {map: fichier.toString(), name: JSON.parse(fichier.toString()).nom_map});
+        res.render("map/creator", {map: fichier.toString(), name: req.params.name});
     });
 
-    router.put('/creator/save', (req, res) => {
+    router.put('/creator/save', async (req, res) => {
         try {
-            fs.writeFileSync(`${__dirname}/../../public/maps/${req.body.nom_map}.json`, JSON.stringify(req.body));
+            fs.writeFileSync(`${__dirname}/../../public/maps/map_${(req.user as User).id}_${req.body.nom_map}.json`, JSON.stringify(req.body));
         } catch (e) {
             console.log(e);
             return res.status(500).send({err: e});

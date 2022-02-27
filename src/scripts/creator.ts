@@ -5,11 +5,11 @@ import axios from "axios";
 import {Displayable} from "../entity/Displayable";
 //@ts-ignore
 const map = _map;
-console.log(map);
 
 const canvas = $("#canvas")[0] as HTMLCanvasElement;
 const $objects = $("#objects");
 const $name = $("#map_name");
+map.nom_map = $name.val();
 const keys = [];
 let mouse = {x : 0, y: 0, click: false};
 const rect = canvas.getBoundingClientRect();
@@ -90,7 +90,9 @@ window.addEventListener("mouseup", ()=>{
 });
 
 $objects.on("mousedown", (e)=>{e.preventDefault()});
-
+$name.on("input", () => {
+    if (($name.val() as string).length > 0) map.nom_map = $name.val();
+});
 
 function draw() {
     requestAnimationFrame(draw);
@@ -116,7 +118,6 @@ async function update(){
         map.interactions = env.interactions.map(o => {
             return o.save();
         });
-        map.nom_map = ($name.val() as string).length === 0 ? "new_map" : $name.val();
         //todo : change player_spawns, version, size
         const r = await axios.put("/creator/save", map);
         console.log(r.data.err ? r.data.err : r.data);
