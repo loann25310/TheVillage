@@ -97,12 +97,19 @@ $name.on("input", () => {
 });
 $save.on("click", saveMap);
 
+/**
+ * draws everything
+ */
 function draw() {
     requestAnimationFrame(draw);
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     update();
 }
+
+/**
+ * updates the canvas (yes indeed)
+ */
 function update(){
     if (keys["KEY_S"] || keys["KEY_ARROWDOWN"])
         env.move({x: 0, y: - Math.abs(20  -zoom)});
@@ -142,15 +149,59 @@ function update(){
             object.update();
             object.size = size;
             object.cord = cord;
-
         }
     }
 }
-function show_popup(o) {
+
+/**
+ * Change la popup pour un autre élément
+ * @param o
+ * l'objet actuellement montré
+ * @param sens
+ * true : objet suivant
+ * false : objet précédent
+ * @param x
+ * la position x de la popup actuelle
+ * @param y
+ * la position y de la popup actuelle
+ */
+function nextPopup(o, sens: boolean, x, y) {
+    if (rightClickObjects.length < 2) return;
     removePopup();
+    const index = rightClickObjects.indexOf(o);
+    if (index === rightClickObjects.length - 1) popup = show_popup(rightClickObjects[0], x, y);
+    else popup = show_popup(rightClickObjects[index + 1], x, y);
+}
+
+/**
+ * Creates a popup to change the caracts of on object
+ * @param o
+ * the object to change
+ * @param x
+ * the x position of the popup - default : mouse position
+ * @param y
+ * the y position of the popup - default : mouse position
+ */
+function show_popup(o, x=mouse.x, y=mouse.y) {
+    console.log(popup);
+    removePopup();
+    console.log(popup);
     const div = $("<div id='popup'>");
-    div.css("top", `${mouse.y}px`);
-    div.css("left", `${mouse.x}px`);
+    if (rightClickObjects.length > 1) {
+        //todo: les icones marchent pas j'ai le seum
+        const directions = $("<span>");
+        const right = $('<button>suivant</button>');
+        right.on("click", () => {nextPopup(o, true, x, y);});
+        const left = $('<button>précédent</button>');
+        left.on("click", () => {nextPopup(o, false, x, y);});
+        directions.append(left, right);
+        div.append(directions);
+    }
+    const nom = $("<h3>");
+    nom.text(o.object.name);
+    div.append(nom);
+    div.css("top", `${y}px`);
+    div.css("left", `${x}px`);
     const inputWidth = $(`<input type='number' placeholder='largeur' value='${o.object.size.w}'>`);
     const inputHeight = $(`<input type='number' placeholder='hauteur' value='${o.object.size.h}'>`);
     inputWidth.on("input", () => {
@@ -179,11 +230,19 @@ function show_popup(o) {
     document.body.appendChild(div[0]);
     return {div};
 }
+
+/**
+ * removes the popup if it exists
+ */
 function removePopup() {
-    if (!popup) return;
+    if (popup === null) return;
     document.body.removeChild(popup.div[0]);
     popup = null;
 }
+
+/**
+ * creates the store (on the left side of the screen), from all types of objects
+ */
 function createObjectChoice(){
     for (const o of enumKeys(ObjectType)) {
         const div = $("<div>");
@@ -199,9 +258,21 @@ function createObjectChoice(){
         $objects.append(div);
     }
 }
+
+/**
+ * returns all values of an enum (stolen from internet though)
+ * @param obj
+ * the enum
+ */
 function enumKeys<O extends object, K extends keyof O = keyof O>(obj: O): K[] {
     return Object.keys(obj).filter(k => Number.isNaN(+k)) as K[];
 }
+
+/**
+ * returns the image's url from the object
+ * @param o
+ * the object's type
+ */
 function getImage(o): string {
     switch (o) {
         case ObjectType.caisse:
@@ -220,6 +291,14 @@ function getImage(o): string {
             return `/img/${o}.png`;
     }
 }
+
+/**
+ * Creates and drags an object from the store (left side of the screen)
+ * @param o
+ * The type of the object
+ * @param interaction
+ * `true` if the object interacts (has a mini-game), `false` if not.
+ */
 function drag(o: ObjectType, interaction: boolean) {
     dragged.interaction = interaction;
     dragged.object = env.createObject({type: o, coordonnees: {x: mouse.x - env.origine.x, y: mouse.y - env.origine.y}, size: {w: 100, h: 100}});
@@ -227,6 +306,10 @@ function drag(o: ObjectType, interaction: boolean) {
     if (interaction) env.interactions.push(dragged.object);
     objects.push({object: dragged.object, interaction});
 }
+
+/**
+ * Saves the current map into a JSON file (server-sided)
+ */
 async function saveMap() {
     $save.removeClass("green_btn");
     $save.addClass("red_btn");
