@@ -207,16 +207,16 @@ export class Player extends Displayable {
     hit(o: Displayable): boolean {
         const pos = this.getPosition();
         pos.x -= this.size.w / 2;
-        pos.y -= this.size.h / 3 * 2;
+        pos.y -= this.size.h / 2;
         return ((
-            pos.x + this.size.w >= o.cord.x &&
-            pos.x + this.size.w <= o.cord.x + o.size.w
+            pos.x + this.size.w >= o.cord.x + 5 &&
+            pos.x + this.size.w <= o.cord.x + o.size.w - 5
         ) || (
-            pos.x >= o.cord.x &&
-            pos.x <= o.cord.x + o.size.w
+            pos.x >= o.cord.x + 5 &&
+            pos.x <= o.cord.x + o.size.w - 5
         )) && ((
-            pos.y + this.size.h >= o.cord.y &&
-            pos.y + this.size.h <= o.cord.y + o.size.h
+            pos.y + this.size.h >= o.cord.y + 25 &&
+            pos.y <= o.cord.y + o.size.h - 5
         ));
     }
 }

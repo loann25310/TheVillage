@@ -48,8 +48,8 @@ Player.imgR3 = document.createElement("img");
 Player.imgR3.src = `/img/Bonhomme3R.png`;
 Player.imgR3.alt = "oh no"
 let player = new Player(ctx, environment, { x: (canvas.width-100) / 2, y: (canvas.height-152) / 2 }, Player.defaultSize);
-player.x = (canvas.width-100) / 2;
-player.y = (canvas.height-152) / 2;
+player.x = (canvas.width-Player.defaultSize.w) / 2;
+player.y = (canvas.height-Player.defaultSize.h) / 2;
 
 async function init(){
     await environment.create(ctx);
