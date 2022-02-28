@@ -32,7 +32,9 @@ export class House extends Displayable {
             caseAttendue: null,
             click: false,
             tromper: false,
-            clickable: false
+            clickable: false,
+            tempsClick: null,
+            tmp: null
         };
         for (let i = 0; i < 5; i++) {
             this.jeu.ecran.push(Math.floor(Math.random() * 9))
@@ -86,7 +88,7 @@ export class House extends Displayable {
             this.jeu.maxTemps = this.jeu.date.getTime()+1000;
         }
 
-        if(this.jeu.date.getTime() > this.jeu.maxTemps-100 && !this.jeu.tromper) {
+        if(this.jeu.date.getTime() > this.jeu.maxTemps && !this.jeu.tromper) {
             if (this.jeu.compteurTotal > this.jeu.compteurCase) {
                 this.jeu.compteurCase++;
                 this.jeu.maxTemps = this.jeu.date.getTime() + 1000;
@@ -123,6 +125,10 @@ export class House extends Displayable {
                 ctx.fillRect(j * 150 + 925, i * 150 + 280, 140, 140);
             }
         }
+        if(this.jeu.date.getTime()<this.jeu.tempsClick && !this.jeu.tromper) {
+            ctx.fillStyle = "#cdd7f6";
+            ctx.fillRect(this.jeu.tmp%3 * 150 + 925, Math.floor(this.jeu.tmp/3) * 150 + 280, 140, 140);
+        }
 
         if (this.jeu.compteurTotal === 5 && !this.jeu.tromper) this.emit("end_game", true);
     }
@@ -136,6 +142,8 @@ export class House extends Displayable {
                     this.jeu.mouseX <= this.jeu.caseAttendue % 3 * 150 + 925 + 140
                 ) {
                     this.jeu.click = true;
+                    this.jeu.tempsClick = this.jeu.date.getTime()+100;
+                    this.jeu.tmp = this.jeu.caseAttendue;
                 } else {
                     this.jeu.tromper = true;
                     this.jeu.maxTemps = this.jeu.date.getTime() + 1000;
