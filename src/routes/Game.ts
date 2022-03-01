@@ -6,14 +6,24 @@ import {Box} from "../entity/Props/Box";
 import {getRepository} from "typeorm";
 import {Partie} from "../entity/Partie";
 import {User} from "../entity/User";
+import * as fs from "fs";
+import * as path from "path";
 const session = require("express-session");
 const passport = require("passport");
 
 export function Route(router: Router, io: SocketIOServer, sessionMiddleware: RequestHandler) {
 
     router.get('/play/:id', async (req, res) => {
+
+        let partie = await getRepository(Partie).findOne(req.params.id);
+
+        if(!partie) return res.sendStatus(404);
+
+        console.log(partie);
+
         res.render("game/main", {
-            partie: await getRepository(Partie).findOne(req.params.id)
+            partie,
+            map: partie.getMap(fs, path)
         });
     });
 

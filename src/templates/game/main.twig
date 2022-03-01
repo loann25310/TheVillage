@@ -33,6 +33,7 @@
   <script>
     const _partie = {{ partie | dump }};
     const _user = {{ currentUser | dump }};
+    const _map = {% if map %}{{ map | dump }}{% else %}null{% endif %};
   </script>
   <script src="/dist/game.js"></script>
 {% endblock %}

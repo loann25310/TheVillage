@@ -1,12 +1,20 @@
 import {Coordinate} from "./types/Coordinate";
+import {ObjectType} from "./types/ObjectType";
+import {Size} from "./types/Size";
 
 export class Map {
 
     objects: {
-        type: string,
+        type: ObjectType,
         coordonnees: Coordinate,
         size: { w: number, h: number }
-    };
+    }[];
+
+    interactions: {
+        type: ObjectType,
+        coordonnees: Coordinate,
+        size: Size
+    }[];
 
     players_spawn: Coordinate[];
 

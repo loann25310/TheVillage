@@ -7,11 +7,14 @@ import {io} from "socket.io-client";
 import {Partie} from "../entity/Partie";
 import {User} from "../entity/User";
 import {Coordinate} from "../entity/types/Coordinate";
+import {Map} from "../entity/Map";
 
 // @ts-ignore
 const partie = _partie as Partie;
 // @ts-ignore
 const user = _user as User;
+// @ts-ignore
+const map = _map as Map;
 
 const socket = io();
 const OTHER_PLAYERS: Player[] = [];
@@ -27,7 +30,7 @@ socket.on("error", (data) => {
     alert("Error: " + data.message);
 });
 
-const environment: Environment = new Environment();
+let environment: Environment = new Environment();
 let canvas = $('#mainCanvas')[0] as HTMLCanvasElement;
 let ctx = canvas.getContext('2d');
 
@@ -47,15 +50,19 @@ Player.imgL3.src = `/img/Bonhomme3L.png`;
 Player.imgR3 = document.createElement("img");
 Player.imgR3.src = `/img/Bonhomme3R.png`;
 Player.imgR3.alt = "oh no"
-let player = new Player(ctx, environment, { x: (canvas.width-100) / 2, y: (canvas.height-152) / 2 }, Player.defaultSize);
+let player = new Player(ctx, environment, { x: (canvas.width-100) / 2, y: (canvas.height-152) / 2 }, Player.defaultSize, map);
 player.x = (canvas.width-Player.defaultSize.w) / 2;
 player.y = (canvas.height-Player.defaultSize.h) / 2;
 
 async function init(){
-    await environment.create(ctx);
+
+    if(map)
+        await environment.create(ctx, map);
+    else
+        await environment.create(ctx);
 
     function addRemotePlayer(data: {id: number, position: Coordinate}): Player {
-        let remotePlayer = new Player(ctx, environment, data.position, Player.defaultSize);
+        let remotePlayer = new Player(ctx, environment, data.position, Player.defaultSize, map);
         remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
         remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
         remotePlayer.pid = data.id;
@@ -147,7 +154,7 @@ setInterval(() => {
 
     if(keys["KEY_U"] && !lock_key_u){
         lock_key_u = true;
-        let p2 = new Player(ctx, environment, player.getPosition(), Player.defaultSize);
+        let p2 = new Player(ctx, environment, player.getPosition(), Player.defaultSize, map);
         p2.pid = playerCount++;
         environment.addToLayer(100, p2);
         console.log(player.getPosition());

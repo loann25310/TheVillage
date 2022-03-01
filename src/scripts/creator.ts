@@ -3,6 +3,7 @@ import {ObjectType} from "../entity/types/ObjectType";
 import {Environment} from "../entity/Environment";
 import axios from "axios";
 import {Displayable} from "../entity/Displayable";
+import Swal from "sweetalert2";
 //@ts-ignore
 const map = _map;
 
@@ -110,7 +111,7 @@ function draw() {
 /**
  * updates the canvas (yes indeed)
  */
-function update(){
+async function update(){
     if (keys["KEY_S"] || keys["KEY_ARROWDOWN"])
         env.move({x: 0, y: - Math.abs(20  -zoom)});
     if (keys["KEY_D"] || keys["KEY_ARROWRIGHT"])
@@ -119,6 +120,31 @@ function update(){
         env.move({x: Math.abs(20 -zoom), y: 0});
     if (keys["KEY_Z"] || keys["KEY_ARROWUP"])
         env.move({x: 0, y: Math.abs(20 -zoom)});
+    if (keys["KEY_CONTROL"] && keys["KEY_S"] && keys["KEY_SHIFT"] && can_save){
+        can_save = false;
+        setTimeout(() => {can_save = true}, 10_000);
+        map.objects = env.getObjects().map(o => {
+            return o.save();
+        });
+        map.interactions = env.interactions.map(o => {
+            return o.save();
+        });
+        //todo : change player_spawns, version, size
+        const r = await axios.put("/creator/save", map);
+        console.log(r.data.err ? r.data.err : r.data);
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        })
+
+        await Toast.fire({
+            icon: 'success',
+            title: 'Map sauvegardée'
+        })
+    }
     if (keys["KEY_CONTROL"] && keys["KEY_Z"] && ctrl_z) {
         ctrl_z = false;
         setTimeout(()=>{ctrl_z = true}, 500);
@@ -235,7 +261,7 @@ function show_popup(o, x=mouse.x, y=mouse.y) {
  * removes the popup if it exists
  */
 function removePopup() {
-    if (popup === null) return;
+    if (!popup) return;
     document.body.removeChild(popup.div[0]);
     popup = null;
 }

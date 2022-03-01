@@ -1,6 +1,7 @@
 import {Column, Entity, getRepository, PrimaryColumn} from "typeorm";
 
 import {User} from "./User";
+import {Map} from "./Map";
 
 export enum PartieStatus {
     CREATING,
@@ -66,6 +67,9 @@ export class Partie {
     })
     bans: number[];
 
+    @Column()
+    map: string;
+
     async getPlayers(): Promise<User[]> {
         return await getRepository(User).findByIds(this.players);
     }
@@ -103,6 +107,14 @@ export class Partie {
         this.status = PartieStatus.STARTED;
         // add stuff here if needed
         this.status = PartieStatus.STARTED;
+    }
+
+    getMap(fs, path): Map {
+        try {
+            if(this.map !== "")
+                return JSON.parse(fs.readFileSync(path.resolve(__dirname, `../../public/maps/map_${this.map}.json`), "utf-8")) as Map;
+        } catch (e) {}
+        return JSON.parse(fs.readFileSync(path.resolve(__dirname, `../../public/maps/The_village.json`), "utf-8")) as Map;
     }
 
 }

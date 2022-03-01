@@ -42,6 +42,7 @@
       "nodemailer": "^6.7.0",
       "nunjucks": "^3.2.3",
       "passport-local": "^1.0.0",
+      "passport-remember-me": "^0.0.1",
       "reflect-metadata": "^0.1.10",
       "sass": "^1.48.0",
       "sass-loader": "^12.2.0",
@@ -50,7 +51,8 @@
       "style-loader": "^3.3.0",
       "ts-loader": "^9.2.6",
       "ts-node": "^10.3.0",
-      "typeorm": "0.2.38"
+      "typeorm": "0.2.38",
+      "uuid": "^8.3.2"
    },
    "devDependencies": {
       "@types/connect-flash": "^0.0.37",
@@ -61,6 +63,7 @@
       "@types/node": "^8.0.29",
       "@types/nunjucks": "^3.2.0",
       "@types/passport": "^1.0.7",
+      "@types/passport-remember-me": "^0.0.0",
       "chokidar": "^3.5.2",
       "passport": "^0.5.0",
       "sweetalert2": "^11.2.0",

@@ -1,6 +1,7 @@
 import {Displayable} from "../Displayable";
 import {PlayerMove} from "../types/PlayerMove";
 import {Coordinate} from "../types/Coordinate";
+import {Map} from "../Map";
 import axios from "axios";
 
 export class Player extends Displayable {
@@ -23,7 +24,7 @@ export class Player extends Displayable {
     public x;
     public y;
 
-    constructor(ctx, environment, positonDraw: Coordinate, size) {
+    constructor(ctx, environment, positonDraw: Coordinate, size, map: Map) {
         super(ctx, positonDraw, size, null );
         this.getImg = this.GeneratorGetImg();
         this.environment = environment;
@@ -33,13 +34,12 @@ export class Player extends Displayable {
         this.x = 0;
         this.y = 0;
         this.decalage = Math.random() * 1000;
-        this.initSpawn().then();
+        this.initSpawn(map).then();
     }
 
-    async initSpawn() {
-        let value = await axios.get('/maps/The_village.json');
-        this.x = value.data.players_spawn[0].x;
-        this.y = value.data.players_spawn[0].y;
+    async initSpawn(map: Map) {
+        this.x = map.players_spawn[0].x;
+        this.y = map.players_spawn[0].y;
     }
 
     initLocal(pid: number, canvas: HTMLCanvasElement) {
