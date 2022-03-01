@@ -6,6 +6,7 @@ import {envoyerMail} from "./Mail";
 import {verifMdp} from "../scripts/VerifMdp"
 import {RecuperationEmail} from "../entity/RecuperationEmail";
 import {Tools} from "../entity/Tools";
+import {RememberMeToken} from "../entity/RememberMeToken";
 const passport = require("passport");
 const bcrypt = require('bcrypt');
 //pour hash le mdp
@@ -132,8 +133,16 @@ export function Route(router: Router) {
     });
 
     router.post('/auth/loginRequest', passport.authenticate('local', {
-        successRedirect: '/',
-        failureRedirect: '/auth?failed=1'
-    }));
+            successRedirect: '/',
+            failureFlash: true,
+            failureRedirect: '/auth?failed=1'
+        }),
+        async function(req, res){
+            console.log("Logged");
+            await RememberMeToken.saveToken(req, res, req.user);
+        },
+        function(req, res) {
+            res.redirect('/');
+        });
 
 }

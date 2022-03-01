@@ -13,9 +13,12 @@ import {Server} from "socket.io";
 import {User} from "./entity/User";
 import logger = require("node-color-log");
 import * as session from "express-session";
+// import { Strategy as RememberMeStrategy } from "passport-remember-me";
+import {RememberMeToken} from "./entity/RememberMeToken";
 
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const RememberMeStrategy = require("passport-remember-me").Strategy;
 const bcrypt = require('bcrypt');
 
 /**
@@ -66,6 +69,7 @@ createConnection().then(async connection => {
     app.use(sessionMiddleware);
     app.use(passport.initialize());
     app.use(passport.session());
+    app.use(passport.authenticate('remember-me'));
     app.use(async (req, res, next) => {
         if(req.user){
             let user = req.user as User;
@@ -103,19 +107,41 @@ createConnection().then(async connection => {
         res.render("main/page404");
     });
 
+    passport.use(new RememberMeStrategy(
+        async function(token, done){
+            let rememberToken = await getRepository(RememberMeToken).findOne({
+                where: {
+                    token: token
+                },
+                relations: ['user']
+            });
+            if (!rememberToken) return done(null, false);
+            return done(null, rememberToken.user);
+        },
+        async function(user, done){
+            if(!user) return done(null, false);
+            let token = new RememberMeToken();
+            token.generateDefaultToken(user);
+            await getRepository(RememberMeToken).save(token);
+            return done(null, token.token);
+        }
+    ));
+
     passport.use(new LocalStrategy({
             usernameField: 'email'
         },
         async function (email, password, done){
             let userRepo = getRepository(User);
-            let user = await userRepo.find({where : {adresseMail : email}});
-            for (let i = 0; i < user.length; i++){
-                if (await bcrypt.compare(password, user[i].password))
-                    return done(null, user[i])
-            }
-            return done(null, false);
+            let user = await userRepo.findOne({where : {adresseMail : email}});
+            if(!user) return done(null, false);
+
+            if (!(await bcrypt.compare(password, user.password)))
+                return done(null, false);
+
+            return done(null, user);
         }
-    ))
+    ));
+
     passport.serializeUser(function(user, done) {
         done(null, user.id);
     });
