@@ -311,14 +311,12 @@ function drag(o: ObjectType, interaction: boolean) {
  * Saves the current map into a JSON file (server-sided)
  */
 async function saveMap() {
-    $save.removeClass("green_btn");
-    $save.addClass("red_btn");
+    if ($save.hasClass("green_btn")) {
+        $save.removeClass("green_btn");
+        $save.addClass("red_btn");
+    }
     can_save = false;
-    setTimeout(() => {
-        can_save = true;
-        $save.removeClass("red_btn");
-        $save.addClass("green_btn");
-    }, 10_000);
+    setTimeout(() => {can_save = true}, 1000);
     map.objects = env.getObjects().map(o => {
         return o.save();
     });
@@ -326,7 +324,23 @@ async function saveMap() {
         return o.save();
     });
     //todo : change player_spawns, version, size
-    const r = await axios.put("/creator/save", map);
-    console.log(r.data.err ? r.data.err : r.data);
-
+    let data, err;
+    try {
+        const r = await axios.put("/creator/save", map);
+        if (!r.data.err) {
+            if ($save.hasClass("red_btn")) {
+                $save.removeClass("red_btn");
+                $save.addClass("green_btn");
+            }
+        }
+        err = r.data.err;
+        data = r.data;
+    } catch (e) {
+        err = e;
+    }
+    const $div = $(`
+            <div class="alert ${err ? "red" : "green"}">${err ? err : data}</div>
+        `);
+    document.body.appendChild($div[0]);
+    setTimeout(()=>{document.body.removeChild($div[0])}, 2_000);
 }

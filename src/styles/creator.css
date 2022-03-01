@@ -71,7 +71,7 @@ button {
     transition-duration: 1s;
 }
 
-button:focus {
+button:hover {
     background-color: #10B100;
 }
 
@@ -102,4 +102,20 @@ button:focus {
 
 .green_btn:hover {
     background-color: #0F0;
+}
+
+.alert {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 1em;
+    background-color: #CCC;
+}
+
+.green {
+    color: #10B100;
+}
+
+.red {
+    color: #A11000;
 }

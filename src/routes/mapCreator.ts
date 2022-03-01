@@ -24,7 +24,7 @@ export function Route(router: Router){
             fs.writeFileSync(`${__dirname}/../../public/maps/map_${(req.user as User).id}_${req.body.nom_map}.json`, JSON.stringify(req.body));
         } catch (e) {
             console.log(e);
-            return res.status(500).send({err: e});
+            return res.status(403).send({err: e});
         }
         res.status(200).send("map updated");
     });
