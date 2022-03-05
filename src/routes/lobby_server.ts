@@ -26,19 +26,15 @@ export async function getAvailableRoom(uid): Promise<string>{
     }
     //Aucune partie n'est libre, on en créée une
 
-    let newGame = new Partie();
-    newGame.players = [];
-    newGame.bans = [0];
-    newGame.inGamePlayers = [];
-    await save_game(newGame);
-    return newGame.id;
+    return await createRoom();
 }
-export async function createRoom(uid): Promise<string>{
-    let user = await userRepo.findOne(uid);
+export async function createRoom(): Promise<string>{
     let newGame = new Partie();
     newGame.players = [];
-    newGame.bans = [0];
+    newGame.bans = [];
     newGame.inGamePlayers = [];
+    newGame.roles = [];
+    newGame.map = "";
     await save_game(newGame);
     return newGame.id;
 }
@@ -75,7 +71,7 @@ export async function disconnect(uid, io) {
     const u = await userRepo.findOne(uid);
     if (!u) return;
     const room = await gameRepo.findOne(u.partie);
-    if (!room || room.status === PartieStatus.STARTING) return;
+    if (!room || room.status >= PartieStatus.STARTING) return;
 
     let index = room.players.indexOf(u.id);
     if (index === -1) return;
@@ -93,9 +89,7 @@ export async function disconnect(uid, io) {
     io.to(`${room.id}`).emit("players", p);
 }
 export async function show_Room(){
-    let parties = await gameRepo.find({
-        publique:true,
-
+    return await gameRepo.find({
+        publique: true,
     });
-    return parties;
 }

@@ -1,14 +1,12 @@
 import {RequestHandler, Router} from "express";
-import {Server as SocketIOServer, Socket} from "socket.io";
-import * as logger from "node-color-log";
-import {Coordinate} from "../entity/types/Coordinate";
-import {Box} from "../entity/Props/Box";
+import {Server as SocketIOServer} from "socket.io";
 import {getRepository} from "typeorm";
 import {Partie} from "../entity/Partie";
 import {User} from "../entity/User";
 import * as fs from "fs";
 import * as path from "path";
-const session = require("express-session");
+import {Roles} from "../entity/roles/Roles";
+
 const passport = require("passport");
 
 export function Route(router: Router, io: SocketIOServer, sessionMiddleware: RequestHandler) {
@@ -18,12 +16,20 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         let partie = await getRepository(Partie).findOne(req.params.id);
 
         if(!partie) return res.sendStatus(404);
-
-        console.log(partie);
-
+        const user = req.user as User;
+        let role = (partie.roles.filter(p => p.uid === user.id))[0]?.role;
+        if (!role) role = Roles.Villageois;
+        //pour ne pas envoyer les rôles à tout le monde (aka anti-cheat ma gueule)
+        partie.roles = [];
+        let numeroJoueur = partie.players.indexOf(user.id);
+        if (numeroJoueur < 0) return res.redirect("/?err=wrong_game");
+        else console.log(numeroJoueur);
+        console.log(user.id, partie.players.indexOf(user.id), partie.players);
         res.render("game/main", {
             partie,
-            map: partie.getMap(fs, path)
+            map: partie.getMap(fs, path),
+            role,
+            numeroJoueur
         });
     });
 
@@ -35,7 +41,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         if (socket.request["user"]) {
             next();
         } else {
-            next(new Error("unauthorized"))
+            next(new Error("unauthorized"));
         }
     });
 
@@ -77,7 +83,6 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         }
 
         socket.on("joinPartie", async (data) => {
-            console.log(user, data);
             partie = monitorPartie(await getRepository(Partie).findOne(data.gameId));
             if(!partie) return sendError("Game not found");
             if(partie.isInGame(user)) return sendError("Is already in this game");
@@ -86,11 +91,12 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             io.to(partie.id).emit("playerJoin", {
                 id: user.id,
                 pseudo: user.pseudo,
-                position: data.position
+                position: data.position,
+                index: data.index
             });
         });
 
-        socket.on("disconnect", (reason) => {
+        socket.on("disconnect", () => {
             if(!partie) return;
             partie.removeInGamePlayer(user);
         });
@@ -99,11 +105,21 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             if(!partie) return;
             io.to(partie.id).emit("playerMove", {
                 id: user.id,
-                position: data.position
+                position: data.position,
+                index: data.index
             });
         });
 
+        socket.on("action", (data) => {
+            switch (data.role) {
+                case Roles.Sorciere:
+                    return io.to(partie.id).emit(data.data.revive ? "revive" : "kill", data.data.player);
+                case Roles.Voyante:
+                    return socket.emit("see_role", partie.roles.filter(p => p.uid === data.data.player)[0].role);
+                case Roles.Chasseur:
+                case Roles.LoupGarou:
+                    return socket.emit("kill", data.data.player);
+            }
+        });
     });
-
-
 }

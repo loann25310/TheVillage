@@ -31,9 +31,11 @@
 
 {% block javascripts %}
   <script>
-    const _partie = {{ partie | dump }};
-    const _user = {{ currentUser | dump }};
-    const _map = {% if map %}{{ map | dump }}{% else %}null{% endif %};
+    var _partie = {{ partie | dump }};
+    var _user = {{ currentUser | dump }};
+    var _map = {% if map %}{{ map | dump }}{% else %}null{% endif %};
+    var _role = {% if role is defined %}{{ role }}{% else %} null {% endif %};
+    var _numeroJoueur = {% if numeroJoueur is defined %} {{ numeroJoueur }} {% else %}null{% endif %};
   </script>
   <script src="/dist/game.js"></script>
 {% endblock %}

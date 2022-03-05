@@ -17,6 +17,7 @@ import {Cobblestone} from "./Grounds/Cobblestone";
 import {Dirt} from "./Grounds/Dirt";
 import {HayBale} from "./Props/HayBale";
 import {Map} from "./Map";
+import {Player} from "./Props/Player";
 
 export class Environment {
 
@@ -85,7 +86,7 @@ export class Environment {
 
             this.size = map.size;
 
-            this.setOrigine({x: -map.players_spawn[0].x+ctx.canvas.width/2, y: -map.players_spawn[0].y+ctx.canvas.height/2});
+            this.setOrigine({x: Player.defaultSize.w / 2, y:Player.defaultSize.h / 2});
             for (const object of map.objects) {
                 const o = this.createObject(object);
                 o.name = object.type;

@@ -2,6 +2,7 @@ import {Column, Entity, getRepository, PrimaryColumn} from "typeorm";
 
 import {User} from "./User";
 import {Map} from "./Map";
+import {Roles} from "./roles/Roles";
 
 export enum PartieStatus {
     CREATING,
@@ -14,7 +15,7 @@ export enum PartieStatus {
 @Entity()
 export class Partie {
 
-    public static readonly nbJoueursMin = 7;
+    public static readonly NB_JOUEURS_MIN = 7;
 
     @PrimaryColumn()
     id: string;
@@ -58,7 +59,6 @@ export class Partie {
 
     @Column({
         type: "simple-json",
-
     })
     inGamePlayers: number[];
 
@@ -69,6 +69,11 @@ export class Partie {
 
     @Column()
     map: string;
+
+    @Column({
+        type: "simple-json",
+    })
+    roles: {uid: number, role: Roles}[];
 
     async getPlayers(): Promise<User[]> {
         return await getRepository(User).findByIds(this.players);
@@ -103,10 +108,10 @@ export class Partie {
         return this.inGamePlayers.includes(user.id);
     }
 
-    start(){
+    async start(){
         this.status = PartieStatus.STARTED;
-        // add stuff here if needed
-        this.status = PartieStatus.STARTED;
+        this.init();
+        await getRepository(Partie).save(this);
     }
 
     getMap(fs, path): Map {
@@ -117,4 +122,21 @@ export class Partie {
         return JSON.parse(fs.readFileSync(path.resolve(__dirname, `../../public/maps/The_village.json`), "utf-8")) as Map;
     }
 
+    init() {
+        const j = [];
+        this.players.forEach(p => j.push(p));
+        const joueurs = [];
+        while (j.length > 0){
+            joueurs.push(j.splice(Math.random() * j.length, 1)[0]);
+        }
+        this.roles = [];
+        this.roles.push({uid : joueurs[0].uid, role: Roles.Voyante});
+        this.roles.push({uid : joueurs[1].uid, role: Roles.Sorciere});
+        this.roles.push({uid : joueurs[2].uid, role: Roles.Chasseur});
+        this.roles.push({uid : joueurs[3].uid, role: Roles.LoupGarou});
+        this.roles.push({uid : joueurs[4].uid, role: Roles.LoupGarou});
+        for (let i = 5; this.roles.length < this.players.length; i++) {
+            this.roles.push({uid: joueurs[i].uid, role: Roles.Villageois});
+        }
+    }
 }

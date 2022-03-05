@@ -7,7 +7,13 @@ import {io} from "socket.io-client";
 import {Partie} from "../entity/Partie";
 import {User} from "../entity/User";
 import {Coordinate} from "../entity/types/Coordinate";
+import {Villageois} from "../entity/roles/Villageois";
 import {Map} from "../entity/Map";
+import {Roles} from "../entity/roles/Roles";
+import {Chasseur} from "../entity/roles/Chasseur";
+import {Sorciere} from "../entity/roles/Sorciere";
+import {Voyante} from "../entity/roles/Voyante";
+import {LoupGarou} from "../entity/roles/LoupGarou";
 
 // @ts-ignore
 const partie = _partie as Partie;
@@ -15,6 +21,10 @@ const partie = _partie as Partie;
 const user = _user as User;
 // @ts-ignore
 const map = _map as Map;
+//@ts-ignore
+const role = _role as Roles;
+//@ts-ignore
+const numeroJoueur = _numeroJoueur as number;
 
 const socket = io();
 const OTHER_PLAYERS: Player[] = [];
@@ -49,10 +59,44 @@ Player.imgL3 = document.createElement("img");
 Player.imgL3.src = `/img/Bonhomme3L.png`;
 Player.imgR3 = document.createElement("img");
 Player.imgR3.src = `/img/Bonhomme3R.png`;
-Player.imgR3.alt = "oh no"
-let player = new Player(ctx, environment, { x: (canvas.width-100) / 2, y: (canvas.height-152) / 2 }, Player.defaultSize, map);
-player.x = (canvas.width-Player.defaultSize.w) / 2;
-player.y = (canvas.height-Player.defaultSize.h) / 2;
+let player;
+switch (role) {
+    case Roles.Chasseur :
+        player = new Chasseur(ctx, environment, {
+            x: map.players_spawn[numeroJoueur].x,
+            y: map.players_spawn[numeroJoueur].y
+        }, Player.defaultSize, map, numeroJoueur);
+        break;
+    case Roles.Sorciere:
+        player = new Sorciere(ctx, environment, {
+            x: map.players_spawn[numeroJoueur].x,
+            y: map.players_spawn[numeroJoueur].y
+        }, Player.defaultSize, map, numeroJoueur);
+        break;
+    case Roles.Voyante:
+        player = new Voyante(ctx, environment, {
+            x: map.players_spawn[numeroJoueur].x,
+            y: map.players_spawn[numeroJoueur].y
+        }, Player.defaultSize, map, numeroJoueur);
+        break;
+    case Roles.LoupGarou:
+        player = new LoupGarou(ctx, environment, {
+            x: map.players_spawn[numeroJoueur].x,
+            y: map.players_spawn[numeroJoueur].y
+        }, Player.defaultSize, map, numeroJoueur);
+        break;
+    default:
+        player = new Villageois(ctx, environment, {
+            x: map.players_spawn[numeroJoueur].x,
+            y: map.players_spawn[numeroJoueur].y
+        }, Player.defaultSize, map, numeroJoueur);
+        break;
+}
+player.setCord({
+    x : -(canvas.width-Player.defaultSize.w) / 2,
+    y : -(canvas.height-Player.defaultSize.h) / 2
+});
+
 
 async function init(){
 
@@ -60,9 +104,11 @@ async function init(){
         await environment.create(ctx, map);
     else
         await environment.create(ctx);
+    environment.move({x: -canvas.width / 2, y : -canvas.height / 2});
+    environment.setCord({x: canvas.width / 2 - map.players_spawn[numeroJoueur].x, y : canvas.height / 2 - map.players_spawn[numeroJoueur].y});
 
-    function addRemotePlayer(data: {id: number, position: Coordinate}): Player {
-        let remotePlayer = new Player(ctx, environment, data.position, Player.defaultSize, map);
+    function addRemotePlayer(data: {id: number, position: Coordinate, index: number}): Player {
+        let remotePlayer = new Villageois(ctx, environment, data.position, Player.defaultSize, map, data.index);
         remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
         remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
         remotePlayer.pid = data.id;
@@ -73,7 +119,8 @@ async function init(){
 
     socket.emit("joinPartie", {
         gameId: partie.id,
-        position: player.getPosition()
+        position: player.getPosition(),
+        index: numeroJoueur
     });
     socket.on("playerJoin", (data) => {
         console.log(data);
@@ -88,14 +135,37 @@ async function init(){
         remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
     });
 
+    socket.on("revive", id => {
+        if (id === player.pid)
+            return player.revive();
+
+        for (const p of OTHER_PLAYERS) {
+            if (p.pid === id) return player.revive();
+        }
+    });
+
+    socket.on("kill", id => {
+        if (id === player.pid)
+            return player.die();
+        for (const p of OTHER_PLAYERS)
+            if (p.pid === id) return player.die();
+    });
+
+    socket.on("see_role", role => {
+        if (player.role !== Roles.Voyante) return console.warn("WHAAAT");
+        //todo: afficher le rôle (tout le temps au dessus du joueur ? juste une fois ?
+        player.nb_boules --;
+    });
+
     player.on("move", () => {
         socket.emit("playerMove", {
-            position: player.getPosition()
+            position: player.getPosition(),
+            index: numeroJoueur
         });
     });
 
     /* useless ? */
-    player.on("task", (/* object */) => {});
+    //player.on("task", (/* object */) => {});
 
     for (const o of player.environment.interactions) {
         o.on("end_game", (completed) => {
@@ -107,6 +177,10 @@ async function init(){
     player.on("no_task", () => {
         player.objectInteract?.endJeu(false, false);
         miniJeu = false;
+    });
+
+    player.on("action", (data) => {
+        socket.emit("action", {source: player.pid, role, data});
     });
 }
 init().then();
@@ -139,7 +213,7 @@ window.addEventListener("resize", () => {
     const diff = {w: canvas.width - window.innerWidth, h: canvas.height - window.innerHeight};
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    environment.setCord({x: environment.origine.x - diff.w / 2, y: environment.origine.y - diff.h / 2})
+    environment.setCord({x: environment.origine.x - diff.w / 2, y: environment.origine.y - diff.h / 2});
 });
 let lock_key_u = false;
 let miniJeu = false;
@@ -154,7 +228,7 @@ setInterval(() => {
 
     if(keys["KEY_U"] && !lock_key_u){
         lock_key_u = true;
-        let p2 = new Player(ctx, environment, player.getPosition(), Player.defaultSize, map);
+        let p2 = new Villageois(ctx, environment, player.getPosition(), Player.defaultSize, map, 0);
         p2.pid = playerCount++;
         environment.addToLayer(100, p2);
         console.log(player.getPosition());

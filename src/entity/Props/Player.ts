@@ -2,9 +2,9 @@ import {Displayable} from "../Displayable";
 import {PlayerMove} from "../types/PlayerMove";
 import {Coordinate} from "../types/Coordinate";
 import {Map} from "../Map";
-import axios from "axios";
+import {Roles} from "../roles/Roles";
 
-export class Player extends Displayable {
+export abstract class Player extends Displayable {
 
     public static imgR1: HTMLImageElement;
     public static imgR2: HTMLImageElement;
@@ -20,11 +20,14 @@ export class Player extends Displayable {
     public objectInteract: Displayable = null;
     private getImg;
     public goesRight: boolean;
+    hasAction: boolean;
+    alive: boolean;
+    role: Roles;
 
     public x;
     public y;
 
-    constructor(ctx, environment, positonDraw: Coordinate, size, map: Map) {
+    protected constructor(ctx, environment, positonDraw: Coordinate, size, map: Map, index) {
         super(ctx, positonDraw, size, null );
         this.getImg = this.GeneratorGetImg();
         this.environment = environment;
@@ -34,12 +37,15 @@ export class Player extends Displayable {
         this.x = 0;
         this.y = 0;
         this.decalage = Math.random() * 1000;
-        this.initSpawn(map).then();
+        this.hasAction = false;
+        this.alive = true;
+        this.role = Roles.Villageois;
+        this.initSpawn(map, index);
     }
 
-    async initSpawn(map: Map) {
-        this.x = map.players_spawn[0].x;
-        this.y = map.players_spawn[0].y;
+    initSpawn(map: Map, index) {
+        this.x = map.players_spawn[index].x;
+        this.y = map.players_spawn[index].y;
     }
 
     initLocal(pid: number, canvas: HTMLCanvasElement) {
@@ -60,7 +66,7 @@ export class Player extends Displayable {
         super.update();
     }
 
-    move(type: PlayerMove, sprint: boolean) {
+    move(type: PlayerMove, sprint: boolean, check=true) {
         let antiMovement;
         this.image = this.getImg.next().value as HTMLImageElement;
         let pixelSprint = 4;
@@ -118,12 +124,16 @@ export class Player extends Displayable {
                 this.environment.move({x:Math.round(condition * 0.707),y:Math.round(condition * 0.707)});
                 break;
         }
-        const hits = (this.environment.getHitBox(this.getPosition(), this.size));
-        for (const o of hits) {
-            if (this.hit(o)) {
-                return this.move(antiMovement, sprint);
+        if (check) {
+            let hits = this.environment.getHitBox(this.getPosition(), this.size);
+            for (const o of hits) {
+                if (this.hit(o)) {
+                    this.move(antiMovement, sprint, false);
+                    break;
+                }
             }
         }
+
         this.emit("move");
         this.checkInteractions();
 
@@ -145,16 +155,14 @@ export class Player extends Displayable {
     }
     
     getDrawnPosition(): Coordinate {
-        const result = {
+        return {
             x: this.environment.origine.x + this.x,
             y: this.environment.origine.y + this.y
         };
-        // result.x += -(this.size.w / 2);
-        // result.y += -(this.size.h / 2);
-        return result;
     }
 
     draw() {
+        if (!this.alive) return;
         this.ctx.font = "10px sans-serif";
         //this.ctx.fillStyle = "#f00";
         //this.ctx.fillRect( this.getDrawnPosition().x, this.getDrawnPosition().y, this.size.w, this.size.h);
@@ -219,5 +227,15 @@ export class Player extends Displayable {
             pos.y + this.size.h >= o.cord.y + 25 &&
             pos.y <= o.cord.y + o.size.h - 5
         ));
+    }
+
+    abstract action(...params);
+
+    die() {
+        this.alive = false;
+    }
+
+    revive() {
+        this.alive = true;
     }
 }

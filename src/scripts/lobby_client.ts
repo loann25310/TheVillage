@@ -147,7 +147,7 @@ document.body.onload = ()=>{
     addBans(game.bans);
     socket.emit("new_guy", uid, roomName);
     create_players(players);
-    $("#nbJoueursMin").text(Partie.nbJoueursMin);
+    $("#nbJoueursMin").text(Partie.NB_JOUEURS_MIN);
     socket.emit('get_game_master', roomName);
     dureeVote.find("option").each((index, element)=>{
         if (+($(element).val()) === +game.dureeVote){
@@ -201,7 +201,7 @@ $("#start").on("click", function () {
 });
 
 function start_game() {
-    if (players.length >= Partie.nbJoueursMin)
+    if (players.length >= Partie.NB_JOUEURS_MIN)
         socket.emit("start_game", `${game.id}`, uid);
     else
         alert("Vous n'êtes pas assez nombreux");
@@ -297,10 +297,10 @@ function display_user_info(player) {
 }
 
 function update_max_players() {
-    (change_max_players[0] as HTMLInputElement).min = `${Math.max(Partie.nbJoueursMin, game.players.length)}`;
+    (change_max_players[0] as HTMLInputElement).min = `${Math.max(Partie.NB_JOUEURS_MIN, game.players.length)}`;
     if (change_max_players.val() === game.nbJoueursMax) return;
-    if (change_max_players.val() < Partie.nbJoueursMin || change_max_players.val() > 15) {
-        (change_max_players[0] as HTMLInputElement).min = `${Math.max(Partie.nbJoueursMin, game.players.length)}`;
+    if (change_max_players.val() < Partie.NB_JOUEURS_MIN || change_max_players.val() > 15) {
+        (change_max_players[0] as HTMLInputElement).min = `${Math.max(Partie.NB_JOUEURS_MIN, game.players.length)}`;
         (change_max_players[0] as HTMLInputElement).max = `15`;
         return alert("Stop messing with this *(-_-)*");
     }

@@ -51,16 +51,16 @@ export function Route(router: Router, io: Server) {
         });
     });
 
-    io.on("connection", async (socket) =>{
+    io.on("connection", async (socket) => {
         socket.on("ask_room", async (userId) =>{
             console.log("room_requested");
             socket.emit("room_found", await getAvailableRoom(userId));
         });
-        socket.on("create_room", async (userId) =>{
+        socket.on("create_room", async () =>{
             console.log("room_requested");
-            socket.emit("room_found", await createRoom(userId));
+            socket.emit("room_found", await createRoom());
         });
-        socket.on("show_room", async (userId) =>{
+        socket.on("show_room", async () =>{
             console.log("room_showed");
             socket.emit("room_showing", await show_Room());
         });
@@ -74,7 +74,8 @@ export function Route(router: Router, io: Server) {
             socket.data.uid = uid;
             socket.join(`${room}`);
             let r = await repo.findOne(room);
-            if (r && !r.players.includes(uid)){
+            if (!r) return;
+            if (!r.players.includes(uid)){
                 r.players.push(uid);
                 if (r.gameMaster === 0)
                     r.gameMaster = uid;
@@ -127,7 +128,7 @@ export function Route(router: Router, io: Server) {
         socket.on("start_game", async (roomId, uid) => {
             let room = await repo.findOne(roomId);
             if (uid !== room.gameMaster) return io.to(roomId).emit("game_master", room.gameMaster);
-            room.start();
+            await room.start();
             io.to(roomId).emit("start_game");
         });
 

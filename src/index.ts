@@ -23,7 +23,7 @@ const bcrypt = require('bcrypt');
 
 /**
  * Pour autoriser une route sans être authentifié :
- * ajouter le nom de la route toute seule ,
+ * ajouter le nom de la route toute seule
  * ou ajouter le nom de la route avec ` *` à la fin pour autoriser **TOUTES** les routes commençant par ça. (exemple : `/auth *`)
  *
  * __Rappel__ :
