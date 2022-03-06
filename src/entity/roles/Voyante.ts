@@ -3,7 +3,7 @@ import {Coordinate} from "../types/Coordinate";
 import {Roles} from "./Roles";
 
 export class Voyante extends Player {
-    public static readonly NB_BOULES_CRISTAL = 3;
+    public static readonly NB_BOULES_CRISTAL = 50;
     public nb_boules: number;
     DISTANCE_FOR_ACTION = 300;
 

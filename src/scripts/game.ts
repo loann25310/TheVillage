@@ -121,6 +121,7 @@ async function init(){
         OTHER_PLAYERS.push(remotePlayer);
         player.addOtherPlayer(remotePlayer);
         environment.addToLayer(100, remotePlayer);
+        remotePlayer.role = null;
         return remotePlayer;
     }
 
@@ -160,10 +161,16 @@ async function init(){
             if (p.pid === id) return p.die();
     });
 
-    socket.on("see_role", role => {
+    socket.on("see_role", (data) => {
         if (player.role !== Roles.Voyante) return console.warn("WHAAAT");
-        console.log(role)
-        //todo: afficher le rôle (tout le temps au dessus du joueur ? juste une fois ?
+        for (const p of OTHER_PLAYERS) {
+            if (p.pid === data.id) {
+                p.role = data.role;
+                break;
+            }
+        }
+        console.log(data, OTHER_PLAYERS)
+
         player.nb_boules --;
     });
 

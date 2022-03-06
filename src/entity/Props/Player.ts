@@ -3,6 +3,7 @@ import {PlayerMove} from "../types/PlayerMove";
 import {Coordinate} from "../types/Coordinate";
 import {Map} from "../Map";
 import {Roles} from "../roles/Roles";
+import {Tools} from "../Tools";
 
 export abstract class Player extends Displayable {
 
@@ -168,7 +169,7 @@ export abstract class Player extends Displayable {
     }
 
     draw() {
-        if (!this.alive) return;
+        if (!this.alive) return this.drawDead();
         this.ctx.font = "10px sans-serif";
         //this.ctx.fillStyle = "#f00";
         //this.ctx.fillRect( this.getDrawnPosition().x, this.getDrawnPosition().y, this.size.w, this.size.h);
@@ -183,6 +184,14 @@ export abstract class Player extends Displayable {
         this.ctx.fillText(`[ PID : ${this.pid} ]`, this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y + this.size.h + 5);
         this.ctx.fillText(`{ x: ${this.cord.x}, y: ${this.cord.y} }`, this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y + this.size.h + 18);
         this.ctx.fillText(`{ x: ${this.getDrawnPosition().x}, y: ${this.getDrawnPosition().y} }`, this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y + this.size.h + 29);
+        if (!this.isLocal && this.role !== null && this.role !== undefined) {
+            this.ctx.fillStyle = this.role === Roles.LoupGarou ? "red" : "blue";
+            this.ctx.fillText(Tools.getRoleName(this.role), this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y - 15);
+        }
+    }
+
+    drawDead() {
+        //todo Draw a dead guy
     }
 
     checkInteractions() {

@@ -115,7 +115,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 case Roles.Sorciere:
                     return io.to(partie.id).emit(data.data.revive ? "revive" : "kill", data.data.player);
                 case Roles.Voyante:
-                    return socket.emit("see_role", partie.roles.filter(p => p.uid === data.data.player)[0].role);
+                    return socket.emit("see_role", {role: partie.roles.filter(p => p.uid === data.data.player)[0].role, id: data.data.player});
                 case Roles.Chasseur:
                 case Roles.LoupGarou:
                     return socket.emit("kill", data.data.player);
