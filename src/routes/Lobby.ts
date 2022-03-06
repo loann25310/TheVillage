@@ -128,8 +128,9 @@ export function Route(router: Router, io: Server) {
         socket.on("start_game", async (roomId, uid) => {
             let room = await repo.findOne(roomId);
             if (uid !== room.gameMaster) return io.to(roomId).emit("game_master", room.gameMaster);
-            await room.start();
-            io.to(roomId).emit("start_game");
+            room.start().then(() => {
+                io.to(roomId).emit("start_game");
+            });
         });
 
         socket.on("private", (roomId, playerId, bool) => {

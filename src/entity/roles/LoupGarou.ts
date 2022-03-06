@@ -5,6 +5,7 @@ import {Roles} from "./Roles";
 
 export class LoupGarou extends Player {
     static readonly NB_POCHE_KILL = 2;
+    DISTANCE_FOR_ACTION = 300;
     private pochesDeSang: number;
     constructor(ctx, environment, positonDraw: Coordinate, size, map, index) {
         super(ctx, environment, positonDraw, size, map, index);
@@ -20,6 +21,7 @@ export class LoupGarou extends Player {
 
     action(player: Player) {
         if (this.pochesDeSang < LoupGarou.NB_POCHE_KILL) return;
+        if (!this.alive) return;
         this.emit("action", {player});
         //todo : can kill a player
         player.die();

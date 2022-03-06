@@ -5,6 +5,7 @@ import {Roles} from "./Roles";
 export class Sorciere extends Player {
     public hasRevived: boolean;
     public hasKilled: boolean;
+    DISTANCE_FOR_ACTION = 300;
 
     constructor(ctx, environment, positonDraw: Coordinate, size, map, index) {
         super(ctx, environment, positonDraw, size, map, index);
@@ -14,6 +15,7 @@ export class Sorciere extends Player {
     }
 
     action(player: Player,  revive: boolean) {
+        if (!this.alive) return;
         if (revive) {
             if (this.hasRevived) return;
             if (player.alive) return;

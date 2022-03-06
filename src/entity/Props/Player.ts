@@ -23,6 +23,9 @@ export abstract class Player extends Displayable {
     hasAction: boolean;
     alive: boolean;
     role: Roles;
+    distancePlayers: {player: Player, distance: number}[];
+    abstract DISTANCE_FOR_ACTION: number;
+    playerForAction: Player;
 
     public x;
     public y;
@@ -40,6 +43,8 @@ export abstract class Player extends Displayable {
         this.hasAction = false;
         this.alive = true;
         this.role = Roles.Villageois;
+        this.distancePlayers = [];
+        this.playerForAction = null;
         this.initSpawn(map, index);
     }
 
@@ -67,6 +72,7 @@ export abstract class Player extends Displayable {
     }
 
     move(type: PlayerMove, sprint: boolean, check=true) {
+        if (!this.alive) return;
         let antiMovement;
         this.image = this.getImg.next().value as HTMLImageElement;
         let pixelSprint = 4;
@@ -136,7 +142,7 @@ export abstract class Player extends Displayable {
 
         this.emit("move");
         this.checkInteractions();
-
+        this.updateAllDistances();
     }
 
     setCord(cord: Coordinate) {
@@ -237,5 +243,55 @@ export abstract class Player extends Displayable {
 
     revive() {
         this.alive = true;
+    }
+
+    removeOtherPLayer(player: Player) {
+        for (let i = 0; i < this.distancePlayers.length; i++) {
+            if (this.distancePlayers[i].player.pid === player.pid) {
+                this.distancePlayers.splice(i, 1);
+                return;
+            }
+        }
+    }
+
+    addOtherPlayer(player: Player) {
+        this.removeOtherPLayer(player);
+        const distance = Math.sqrt((this.getPosition().x - player.getPosition().x) ** 2 + (this.getPosition().y - player.getPosition().y) ** 2);
+        this.distancePlayers.push({player, distance});
+    }
+
+    updateDistance(id) {
+        for (let i = 0; i < this.distancePlayers.length; i++) {
+            if (this.distancePlayers[i].player.pid === id) {
+                this.distancePlayers[i].distance = Math.sqrt((this.getPosition().x - this.distancePlayers[i].player.getPosition().x) ** 2 + (this.getPosition().y - this.distancePlayers[i].player.getPosition().y) ** 2);
+                break;
+            }
+        }
+        this.sortDistances();
+    }
+
+    updateAllDistances() {
+        for (let i = 0; i < this.distancePlayers.length; i++) {
+            this.distancePlayers[i].distance = Math.sqrt((this.getPosition().x - this.distancePlayers[i].player.getPosition().x) ** 2 + (this.getPosition().y - this.distancePlayers[i].player.getPosition().y) ** 2);
+        }
+        this.sortDistances();
+    }
+
+    sortDistances() {
+        const arr = [];
+        while (this.distancePlayers.length > 0) {
+            let indexMin = 0;
+            for (let i = 1; i < this.distancePlayers.length; i++) {
+                if (this.distancePlayers[i].distance < this.distancePlayers[indexMin].distance) indexMin = i;
+            }
+            arr.push(this.distancePlayers.splice(indexMin, 1)[0]);
+        }
+        if (arr.length === 0) return;
+        this.distancePlayers = arr;
+        if (arr[0].distance <= this.DISTANCE_FOR_ACTION && this.playerForAction?.pid !== arr[0].player.pid) {
+            if (this.role === Roles.Chasseur && this.alive) return;
+            else this.emit("action_available", arr[0].player);
+        } else if (arr[0].distance > this.DISTANCE_FOR_ACTION && this.playerForAction)
+            this.emit("action_unavailable");
     }
 }

@@ -4,6 +4,7 @@ import {Roles} from "./Roles";
 
 export class Chasseur extends Player {
     public hasShot: boolean;
+    DISTANCE_FOR_ACTION = -1;
     constructor(ctx, environment, positonDraw: Coordinate, size, map, index) {
         super(ctx, environment, positonDraw, size, map, index);
         this.hasShot = false;

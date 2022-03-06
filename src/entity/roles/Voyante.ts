@@ -5,6 +5,7 @@ import {Roles} from "./Roles";
 export class Voyante extends Player {
     public static readonly NB_BOULES_CRISTAL = 3;
     public nb_boules: number;
+    DISTANCE_FOR_ACTION = 300;
 
     constructor(ctx, environment, positonDraw: Coordinate, size, map, index) {
         super(ctx, environment, positonDraw, size, map, index);
@@ -14,6 +15,7 @@ export class Voyante extends Player {
 
     action(player: Player) {
         if (this.nb_boules <= 0) return;
+        if (!this.alive) return;
         this.emit("action", {player : player.pid});
     }
 }

@@ -97,6 +97,10 @@ player.setCord({
     y : -(canvas.height-Player.defaultSize.h) / 2
 });
 
+let lock_key_u = false;
+let miniJeu = false;
+let actionPossible = false;
+let playerCount = 1;
 
 async function init(){
 
@@ -113,6 +117,7 @@ async function init(){
         remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
         remotePlayer.pid = data.id;
         OTHER_PLAYERS.push(remotePlayer);
+        player.addOtherPlayer(remotePlayer);
         environment.addToLayer(100, remotePlayer);
         return remotePlayer;
     }
@@ -133,6 +138,7 @@ async function init(){
         if(!remotePlayer) remotePlayer = addRemotePlayer(data);
         remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
         remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
+        player.updateDistance(data.id);
     });
 
     socket.on("revive", id => {
@@ -153,6 +159,7 @@ async function init(){
 
     socket.on("see_role", role => {
         if (player.role !== Roles.Voyante) return console.warn("WHAAAT");
+        console.log(role)
         //todo: afficher le rôle (tout le temps au dessus du joueur ? juste une fois ?
         player.nb_boules --;
     });
@@ -180,7 +187,17 @@ async function init(){
     });
 
     player.on("action", (data) => {
-        socket.emit("action", {source: player.pid, role, data});
+        socket.emit("action", {role, data});
+    });
+
+    player.on("action_available", p => {
+        player.playerForAction = p;
+        actionPossible = true;
+    });
+
+    player.on("action_unavailable", () => {
+        player.playerForAction = null;
+        actionPossible = false;
     });
 }
 init().then();
@@ -193,11 +210,24 @@ function draw() {
     personnage = player.image;
     environment.update();
     ctx.drawImage(personnage, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
-    if (player.objectInteract !== null && !miniJeu) {
+    if (!player.alive) {
+        ctx.textAlign = "center";
+        ctx.font = "30px sans-serif";
+        ctx.fillStyle = "red";
+        ctx.fillText(`U R DED lol what a noob`, window.innerWidth / 2, window.innerHeight - 300);
+    }
+    else if (player.objectInteract !== null && !miniJeu) {
         ctx.textAlign = "center";
         ctx.font = "30px sans-serif";
         ctx.fillStyle = "red";
         ctx.fillText(`[E] pour interagir avec ${player.objectInteract.name}`, window.innerWidth / 2, window.innerHeight - 300);
+    }
+
+    if (actionPossible) {
+        ctx.textAlign = "center";
+        ctx.font = "30px sans-serif";
+        ctx.fillStyle = "blue";
+        ctx.fillText(`[F] pour ACTION sur ${player.playerForAction.pid}`, window.innerWidth / 2, window.innerHeight - 500);
     }
 
     if (miniJeu) {
@@ -215,15 +245,22 @@ window.addEventListener("resize", () => {
     canvas.height = window.innerHeight;
     environment.setCord({x: environment.origine.x - diff.w / 2, y: environment.origine.y - diff.h / 2});
 });
-let lock_key_u = false;
-let miniJeu = false;
-let playerCount = 1;
+
 setInterval(() => {
     let shift = keys["KEY_SHIFT"] === true;
 
     if (keys["KEY_E"] && !miniJeu && player.objectInteract !== null) {
         miniJeu = true;
         player.objectInteract.miniJeu(player);
+    }
+
+    if (keys["KEY_F"] && actionPossible) {
+        player.action(player.playerForAction);
+        actionPossible = false;
+    }
+
+    if (keys["KEY_P"]){
+        console.log(player.distancePlayers)
     }
 
     if(keys["KEY_U"] && !lock_key_u){

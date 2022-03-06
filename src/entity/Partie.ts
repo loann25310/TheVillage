@@ -109,7 +109,7 @@ export class Partie {
     }
 
     async start(){
-        this.status = PartieStatus.STARTED;
+        this.status = PartieStatus.STARTING;
         this.init();
         await getRepository(Partie).save(this);
     }
@@ -127,16 +127,17 @@ export class Partie {
         this.players.forEach(p => j.push(p));
         const joueurs = [];
         while (j.length > 0){
-            joueurs.push(j.splice(Math.random() * j.length, 1)[0]);
+            joueurs.push(j.splice(Math.floor(Math.random() * j.length), 1)[0]);
         }
         this.roles = [];
-        this.roles.push({uid : joueurs[0].uid, role: Roles.Voyante});
-        this.roles.push({uid : joueurs[1].uid, role: Roles.Sorciere});
-        this.roles.push({uid : joueurs[2].uid, role: Roles.Chasseur});
-        this.roles.push({uid : joueurs[3].uid, role: Roles.LoupGarou});
-        this.roles.push({uid : joueurs[4].uid, role: Roles.LoupGarou});
+        this.roles.push({uid : joueurs[0], role: Roles.Voyante});
+        this.roles.push({uid : joueurs[1], role: Roles.Sorciere});
+        this.roles.push({uid : joueurs[2], role: Roles.Chasseur});
+        this.roles.push({uid : joueurs[3], role: Roles.LoupGarou});
+        this.roles.push({uid : joueurs[4], role: Roles.LoupGarou});
         for (let i = 5; this.roles.length < this.players.length; i++) {
-            this.roles.push({uid: joueurs[i].uid, role: Roles.Villageois});
+            this.roles.push({uid: joueurs[i], role: Roles.Villageois});
         }
+        console.log(this.roles);
     }
 }
