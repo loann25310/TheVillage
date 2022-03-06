@@ -14,18 +14,16 @@ export class Sorciere extends Player {
         this.role = Roles.Sorciere;
     }
 
-    action(player: Player,  revive: boolean) {
+    action(player: Player) {
         if (!this.alive) return;
-        if (revive) {
+        if (!player.alive) {
             if (this.hasRevived) return;
-            if (player.alive) return;
-            this.emit("action", {player: player.pid, revive});
+            this.emit("action", {player: player.pid, revive: true});
             player.revive();
             this.hasRevived = true;
         } else {
             if (this.hasKilled) return;
-            if (!player.alive) return;
-            this.emit("action", {player: player.pid, revive});
+            this.emit("action", {player: player.pid, revive: false});
             player.die();
             this.hasKilled = true;
         }

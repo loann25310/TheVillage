@@ -14,6 +14,7 @@ import {Chasseur} from "../entity/roles/Chasseur";
 import {Sorciere} from "../entity/roles/Sorciere";
 import {Voyante} from "../entity/roles/Voyante";
 import {LoupGarou} from "../entity/roles/LoupGarou";
+import {Tools} from "../entity/Tools";
 
 // @ts-ignore
 const partie = _partie as Partie;
@@ -92,6 +93,7 @@ switch (role) {
         }, Player.defaultSize, map, numeroJoueur);
         break;
 }
+player.pid = user.id;
 player.setCord({
     x : -(canvas.width-Player.defaultSize.w) / 2,
     y : -(canvas.height-Player.defaultSize.h) / 2
@@ -151,10 +153,11 @@ async function init(){
     });
 
     socket.on("kill", id => {
+        console.log(id, player)
         if (id === player.pid)
             return player.die();
         for (const p of OTHER_PLAYERS)
-            if (p.pid === id) return player.die();
+            if (p.pid === id) return p.die();
     });
 
     socket.on("see_role", role => {
@@ -233,6 +236,11 @@ function draw() {
     if (miniJeu) {
         requestAnimationFrame(() => {player.objectInteract?.drawJeu()});
     }
+
+    ctx.textAlign = "left";
+    ctx.font = "15px sans-serif";
+    ctx.fillStyle = player.role === Roles.LoupGarou ? "red" : "blue";
+    ctx.fillText(Tools.getRoleName(player.role), 10, window.innerHeight-30);
 }
 draw();
 
