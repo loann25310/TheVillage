@@ -4,7 +4,7 @@ import {Blood} from "../Props/Blood";
 import {Roles} from "./Roles";
 
 export class LoupGarou extends Player {
-    static readonly NB_POCHE_KILL = 0;
+    static readonly NB_POCHE_KILL = 1;
     DISTANCE_FOR_ACTION = 300;
     private pochesDeSang: number;
     constructor(ctx, environment, positonDraw: Coordinate, size, map, index) {
@@ -15,14 +15,19 @@ export class LoupGarou extends Player {
     }
 
     ramassePoche(poche: Blood) {
-        this.pochesDeSang++;
-        poche.drink();
+        if (poche.drink()) {
+            this.pochesDeSang++;
+            this.emit("drink", poche);
+        }
     }
 
     action(player: Player) {
-        if (this.pochesDeSang < LoupGarou.NB_POCHE_KILL) return;
-        if (!this.alive) return;
-        this.emit("action", {player});
+        if (!this.checkAction()) return;
+        this.emit("action", {player: player.pid});
         this.pochesDeSang -= LoupGarou.NB_POCHE_KILL;
+    }
+
+    checkAction(): boolean {
+        return this.pochesDeSang >= LoupGarou.NB_POCHE_KILL && this.alive;
     }
 }

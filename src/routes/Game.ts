@@ -121,5 +121,9 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                     return socket.emit("kill", data.data.player);
             }
         });
+
+        socket.on("drink", pos => {
+            io.to(partie.id).emit("drink", pos);
+        });
     });
 }

@@ -9,4 +9,8 @@ export class Villageois extends Player {
     }
 
     action() {}
+
+    checkAction(): boolean {
+        return false;
+    }
 }

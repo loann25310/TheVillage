@@ -154,7 +154,6 @@ async function init(){
     });
 
     socket.on("kill", id => {
-        console.log(id, player)
         if (id === player.pid)
             return player.die();
         for (const p of OTHER_PLAYERS)
@@ -172,6 +171,15 @@ async function init(){
         console.log(data, OTHER_PLAYERS)
 
         player.nb_boules --;
+    });
+
+    socket.on("drink", pos => {
+        for (const o of environment.interactions) {
+            if (o.name !== "blood") continue;
+            if (o.getPosition().x === pos.x && o.getPosition().y === pos.y) {
+                o.hide();
+            }
+        }
     });
 
     player.on("move", () => {
@@ -208,6 +216,11 @@ async function init(){
     player.on("action_unavailable", () => {
         player.playerForAction = null;
         actionPossible = false;
+    });
+
+    player.on("drink", poche => {
+        poche.hide();
+        socket.emit("drink", poche.getPosition());
     });
 }
 init().then();

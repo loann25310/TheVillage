@@ -27,6 +27,8 @@ export class Displayable {
 
     hittable: boolean;
 
+    hidden: boolean;
+
     protected readonly callbacks;
 
     constructor(ctx: CanvasRenderingContext2D, cord: Coordinate, size: Size, color: string) {
@@ -41,6 +43,7 @@ export class Displayable {
         this.player = null;
         this.callbacks = [];
         this.hittable = false;
+        this.hidden = false;
     }
 
     on(eventName: string, callback: ((data) => void)) {
@@ -161,6 +164,14 @@ export class Displayable {
             this.cord.y >= o.cord.y &&
             this.cord.y <= o.cord.y + o.size.h
         ));
+    }
+
+    hide() {
+        this.hidden = true;
+    }
+
+    show() {
+        this.hidden = false;
     }
 
     save() {

@@ -18,6 +18,7 @@ import {Dirt} from "./Grounds/Dirt";
 import {HayBale} from "./Props/HayBale";
 import {Map} from "./Map";
 import {Player} from "./Props/Player";
+import {Blood} from "./Props/Blood";
 
 export class Environment {
 
@@ -71,7 +72,8 @@ export class Environment {
         for (const layer of this.layers) {
             if(!layer) continue;
             for (const object of layer) {
-                object.update();
+                if (!object.hidden)
+                    object.update();
             }
         }
     }
@@ -100,7 +102,6 @@ export class Environment {
                 this.addHitBox(o);
             }
 
-            console.log(this.size);
             for (let i = 0; i < this.size.w / 1000; i++) {
                 for (let j = 0; j < this.size.h / 1000; j++) {
                     let terre = new Dirt(ctx, { x: i * 1000, y: j * 1000 }, { w: 1000, h: 1000 });
@@ -185,6 +186,10 @@ export class Environment {
                 const foin = new HayBale(this.ctx, object.coordonnees, object.size, false);
                 this.addToLayer(1, foin);
                 return foin;
+            case ObjectType.blood:
+                const blood = new Blood(this.ctx, object.coordonnees, object.size);
+                this.addToLayer(2, blood);
+                return blood;
         }
     }
     

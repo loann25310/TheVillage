@@ -11,5 +11,6 @@ export enum ObjectType {
     pave = "pave",
     bois = "bois",
     terre = "terre",
-    foin = "foin"
+    foin = "foin",
+    blood = "blood"
 }

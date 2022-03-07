@@ -12,8 +12,7 @@ export class Chasseur extends Player {
     }
 
     action(player: Player) {
-        if (this.alive) return;
-        if (this.hasShot) return;
+        if (!this.checkAction()) return;
         this.emit("action", {player});
         player.die();
         this.hasShot = true;
@@ -26,5 +25,9 @@ export class Chasseur extends Player {
 
     revive() {
         super.revive();
+    }
+
+    checkAction(): boolean {
+        return !this.alive && !this.hasShot;
     }
 }

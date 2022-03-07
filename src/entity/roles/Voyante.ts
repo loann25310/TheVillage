@@ -14,8 +14,11 @@ export class Voyante extends Player {
     }
 
     action(player: Player) {
-        if (this.nb_boules <= 0) return;
-        if (!this.alive) return;
+        if (!this.checkAction()) return;
         this.emit("action", {player : player.pid});
+    }
+
+    checkAction(): boolean {
+        return this.alive && this.nb_boules > 0;
     }
 }
