@@ -15,7 +15,7 @@ export class Sorciere extends Player {
     }
 
     action(player: Player) {
-        if (!this.checkAction()) return;
+        if (!this.checkAction(player)) return;
         if (!player.alive) {
             if (this.hasRevived) return;
             this.emit("action", {player: player.pid, revive: true});
@@ -29,7 +29,7 @@ export class Sorciere extends Player {
         }
     }
 
-    checkAction(): boolean {
-        return this.alive && (this.hasKilled || this.hasRevived);
+    checkAction(player): boolean {
+        return this.alive && (player.alive && !this.hasKilled || !player.alive && !this.hasRevived);
     }
 }

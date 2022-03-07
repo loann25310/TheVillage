@@ -248,7 +248,7 @@ export abstract class Player extends Displayable {
 
     abstract action(...params);
 
-    abstract checkAction(): boolean;
+    abstract checkAction(player: Player): boolean;
 
     die() {
         this.alive = false;
@@ -301,7 +301,7 @@ export abstract class Player extends Displayable {
         }
         if (arr.length === 0) return;
         this.distancePlayers = arr;
-        if (arr[0].distance <= this.DISTANCE_FOR_ACTION && this.playerForAction?.pid !== arr[0].player.pid && this.checkAction()) {
+        if (arr[0].distance <= this.DISTANCE_FOR_ACTION && this.playerForAction?.pid !== arr[0].player.pid && this.checkAction(arr[0].player)) {
             this.emit("action_available", arr[0].player);
         } else if (arr[0].distance > this.DISTANCE_FOR_ACTION && this.playerForAction)
             this.emit("action_unavailable");

@@ -22,12 +22,13 @@ export class LoupGarou extends Player {
     }
 
     action(player: Player) {
-        if (!this.checkAction()) return;
+        if (!this.checkAction(player)) return;
+        console.log(player)
         this.emit("action", {player: player.pid});
         this.pochesDeSang -= LoupGarou.NB_POCHE_KILL;
     }
 
-    checkAction(): boolean {
-        return this.pochesDeSang >= LoupGarou.NB_POCHE_KILL && this.alive;
+    checkAction(player): boolean {
+        return this.pochesDeSang >= LoupGarou.NB_POCHE_KILL && this.alive && player.role !== Roles.LoupGarou;
     }
 }

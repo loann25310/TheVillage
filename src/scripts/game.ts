@@ -154,6 +154,7 @@ async function init(){
     });
 
     socket.on("kill", id => {
+        console.log(id)
         if (id === player.pid)
             return player.die();
         for (const p of OTHER_PLAYERS)

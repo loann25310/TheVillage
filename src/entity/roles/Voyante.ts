@@ -14,11 +14,11 @@ export class Voyante extends Player {
     }
 
     action(player: Player) {
-        if (!this.checkAction()) return;
+        if (!this.checkAction(player)) return;
         this.emit("action", {player : player.pid});
     }
 
-    checkAction(): boolean {
-        return this.alive && this.nb_boules > 0;
+    checkAction(player): boolean {
+        return this.alive && this.nb_boules > 0 && player.role !== null && player.role !== undefined;
     }
 }
