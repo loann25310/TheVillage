@@ -113,6 +113,13 @@ async function init(){
     environment.move({x: -canvas.width / 2, y : -canvas.height / 2});
     environment.setCord({x: canvas.width / 2 - map.players_spawn[numeroJoueur].x, y : canvas.height / 2 - map.players_spawn[numeroJoueur].y});
 
+    if (role !== Roles.LoupGarou) {
+        const blood = environment.interactions.filter(o => o.name === "blood");
+        for (const o of blood) {
+            environment.interactions.splice(environment.interactions.indexOf(o), 1);
+        }
+    }
+
     function addRemotePlayer(data: {id: number, position: Coordinate, index: number}): Player {
         let remotePlayer = new Villageois(ctx, environment, data.position, Player.defaultSize, map, data.index);
         remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
