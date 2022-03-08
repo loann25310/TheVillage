@@ -177,8 +177,10 @@ export abstract class Player extends Displayable {
         this.ctx.fillStyle = "#fff";
         this.ctx.fillRect(this.getDrawnPosition().x, this.getDrawnPosition().y + this.size.h - 5, this.size.w, 40 );
         this.ctx.textAlign = "center";
-        if(this.isLocal)
+        if(this.isLocal) {
+            this.drawInfo();
             this.ctx.fillStyle = "#0080ff";
+        }
         else
             this.ctx.fillStyle = "#f00";
         this.ctx.fillText(`[ PID : ${this.pid} ]`, this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y + this.size.h + 5);
@@ -193,6 +195,7 @@ export abstract class Player extends Displayable {
     drawDead() {
         //todo Draw a dead guy
     }
+    drawInfo() {}
 
     checkInteractions() {
         let seen = false;
