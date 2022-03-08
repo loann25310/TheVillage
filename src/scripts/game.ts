@@ -113,12 +113,13 @@ async function init(){
     environment.move({x: -canvas.width / 2, y : -canvas.height / 2});
     environment.setCord({x: canvas.width / 2 - map.players_spawn[numeroJoueur].x, y : canvas.height / 2 - map.players_spawn[numeroJoueur].y});
 
-    if (role !== Roles.LoupGarou) {
-        const blood = environment.interactions.filter(o => o.name === "blood");
-        for (const o of blood) {
-            environment.interactions.splice(environment.interactions.indexOf(o), 1);
-        }
+
+    const blood = environment.possibleInteractions.filter(role === Roles.LoupGarou ? (o => o.name !== "blood") : (o => o.name === "blood"));
+    for (const o of blood) {
+        environment.possibleInteractions.splice(environment.possibleInteractions.indexOf(o), 1);
     }
+
+    environment.initDay();
 
     function addRemotePlayer(data: {id: number, position: Coordinate, index: number}): Player {
         let remotePlayer = new Villageois(ctx, environment, data.position, Player.defaultSize, map, data.index);
@@ -175,7 +176,6 @@ async function init(){
                 break;
             }
         }
-        console.log(data, OTHER_PLAYERS)
 
         player.nb_boules --;
     });
@@ -186,6 +186,9 @@ async function init(){
             for (const o of l) {
                 if (o.name !== "blood") continue;
                 if (o.cord.x === pos.x && o.cord.y === pos.y) {
+                    if (environment.interactions.includes(o)) {
+                        environment.possibleInteractions.push(environment.interactions.splice(environment.interactions.indexOf(o), 1)[0]);
+                    }
                     o.hide();
                 }
             }
@@ -203,6 +206,13 @@ async function init(){
     //player.on("task", (/* object */) => {});
 
     for (const o of player.environment.interactions) {
+        o.on("end_game", (completed) => {
+            o.endJeu(completed);
+            miniJeu = false;
+        });
+    }
+
+    for (const o of player.environment.possibleInteractions) {
         o.on("end_game", (completed) => {
             o.endJeu(completed);
             miniJeu = false;
@@ -230,6 +240,9 @@ async function init(){
 
     player.on("drink", poche => {
         poche.hide();
+        if (environment.interactions.includes(poche)) {
+            environment.possibleInteractions.push(environment.interactions.splice(environment.interactions.indexOf(poche), 1)[0]);
+        }
         socket.emit("drink", {x: poche.cord.x, y: poche.cord.y});
     });
 }
@@ -288,6 +301,7 @@ window.addEventListener("resize", () => {
     }
     environment.setCord({x: environment.origine.x - diff.w / 2, y: environment.origine.y - diff.h / 2});
 });
+window.addEventListener("click", ()=> {if (keys["KEY_P"])environment.initDay()});
 
 setInterval(() => {
     let shift = keys["KEY_SHIFT"] === true;
@@ -300,10 +314,6 @@ setInterval(() => {
     if (keys["KEY_F"] && actionPossible) {
         player.action(player.playerForAction);
         actionPossible = false;
-    }
-
-    if (keys["KEY_P"]){
-        console.log(player.distancePlayers)
     }
 
     if(keys["KEY_U"] && !lock_key_u){

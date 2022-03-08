@@ -27,12 +27,15 @@ export class Environment {
     size: { w: number, h: number };
     ctx: CanvasRenderingContext2D;
     interactions: Displayable[];
+    possibleInteractions: Displayable[];
     hitBoxes: Displayable[][][];
+    static readonly NB_TASK_PER_DAY = 2;
 
     constructor() {
         this.layers = [];
         this.interactions = [];
         this.hitBoxes = [];
+        this.possibleInteractions = [];
         this.setOrigine({x:0,y:0});
     }
 
@@ -98,7 +101,7 @@ export class Environment {
             for (const object of map.interactions) {
                 const o = this.createObject(object);
                 o.name = object.type;
-                this.interactions.push(o);
+                this.possibleInteractions.push(o);
                 this.addHitBox(o);
             }
 
@@ -228,6 +231,20 @@ export class Environment {
             }
         }
         return objects;
+    }
+
+    initDay() {
+        console.log(this.possibleInteractions, this.interactions);
+        const nb = this.possibleInteractions[0].name === "blood" ? Environment.NB_TASK_PER_DAY * 3 : Environment.NB_TASK_PER_DAY;
+        for (let i = 0; i < nb && this.possibleInteractions.length > 0; i++) {
+            this.interactions.push(this.possibleInteractions.splice(Math.floor(Math.random() * this.possibleInteractions.length), 1)[0]);
+        }
+        for (const o of this.interactions) {
+            o.show();
+            if (o.name === "blood") {
+                (o as Blood).isFull = true;
+            }
+        }
     }
 
     getObjects() {

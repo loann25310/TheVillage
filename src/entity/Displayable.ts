@@ -123,23 +123,15 @@ export class Displayable {
                 document.body.removeChild(this.miniJeuCanvas);
             this.miniJeuCanvas = null;
             if (reussi) {
-                this.player.environment.interactions.splice(this.player.environment.interactions.indexOf(this), 1);
+                this.player.environment.possibleInteractions.push(this.player.environment.interactions.splice(this.player.environment.interactions.indexOf(this), 1)[0]);
                 this.player.objectInteract = null;
             }
             return;
         }
         const dj = this.drawJeu;
         setTimeout(() => {
-            this.jeu = null;
-            if (this.miniJeuCanvas)
-                document.body.removeChild(this.miniJeuCanvas);
-            this.miniJeuCanvas = null;
-            if (reussi) {
-                this.player.environment.interactions.splice(this.player.environment.interactions.indexOf(this), 1);
-                this.player.objectInteract = null;
-            } else {
-                this.drawJeu = dj;
-            }
+            this.drawJeu = dj;
+            this.endJeu(reussi, false);
         }, 1000);
 
         this.drawJeu = () => {
