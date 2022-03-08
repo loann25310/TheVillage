@@ -154,7 +154,6 @@ async function init(){
     });
 
     socket.on("kill", id => {
-        console.log(id)
         if (id === player.pid)
             return player.die();
         for (const p of OTHER_PLAYERS)
@@ -272,6 +271,10 @@ window.addEventListener("resize", () => {
     const diff = {w: canvas.width - window.innerWidth, h: canvas.height - window.innerHeight};
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    if (player.objectInteract?.miniJeuCanvas) {
+        player.objectInteract.miniJeuCanvas.width = window.innerWidth;
+        player.objectInteract.miniJeuCanvas.height = window.innerHeight;
+    }
     environment.setCord({x: environment.origine.x - diff.w / 2, y: environment.origine.y - diff.h / 2});
 });
 
