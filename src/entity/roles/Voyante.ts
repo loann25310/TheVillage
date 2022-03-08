@@ -19,6 +19,14 @@ export class Voyante extends Player {
     }
 
     checkAction(player): boolean {
-        return this.alive && this.nb_boules > 0 && player.role !== null && player.role !== undefined;
+        return this.alive && this.nb_boules > 0 && (player.role === null || player.role === undefined);
+    }
+
+    drawInfo() {
+        super.drawInfo();
+        this.ctx.fillStyle = "blue";
+        this.ctx.font = "30px sans-serif";
+        this.ctx.textAlign = "left";
+        this.ctx.fillText(`Boules de cristal : ${this.nb_boules}`, 20, innerHeight - 80);
     }
 }

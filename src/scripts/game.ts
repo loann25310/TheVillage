@@ -181,10 +181,13 @@ async function init(){
     });
 
     socket.on("drink", pos => {
-        for (const o of environment.interactions) {
-            if (o.name !== "blood") continue;
-            if (o.getPosition().x === pos.x && o.getPosition().y === pos.y) {
-                o.hide();
+        for (const l of environment.layers) {
+            if (!l) continue;
+            for (const o of l) {
+                if (o.name !== "blood") continue;
+                if (o.cord.x === pos.x && o.cord.y === pos.y) {
+                    o.hide();
+                }
             }
         }
     });
@@ -227,7 +230,7 @@ async function init(){
 
     player.on("drink", poche => {
         poche.hide();
-        socket.emit("drink", poche.getPosition());
+        socket.emit("drink", {x: poche.cord.x, y: poche.cord.y});
     });
 }
 init().then();
@@ -240,6 +243,7 @@ function draw() {
     personnage = player.image;
     environment.update();
     ctx.drawImage(personnage, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
+    player.drawInfo();
     if (!player.alive) {
         ctx.textAlign = "center";
         ctx.font = "30px sans-serif";

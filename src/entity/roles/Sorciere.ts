@@ -32,4 +32,14 @@ export class Sorciere extends Player {
     checkAction(player): boolean {
         return this.alive && (player.alive && !this.hasKilled || !player.alive && !this.hasRevived);
     }
+
+    drawInfo() {
+        super.drawInfo();
+        this.ctx.fillStyle = "red";
+        this.ctx.font = "30px sans-serif";
+        this.ctx.textAlign = "left";
+        this.ctx.fillText(`Mort : ${+!this.hasKilled}`, 20, innerHeight - 80);
+        this.ctx.fillStyle = "green";
+        this.ctx.fillText(`Vie : ${+!this.hasRevived}`, 20, innerHeight - 110);
+    }
 }
