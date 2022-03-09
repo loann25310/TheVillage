@@ -23,8 +23,6 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         partie.roles = [];
         let numeroJoueur = partie.players.indexOf(user.id);
         if (numeroJoueur < 0) return res.redirect("/?err=wrong_game");
-        else console.log(numeroJoueur);
-        console.log(user.id, partie.players.indexOf(user.id), partie.players);
         res.render("game/main", {
             partie,
             map: partie.getMap(fs, path),
@@ -124,6 +122,39 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
 
         socket.on("drink", pos => {
             io.to(partie.id).emit("drink", pos);
+        });
+
+        socket.on("task_completed",  (id, nb) => {
+            let seen = false;
+            for (const couple of partie.idTasks) {
+                if (couple.id === id) {
+                    couple.nb = nb;
+                    seen = true;
+                    break;
+                }
+            }
+            if (!seen)
+                partie.idTasks.push({id, nb});
+            if (partie.idTasks.length !== partie.inGamePlayers.length) return;
+            let compteur = 0;
+            for (const c of partie.idTasks) {
+                compteur += c.nb;
+            }
+            if (compteur > 0)
+                io.to(partie.id).emit("nb_tasks", compteur);
+            else
+                io.to(partie.id).emit("DAY");
+        });
+
+        socket.on("new_night", (id, nb) =>{
+            if(!partie.idTasks) partie.idTasks = [];
+            for (const couple of partie.idTasks) {
+                if (couple.id === id) {
+                    couple.nb = nb;
+                    return;
+                }
+            }
+            partie.idTasks.push({id, nb});
         });
     });
 }

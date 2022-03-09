@@ -236,13 +236,13 @@ export abstract class Player extends Displayable {
                     yield this.goesRight ? Player.imgR3 : Player.imgL3;  // Bonhomme3
             } else {
                 if (millis < 250)
-                    yield this.goesRight ? Player.deadimgR2 : Player.deadimgL2; //Bonhomme2
+                    yield this.goesRight ? Player.deadimgR2 : Player.deadimgL2;
                 else if (millis < 500)
-                    yield this.goesRight ? Player.deadimgR1 : Player.deadimgL1; // Bonhomme1
+                    yield this.goesRight ? Player.deadimgR1 : Player.deadimgL1;
                 else if (millis < 750)
-                    yield this.goesRight ? Player.deadimgR3 : Player.deadimgL3; // Bonhomme2
+                    yield this.goesRight ? Player.deadimgR3 : Player.deadimgL3;
                 else
-                    yield this.goesRight ? Player.deadimgR4 : Player.deadimgL4;  // Bonhomme3
+                    yield this.goesRight ? Player.deadimgR4 : Player.deadimgL4;
             }
         }
     }

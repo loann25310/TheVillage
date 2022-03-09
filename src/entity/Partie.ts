@@ -75,6 +75,8 @@ export class Partie {
     })
     roles: {uid: number, role: Roles}[];
 
+    idTasks: {id: number, nb: number}[];
+
     async getPlayers(): Promise<User[]> {
         return await getRepository(User).findByIds(this.players);
     }

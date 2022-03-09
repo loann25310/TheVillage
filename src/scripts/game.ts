@@ -135,7 +135,8 @@ async function init(){
         environment.possibleInteractions.splice(environment.possibleInteractions.indexOf(o), 1);
     }
 
-    environment.initDay();
+    environment.initNight();
+    socket.emit("new_night", player.pid, player.role === Roles.LoupGarou ? 0 : environment.interactions.length);
 
     function addRemotePlayer(data: {id: number, position: Coordinate, index: number}): Player {
         let remotePlayer = new Villageois(ctx, environment, data.position, Player.defaultSize, map, data.index);
@@ -232,6 +233,8 @@ async function init(){
         o.on("end_game", (completed) => {
             o.endJeu(completed);
             miniJeu = false;
+            if (completed)
+                socket.emit("task_completed", environment.interactions.length);
         });
     }
 
