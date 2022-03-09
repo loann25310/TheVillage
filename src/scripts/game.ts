@@ -60,6 +60,22 @@ Player.imgL3 = document.createElement("img");
 Player.imgL3.src = `/img/Bonhomme3L.png`;
 Player.imgR3 = document.createElement("img");
 Player.imgR3.src = `/img/Bonhomme3R.png`;
+Player.deadimgL1 = document.createElement("img");
+Player.deadimgL1.src = `/img/dead2L.png`;
+Player.deadimgR1 = document.createElement("img");
+Player.deadimgR1.src = `/img/dead2R.png`;
+Player.deadimgL2 = document.createElement("img");
+Player.deadimgL2.src = `/img/dead1L.png`;
+Player.deadimgR2 = document.createElement("img");
+Player.deadimgR2.src = `/img/dead1R.png`;
+Player.deadimgL3 = document.createElement("img");
+Player.deadimgL3.src = `/img/dead3L.png`;
+Player.deadimgR3 = document.createElement("img");
+Player.deadimgR3.src = `/img/dead3R.png`;
+Player.deadimgL4 = document.createElement("img");
+Player.deadimgL4.src = `/img/dead4L.png`;
+Player.deadimgR4 = document.createElement("img");
+Player.deadimgR4.src = `/img/dead4R.png`;
 let player;
 switch (role) {
     case Roles.Chasseur :
@@ -248,14 +264,12 @@ async function init(){
 }
 init().then();
 
-let personnage: HTMLImageElement;
-
 function draw() {
     requestAnimationFrame(draw);
+    if (!player.alive) player.image = player.getImg.next().value as HTMLImageElement;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    personnage = player.image;
     environment.update();
-    ctx.drawImage(personnage, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
+    ctx.drawImage(player.image, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
     player.drawInfo();
     if (!player.alive) {
         ctx.textAlign = "center";
@@ -301,7 +315,7 @@ window.addEventListener("resize", () => {
     }
     environment.setCord({x: environment.origine.x - diff.w / 2, y: environment.origine.y - diff.h / 2});
 });
-window.addEventListener("click", ()=> {if (keys["KEY_P"])environment.initDay()});
+window.addEventListener("click", ()=> {/*if (keys["KEY_P"])environment.initDay()*/ player.die()});
 
 setInterval(() => {
     let shift = keys["KEY_SHIFT"] === true;

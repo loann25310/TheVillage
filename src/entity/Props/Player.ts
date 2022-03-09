@@ -13,6 +13,14 @@ export abstract class Player extends Displayable {
     public static imgL1: HTMLImageElement;
     public static imgL2: HTMLImageElement;
     public static imgL3: HTMLImageElement;
+    public static deadimgR1: HTMLImageElement;
+    public static deadimgR2: HTMLImageElement;
+    public static deadimgR3: HTMLImageElement;
+    public static deadimgR4: HTMLImageElement;
+    public static deadimgL1: HTMLImageElement;
+    public static deadimgL2: HTMLImageElement;
+    public static deadimgL3: HTMLImageElement;
+    public static deadimgL4: HTMLImageElement;
     private readonly decalage: number;
     public static readonly defaultSize = { w: 80, h: 186 };
     image: HTMLImageElement;
@@ -169,7 +177,6 @@ export abstract class Player extends Displayable {
     }
 
     draw() {
-        if (!this.alive) return this.drawDead();
         this.ctx.font = "10px sans-serif";
         //this.ctx.fillStyle = "#f00";
         //this.ctx.fillRect( this.getDrawnPosition().x, this.getDrawnPosition().y, this.size.w, this.size.h);
@@ -190,10 +197,6 @@ export abstract class Player extends Displayable {
             this.ctx.fillStyle = this.role === Roles.LoupGarou ? "red" : "blue";
             this.ctx.fillText(Tools.getRoleName(this.role), this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y - 15);
         }
-    }
-
-    drawDead() {
-        //todo Draw a dead guy
     }
     drawInfo() {}
 
@@ -221,14 +224,26 @@ export abstract class Player extends Displayable {
     public *GeneratorGetImg() {
         while(true) {
             const millis = (new Date().getMilliseconds() + this.decalage) % 1000;
-            if (millis < 250)
-                yield this.goesRight ? Player.imgR1 : Player.imgL1; //Bonhomme2
-            else if (millis < 500)
-                yield this.goesRight ? Player.imgR2 : Player.imgL2; // Bonhomme1
-            else if (millis < 750)
-                yield this.goesRight ? Player.imgR1 : Player.imgL1; // Bonhomme2
-            else
-                yield this.goesRight ? Player.imgR3 : Player.imgL3;  // Bonhomme3
+            //au démarrage, envoyait l'image du mort
+            if (this.alive !== false) {
+                if (millis < 250)
+                    yield this.goesRight ? Player.imgR1 : Player.imgL1; //Bonhomme2
+                else if (millis < 500)
+                    yield this.goesRight ? Player.imgR2 : Player.imgL2; // Bonhomme1
+                else if (millis < 750)
+                    yield this.goesRight ? Player.imgR1 : Player.imgL1; // Bonhomme2
+                else
+                    yield this.goesRight ? Player.imgR3 : Player.imgL3;  // Bonhomme3
+            } else {
+                if (millis < 250)
+                    yield this.goesRight ? Player.deadimgR2 : Player.deadimgL2; //Bonhomme2
+                else if (millis < 500)
+                    yield this.goesRight ? Player.deadimgR1 : Player.deadimgL1; // Bonhomme1
+                else if (millis < 750)
+                    yield this.goesRight ? Player.deadimgR3 : Player.deadimgL3; // Bonhomme2
+                else
+                    yield this.goesRight ? Player.deadimgR4 : Player.deadimgL4;  // Bonhomme3
+            }
         }
     }
 
