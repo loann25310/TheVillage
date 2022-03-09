@@ -109,6 +109,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         });
 
         socket.on("action", (data) => {
+            if (!partie) return;
             switch (data.role) {
                 case Roles.Sorciere:
                     return io.to(partie.id).emit(data.data.revive ? "revive" : "kill", data.data.player);
@@ -121,10 +122,12 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         });
 
         socket.on("drink", pos => {
+            if (!partie) return;
             io.to(partie.id).emit("drink", pos);
         });
 
         socket.on("task_completed",  (id, nb) => {
+            if (!partie) return;
             let seen = false;
             for (const couple of partie.idTasks) {
                 if (couple.id === id) {
@@ -147,6 +150,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         });
 
         socket.on("new_night", (id, nb) =>{
+            if (!partie) return;
             if(!partie.idTasks) partie.idTasks = [];
             for (const couple of partie.idTasks) {
                 if (couple.id === id) {

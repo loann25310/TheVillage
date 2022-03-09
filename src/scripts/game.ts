@@ -212,6 +212,14 @@ async function init(){
         }
     });
 
+    socket.on("DAY", ()=>{
+        console.log("cocorico");
+    });
+
+    socket.on("nb_tasks", (nb) => {
+        console.log(`nombre total de tâches restantes : ${nb}`);
+    });
+
     player.on("move", () => {
         socket.emit("playerMove", {
             position: player.getPosition(),
@@ -318,8 +326,6 @@ window.addEventListener("resize", () => {
     }
     environment.setCord({x: environment.origine.x - diff.w / 2, y: environment.origine.y - diff.h / 2});
 });
-window.addEventListener("click", ()=> {/*if (keys["KEY_P"])environment.initDay()*/ player.die()});
-
 setInterval(() => {
     let shift = keys["KEY_SHIFT"] === true;
 
