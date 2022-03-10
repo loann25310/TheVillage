@@ -177,6 +177,8 @@ export abstract class Player extends Displayable {
     }
 
     draw() {
+        if (!this.alive)
+            this.image = this.getImg.next().value as HTMLImageElement;
         this.ctx.font = "10px sans-serif";
         //this.ctx.fillStyle = "#f00";
         //this.ctx.fillRect( this.getDrawnPosition().x, this.getDrawnPosition().y, this.size.w, this.size.h);
