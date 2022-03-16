@@ -170,7 +170,7 @@ export class House extends Displayable {
     }
 
     hit(o: Displayable): boolean {
-        if ((o.getPosition().x + o.size.w < this.cord.x) || (o.getPosition().x > this.cord.x + this.size.w) || (o.getPosition().y + o.size.h < this.cord.y) || (o.getPosition().y > this.cord.y + this.size.h)) return false;
+        if ((o.getPosition().x + o.size.w < this.cord.x) || (o.getPosition().x > this.cord.x + this.size.w) || (o.getPosition().y + o.size.h/2.5 < this.cord.y) || (o.getPosition().y > this.cord.y + this.size.h)) return false;
         const ratioY = (this.size.h / 1718);
         const ratioX = (this.size.w / 1514);
         const bas_du_mur_du_haut = this.cord.y + (270 * ratioY);
@@ -200,8 +200,6 @@ export class House extends Displayable {
             const gauche_du_lit = this.cord.x + (1000 * ratioX);
             return o.getPosition().x + o.size.w/4 > gauche_du_lit && o.getPosition().y + o.size.h/4 < bas_du_lit && o.getPosition().y + o.size.h/3 > haut_du_lit;
         }
-
-        return false
-
+        return false;
     }
 }
