@@ -32,7 +32,7 @@ env.create(canvas.getContext("2d"), map).then(() => {
     for (const o of env.getObjects()) {
         objects.push({object: o, interaction: false});
     }
-    for (const o of env.interactions) {
+    for (const o of env.possibleInteractions) {
         objects.push({object: o, interaction: true});
     }
     requestAnimationFrame(draw);
@@ -106,6 +106,10 @@ function draw() {
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     update();
+    ctx.font = "40px sans-serif";
+    ctx.fillStyle = 'red';
+    ctx.textAlign = "center";
+    ctx.fillText(`x : ${-env.origine.x}  |  y : ${-env.origine.y}`, innerWidth/2 - 300, innerHeight-100);
 }
 
 /**
@@ -126,7 +130,7 @@ async function update(){
         map.objects = env.getObjects().map(o => {
             return o.save();
         });
-        map.interactions = env.interactions.map(o => {
+        map.interactions = env.possibleInteractions.map(o => {
             return o.save();
         });
         //todo : change player_spawns, version, size
@@ -329,7 +333,7 @@ function drag(o: ObjectType, interaction: boolean) {
     dragged.interaction = interaction;
     dragged.object = env.createObject({type: o, coordonnees: {x: mouse.x - env.origine.x, y: mouse.y - env.origine.y}, size: {w: 100, h: 100}});
     dragged.object.name = o;
-    if (interaction) env.interactions.push(dragged.object);
+    if (interaction) env.possibleInteractions.push(dragged.object);
     objects.push({object: dragged.object, interaction});
 }
 
@@ -346,7 +350,7 @@ async function saveMap() {
     map.objects = env.getObjects().map(o => {
         return o.save();
     });
-    map.interactions = env.interactions.map(o => {
+    map.interactions = env.possibleInteractions.map(o => {
         return o.save();
     });
     //todo : change player_spawns, version, size
