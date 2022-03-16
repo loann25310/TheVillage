@@ -234,6 +234,7 @@ export class Environment {
     }
 
     initNight() {
+        if (this.possibleInteractions.length <= 0) return;
         const nb = this.possibleInteractions[0].name === "blood" ? Environment.NB_TASK_PER_DAY * 3 : Environment.NB_TASK_PER_DAY;
         for (let i = 0; i < nb && this.possibleInteractions.length > 0; i++) {
             this.interactions.push(this.possibleInteractions.splice(Math.floor(Math.random() * this.possibleInteractions.length), 1)[0]);

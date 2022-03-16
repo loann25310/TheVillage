@@ -169,4 +169,39 @@ export class House extends Displayable {
         this.jeu.mouseY = (event.clientY - rect.top) / this.miniJeuCanvas.offsetHeight * this.miniJeuCanvas.height;
     }
 
+    hit(o: Displayable): boolean {
+        if ((o.getPosition().x + o.size.w < this.cord.x) || (o.getPosition().x > this.cord.x + this.size.w) || (o.getPosition().y + o.size.h < this.cord.y) || (o.getPosition().y > this.cord.y + this.size.h)) return false;
+        const ratioY = (this.size.h / 1718);
+        const ratioX = (this.size.w / 1514);
+        const bas_du_mur_du_haut = this.cord.y + (270 * ratioY);
+        const haut_du_mur_du_bas = this.cord.y + (1450 * ratioY);
+        const haut_mur_milieu = this.cord.y + (545 * ratioY);
+        const bas_mur_milieu = this.cord.y + (775 * ratioY);
+        const gauche_mur_milieu = this.cord.x + (675 * ratioX);
+        const droite_mur_milieu = this.cord.x + (690 * ratioX);
+        const largeur_mur_cotes = 70 * ratioX;
+        const haut_porte_interieur = this.cord.y + (1070 * ratioY);
+        const bas_porte_interieur = this.cord.y + (1370 * ratioY);
+        const top_door = this.cord.y + 673 * ratioY;
+        const bottom_door = this.cord.y + 1018 * ratioY;
+        if (o.getPosition().y + o.size.h/4 < bas_du_mur_du_haut) return true; // touche le mur du haut
+        if (o.getPosition().y + o.size.h / 3 > haut_du_mur_du_bas) return true; // touche le mur du bas
+        if (o.getPosition().x < this.cord.x + largeur_mur_cotes) {
+            return (o.getPosition().y +o.size.h/3 > bottom_door || o.getPosition().y < top_door); // touche le mur de gauche (ou est dans la porte)
+        }
+        if (o.getPosition().x + o.size.w / 4 >= this.cord.x + this.size.w - largeur_mur_cotes) return true; // touche le mur de droite
+        if (o.getPosition().x + o.size.w / 4 > gauche_mur_milieu) {
+            if (o.getPosition().x < droite_mur_milieu && o.getPosition().y + o.size.h/3 >= haut_mur_milieu) {
+                return o.getPosition().y + o.size.h / 3 > bas_porte_interieur || o.getPosition().y < haut_porte_interieur; // touche (ou pqs) le mur vertical du milieu
+            }
+            if (o.getPosition().y + o.size.h/4 < bas_mur_milieu && o.getPosition().y + o.size.h/3 > haut_mur_milieu) return true; // touche le mur horizontal du milieu
+            const bas_du_lit = this.cord.y + (1120 * ratioY);
+            const haut_du_lit = this.cord.y + (930 * ratioY);
+            const gauche_du_lit = this.cord.x + (1000 * ratioX);
+            return o.getPosition().x + o.size.w/4 > gauche_du_lit && o.getPosition().y + o.size.h/4 < bas_du_lit && o.getPosition().y + o.size.h/3 > haut_du_lit;
+        }
+
+        return false
+
+    }
 }

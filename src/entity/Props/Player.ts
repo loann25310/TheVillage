@@ -4,6 +4,7 @@ import {Coordinate} from "../types/Coordinate";
 import {Map} from "../Map";
 import {Roles} from "../roles/Roles";
 import {Tools} from "../Tools";
+import {ObjectType} from "../types/ObjectType";
 
 export abstract class Player extends Displayable {
 
@@ -251,6 +252,9 @@ export abstract class Player extends Displayable {
 
     hit(o: Displayable): boolean {
         if (o.hidden) return ;
+        if (o.name === ObjectType.maison) {
+            return o.hit(this);
+        }
         const pos = this.getPosition();
         pos.x -= this.size.w / 2;
         pos.y -= this.size.h / 2;
