@@ -330,4 +330,24 @@ export abstract class Player extends Displayable {
         } else if (arr[0].distance > this.DISTANCE_FOR_ACTION && this.playerForAction)
             this.emit("action_unavailable");
     }
+
+    slideTo(coordonnes: Coordinate, duration: number = 50): Promise<Coordinate> {
+        return new Promise((resolve, reject) => {
+            let delta = {
+                x: (coordonnes.x - this.x) / duration,
+                y: (coordonnes.y - this.y) / duration
+            };
+            for (let i = 1; i < duration; i++) {
+                setTimeout(() => {
+                    this.x += delta.x;
+                    this.y += delta.y;
+                }, i);
+            }
+            setTimeout(() => {
+                this.x = coordonnes.x;
+                this.y = coordonnes.y;
+                resolve(coordonnes);
+            }, duration);
+        });
+    }
 }
