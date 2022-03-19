@@ -162,13 +162,31 @@ async function init(){
         if(data.id === user.id) return;
         addRemotePlayer(data);
     });
+
+
+    const MOVE_ANTISPAM_DURATION = 50;
+    let moveAntiSpam = 0;
+    player.on("move", () => {
+        if(moveAntiSpam > Date.now()) return;
+        moveAntiSpam = Date.now() + MOVE_ANTISPAM_DURATION;
+        socket.emit("playerMove", {
+            position: {
+                x: player.getPosition().x - Player.defaultSize.w / 2,
+                y: player.getPosition().y - Player.defaultSize.h / 2
+            },
+            index: numeroJoueur
+        });
+    });
+
     socket.on("playerMove", (data) => {
         if(data.id === user.id) return;
         let remotePlayer = getPlayerById(data.id);
         if(!remotePlayer) remotePlayer = addRemotePlayer(data);
-        remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
-        remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
-        player.updateDistance(data.id);
+        //remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
+        //remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
+        remotePlayer.slideTo(data.position, MOVE_ANTISPAM_DURATION).then(() => {
+            player.updateDistance(data.id);
+        });
     });
 
     socket.on("revive", id => {
@@ -220,13 +238,6 @@ async function init(){
 
     socket.on("nb_tasks", (nb) => {
         console.log(`nombre total de tâches restantes : ${nb}`);
-    });
-
-    player.on("move", () => {
-        socket.emit("playerMove", {
-            position: player.getPosition(),
-            index: numeroJoueur
-        });
     });
 
     /* useless ? */
