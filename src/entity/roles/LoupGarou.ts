@@ -23,7 +23,6 @@ export class LoupGarou extends Player {
 
     action(player: Player) {
         if (!this.checkAction(player)) return;
-        console.log(player)
         this.emit("action", {player: player.pid});
         this.pochesDeSang -= LoupGarou.NB_POCHE_KILL;
     }

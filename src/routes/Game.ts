@@ -19,6 +19,9 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         const user = req.user as User;
         let role = (partie.roles.filter(p => p.uid === user.id))[0]?.role;
         if (!role) role = Roles.Villageois;
+        const LG = role === Roles.LoupGarou ? (partie.roles.filter(p => p.role === Roles.LoupGarou)).map(p => {
+            return p.uid
+        }) : [];
         //pour ne pas envoyer les rôles à tout le monde (aka anti-cheat ma gueule)
         partie.roles = [];
         let numeroJoueur = partie.players.indexOf(user.id);
@@ -27,7 +30,8 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             partie,
             map: partie.getMap(fs, path),
             role,
-            numeroJoueur
+            numeroJoueur,
+            LoupsGarous: JSON.stringify(LG)
         });
     });
 

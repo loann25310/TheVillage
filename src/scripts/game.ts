@@ -26,6 +26,8 @@ const map = _map as Map;
 const role = _role as Roles;
 //@ts-ignore
 const numeroJoueur = _numeroJoueur as number;
+//@ts-ignore
+const LG = _LG as number[];
 
 const socket = io();
 const OTHER_PLAYERS: Player[] = [];
@@ -146,7 +148,7 @@ async function init(){
         OTHER_PLAYERS.push(remotePlayer);
         player.addOtherPlayer(remotePlayer);
         environment.addToLayer(100, remotePlayer);
-        remotePlayer.role = null;
+        remotePlayer.role = LG.includes(remotePlayer.pid) ? Roles.LoupGarou : null;
         return remotePlayer;
     }
 

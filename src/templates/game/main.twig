@@ -31,6 +31,7 @@
 
 {% block javascripts %}
   <script>
+    var _LG = {% if LoupsGarous is defined %} {{ LoupsGarous }} {% else %} null {% endif %};
     var _partie = {{ partie | dump }};
     var _user = {{ currentUser | dump }};
     var _map = {% if map %}{{ map | dump }}{% else %}null{% endif %};

@@ -327,7 +327,7 @@ export abstract class Player extends Displayable {
         this.distancePlayers = arr;
         if (arr[0].distance <= this.DISTANCE_FOR_ACTION && this.playerForAction?.pid !== arr[0].player.pid && this.checkAction(arr[0].player)) {
             this.emit("action_available", arr[0].player);
-        } else if (arr[0].distance > this.DISTANCE_FOR_ACTION && this.playerForAction)
+        } else if (arr[0].distance > this.DISTANCE_FOR_ACTION && this.playerForAction !== null)
             this.emit("action_unavailable");
     }
 }
