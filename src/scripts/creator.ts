@@ -2,7 +2,7 @@ import '../styles/creator.css';
 import {ObjectType} from "../entity/types/ObjectType";
 import {Environment} from "../entity/Environment";
 import axios from "axios";
-import {Displayable} from "../entity/Displayable";
+import {Displayable} from "../entity/Displayables/Displayable";
 import Swal from "sweetalert2";
 //@ts-ignore
 const map = _map;

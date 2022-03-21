@@ -1,6 +1,6 @@
 import * as $ from 'jquery';
 import "../styles/task.css";
-import {Player} from "../entity/Props/Player";
+import {Player} from "../entity/Displayables/Props/Player";
 import {Environment} from "../entity/Environment";
 import {PlayerMove} from "../entity/types/PlayerMove";
 import {io} from "socket.io-client";

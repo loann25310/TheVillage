@@ -1,6 +1,6 @@
-import {Player} from "../Props/Player";
+import {Player} from "../Displayables/Props/Player";
 import {Coordinate} from "../types/Coordinate";
-import {Blood} from "../Props/Blood";
+import {Blood} from "../Displayables/Props/Blood";
 import {Roles} from "./Roles";
 
 export class LoupGarou extends Player {

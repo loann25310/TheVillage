@@ -1,7 +1,7 @@
 import {Displayable} from "../Displayable";
-import {Coordinate} from "../types/Coordinate";
+import {Coordinate} from "../../types/Coordinate";
 
-export class Flower extends Displayable{
+export class Cobblestone extends Displayable{
 
     private readonly image: HTMLImageElement;
 
@@ -9,7 +9,7 @@ export class Flower extends Displayable{
         super(ctx, cord, size, null);
 
         this.image = document.createElement("img");
-        this.image.src = "/img/fleur.svg";
+        this.image.src = "/img/pave.jpg";
     }
 
     draw() {

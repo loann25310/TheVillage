@@ -1,4 +1,4 @@
-import {Player} from "../Props/Player";
+import {Player} from "../Displayables/Props/Player";
 import {Coordinate} from "../types/Coordinate";
 import {Roles} from "./Roles";
 

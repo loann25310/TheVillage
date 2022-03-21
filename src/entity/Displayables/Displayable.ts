@@ -1,7 +1,7 @@
-import {Coordinate} from "./types/Coordinate";
-import {Environment} from "./Environment";
+import {Coordinate} from "../types/Coordinate";
+import {Environment} from "../Environment";
 import {Player} from "./Props/Player";
-import {Size} from "./types/Size";
+import {Size} from "../types/Size";
 
 export class Displayable {
 
