@@ -15,7 +15,7 @@ export enum PartieStatus {
 @Entity()
 export class Partie {
 
-    public static readonly NB_JOUEURS_MIN = 7;
+    public static readonly NB_JOUEURS_MIN = 1;
 
     @PrimaryColumn()
     id: string;

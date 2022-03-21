@@ -15,6 +15,7 @@ import {Sorciere} from "../entity/roles/Sorciere";
 import {Voyante} from "../entity/roles/Voyante";
 import {LoupGarou} from "../entity/roles/LoupGarou";
 import {Tools} from "../entity/Tools";
+import {HUD} from "../entity/Props/HUD";
 
 // @ts-ignore
 const partie = _partie as Partie;
@@ -46,6 +47,8 @@ socket.on("error", (data) => {
 let environment: Environment = new Environment();
 let canvas = $('#mainCanvas')[0] as HTMLCanvasElement;
 let ctx = canvas.getContext('2d');
+
+
 
 canvas.width  = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -79,6 +82,7 @@ Player.deadimgL4.src = `/img/dead4L.png`;
 Player.deadimgR4 = document.createElement("img");
 Player.deadimgR4.src = `/img/dead4R.png`;
 let player;
+
 switch (role) {
     case Roles.Chasseur :
         player = new Chasseur(ctx, environment, {
@@ -138,6 +142,8 @@ async function init(){
     }
 
     environment.initNight();
+
+
     socket.emit("new_night", player.pid, player.role === Roles.LoupGarou ? 0 : environment.interactions.length);
 
     function addRemotePlayer(data: {id: number, position: Coordinate, index: number}): Player {
@@ -288,6 +294,7 @@ async function init(){
 }
 init().then();
 
+
 function draw() {
     requestAnimationFrame(draw);
     if (!player.alive) player.image = player.getImg.next().value as HTMLImageElement;
@@ -297,6 +304,8 @@ function draw() {
     environment.update();
     ctx.drawImage(player.image, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
     player.drawInfo();
+    player.hud.drawRectangle();
+    player.hud.displayTaskList();
     if (!player.alive) {
         ctx.textAlign = "center";
         ctx.font = "30px sans-serif";
@@ -308,6 +317,9 @@ function draw() {
         ctx.font = "30px sans-serif";
         ctx.fillStyle = "red";
         ctx.fillText(`[E] pour interagir avec ${player.objectInteract.name}`, window.innerWidth / 2, window.innerHeight - 300);
+        player.hud.activateInteractButton();
+        canvas.addEventListener("mousedown",player.hud.clicked,false);
+
     }
 
     if (actionPossible) {
@@ -315,6 +327,8 @@ function draw() {
         ctx.font = "30px sans-serif";
         ctx.fillStyle = "blue";
         ctx.fillText(`[F] pour ACTION sur ${player.playerForAction.pid}`, window.innerWidth / 2, window.innerHeight - 500);
+        player.hud.activateInteractButton();
+
     }
 
     if (miniJeu) {
@@ -383,6 +397,5 @@ setInterval(() => {
         player.move(PlayerMove.moveW, shift);
     if(up && !right && !down && left)
         player.move(PlayerMove.moveNW, shift);
-    $('.getPosition').text(`{ x: ${player.getPosition().x}, y: ${player.getPosition().y} }`);
-    $('.getDrawnPosition').text(`{ x: ${player.getDrawnPosition().x}, y: ${player.getDrawnPosition().y} }`);
+
 }, 1);

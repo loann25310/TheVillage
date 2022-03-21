@@ -5,6 +5,8 @@ import {Map} from "../Map";
 import {Roles} from "../roles/Roles";
 import {Tools} from "../Tools";
 import {ObjectType} from "../types/ObjectType";
+import {HUD} from "./HUD";
+import {TaskList} from "../types/TaskList";
 
 export abstract class Player extends Displayable {
 
@@ -36,6 +38,8 @@ export abstract class Player extends Displayable {
     distancePlayers: {player: Player, distance: number}[];
     abstract DISTANCE_FOR_ACTION: number;
     playerForAction: Player;
+    public hud:HUD;
+    taskList:TaskList;
 
     public x;
     public y;
@@ -56,6 +60,11 @@ export abstract class Player extends Displayable {
         this.distancePlayers = [];
         this.playerForAction = null;
         this.initSpawn(map, index);
+        this.taskList = new TaskList();
+        console.log(this.taskList.tasks.toString())
+        this.hud = new HUD(ctx,this.taskList);
+
+
     }
 
     initSpawn(map: Map, index) {
@@ -188,7 +197,8 @@ export abstract class Player extends Displayable {
         this.ctx.fillRect(this.getDrawnPosition().x, this.getDrawnPosition().y + this.size.h - 5, this.size.w, 40 );
         this.ctx.textAlign = "center";
         if(this.isLocal) {
-            this.drawInfo();
+            this.ctx.fillStyle = "red";
+            this.hud.drawRectangle();
             this.ctx.fillStyle = "#0080ff";
         }
         else
