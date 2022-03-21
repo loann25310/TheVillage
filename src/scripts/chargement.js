@@ -1,4 +1,5 @@
 import "../styles/chargement.css";
+
 $(document).ready(function () {
     $("html").hide().fadeIn(1000);
     $("body").hide().fadeIn(1500);

@@ -7,12 +7,10 @@ export class Voyante extends Player {
     public nb_boules: number;
     DISTANCE_FOR_ACTION = 300;
 
-
     constructor(ctx, environment, positonDraw: Coordinate, size, map, index) {
         super(ctx, environment, positonDraw, size, map, index);
         this.nb_boules = Voyante.NB_BOULES_CRISTAL;
         this.role = Roles.Voyante;
-
     }
 
     action(player: Player) {
@@ -30,7 +28,5 @@ export class Voyante extends Player {
         this.ctx.font = "30px sans-serif";
         this.ctx.textAlign = "left";
         this.ctx.fillText(`Boules de cristal : ${this.nb_boules}`, 20, innerHeight - 80);
-
-
     }
 }
