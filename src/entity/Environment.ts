@@ -253,9 +253,8 @@ export class Environment {
             if (layer === this.layers[0]) continue;
             if (!layer) continue;
             for (const o of layer){
-                if (!o.name) continue;
-                if (!this.interactions.includes(o))
-                    objects.push(o);
+                if (!o.name || this.possibleInteractions.includes(o)) continue;
+                objects.push(o);
             }
         }
         return objects;

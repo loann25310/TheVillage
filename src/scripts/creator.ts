@@ -9,6 +9,8 @@ const map = _map;
 
 const canvas = $("#canvas")[0] as HTMLCanvasElement;
 const $objects = $("#objects");
+const $width = $("#width");
+const $height = $("#height");
 const $name = $("#map_name");
 const $save = $("#save");
 map.nom_map = $name.val();
@@ -27,7 +29,7 @@ const rightClickObjects = [] as {object: Displayable, interaction: boolean}[];
 
 createObjectChoice();
 const env = new Environment();
-if (map.players_spawn.length === 0) map.players_spawn.push({x: 0, y: 0});
+if (map.players_spawn.length === 0) map.players_spawn = new Array(15).fill({x: 500, y: 500});
 env.create(canvas.getContext("2d"), map).then(() => {
     for (const o of env.getObjects()) {
         objects.push({object: o, interaction: false});
@@ -74,9 +76,7 @@ window.addEventListener("mousemove", (e) => {
     }
 });
 window.addEventListener("mousedown", ()=>{
-
     mouse.click = true;
-    //todo: check if clicks on an object to move it;
 });
 window.addEventListener("mouseup", ()=>{
     mouse.click = false;
@@ -125,29 +125,7 @@ async function update(){
     if (keys["KEY_Z"] || keys["KEY_ARROWUP"])
         env.move({x: 0, y: Math.abs(20 -zoom)});
     if (keys["KEY_CONTROL"] && keys["KEY_S"] && keys["KEY_SHIFT"] && can_save){
-        can_save = false;
-        setTimeout(() => {can_save = true}, 10_000);
-        map.objects = env.getObjects().map(o => {
-            return o.save();
-        });
-        map.interactions = env.possibleInteractions.map(o => {
-            return o.save();
-        });
-        //todo : change player_spawns, version, size
-        const r = await axios.put("/creator/save", map);
-        console.log(r.data.err ? r.data.err : r.data);
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true
-        })
-
-        await Toast.fire({
-            icon: 'success',
-            title: 'Map sauvegardée'
-        })
+        await saveMap();
     }
     if (keys["KEY_CONTROL"] && keys["KEY_Z"] && ctrl_z) {
         ctrl_z = false;
@@ -213,9 +191,7 @@ function nextPopup(o, sens: boolean, x, y) {
  * the y position of the popup - default : mouse position
  */
 function show_popup(o, x=mouse.x, y=mouse.y) {
-    console.log(popup);
     removePopup();
-    console.log(popup);
     const div = $("<div id='popup'>");
     if (rightClickObjects.length > 1) {
         //todo: les icones marchent pas j'ai le seum
@@ -230,6 +206,9 @@ function show_popup(o, x=mouse.x, y=mouse.y) {
     const nom = $("<h3>");
     nom.text(o.object.name);
     div.append(nom);
+    const inter = $("<p>");
+    inter.text(`interaction : ${o.interaction}`);
+    div.append(inter);
     div.css("top", `${y}px`);
     div.css("left", `${x}px`);
     const inputWidth = $(`<input type='number' placeholder='largeur' value='${o.object.size.w}'>`);
@@ -331,7 +310,7 @@ function getImage(o): string {
  */
 function drag(o: ObjectType, interaction: boolean) {
     dragged.interaction = interaction;
-    dragged.object = env.createObject({type: o, coordonnees: {x: mouse.x - env.origine.x, y: mouse.y - env.origine.y}, size: {w: 100, h: 100}});
+    dragged.object = env.createObject({type: o, coordonnees: {x: mouse.x - env.origine.x, y: mouse.y - env.origine.y}, size: {w: +($width.val()), h: +($height.val())}});
     dragged.object.name = o;
     if (interaction) env.possibleInteractions.push(dragged.object);
     objects.push({object: dragged.object, interaction});
@@ -341,12 +320,12 @@ function drag(o: ObjectType, interaction: boolean) {
  * Saves the current map into a JSON file (server-sided)
  */
 async function saveMap() {
+    can_save = false;
     if ($save.hasClass("green_btn")) {
         $save.removeClass("green_btn");
         $save.addClass("red_btn");
     }
-    can_save = false;
-    setTimeout(() => {can_save = true}, 1000);
+    setTimeout(() => {can_save = true}, 10_000);
     map.objects = env.getObjects().map(o => {
         return o.save();
     });
@@ -354,23 +333,22 @@ async function saveMap() {
         return o.save();
     });
     //todo : change player_spawns, version, size
-    let data, err;
-    try {
-        const r = await axios.put("/creator/save", map);
-        if (!r.data.err) {
-            if ($save.hasClass("red_btn")) {
-                $save.removeClass("red_btn");
-                $save.addClass("green_btn");
-            }
-        }
-        err = r.data.err;
-        data = r.data;
-    } catch (e) {
-        err = e;
+    const r = await axios.put("/creator/save", map);
+    if ($save.hasClass("red_btn")) {
+        $save.removeClass("red_btn");
+        $save.addClass("green_btn");
     }
-    const $div = $(`
-            <div class="alert ${err ? "red" : "green"}">${err ? err : data}</div>
-        `);
-    document.body.appendChild($div[0]);
-    setTimeout(()=>{document.body.removeChild($div[0])}, 2_000);
+    console.log(r.data.err ? r.data.err : r.data);
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+    });
+
+    await Toast.fire({
+        icon: 'success',
+        title: 'Map sauvegardée'
+    });
 }
