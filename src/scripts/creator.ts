@@ -209,8 +209,6 @@ function show_popup(o, x=mouse.x, y=mouse.y) {
     const inter = $("<p>");
     inter.text(`interaction : ${o.interaction}`);
     div.append(inter);
-    div.css("top", `${y}px`);
-    div.css("left", `${x}px`);
     const inputWidth = $(`<input type='number' placeholder='largeur' value='${o.object.size.w}'>`);
     const inputHeight = $(`<input type='number' placeholder='hauteur' value='${o.object.size.h}'>`);
     inputWidth.on("input", () => {
@@ -237,6 +235,8 @@ function show_popup(o, x=mouse.x, y=mouse.y) {
     });
     div.append(remove);
     document.body.appendChild(div[0]);
+    div.css("top", `${Math.min(y, innerHeight - div[0].offsetHeight)}px`);
+    div.css("left", `${Math.min(x, innerWidth - div[0].offsetWidth)}px`);
     return {div};
 }
 
