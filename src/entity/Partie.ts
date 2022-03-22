@@ -140,6 +140,5 @@ export class Partie {
         for (let i = 5; this.roles.length < this.players.length; i++) {
             this.roles.push({uid: joueurs[i], role: Roles.Villageois});
         }
-        console.log(this.roles);
     }
 }

@@ -294,7 +294,7 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    environment.update();
+    environment.update(player.role === Roles.LoupGarou);
     ctx.drawImage(player.image, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
     player.drawInfo();
     if (!player.alive) {

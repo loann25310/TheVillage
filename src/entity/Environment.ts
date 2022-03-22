@@ -71,10 +71,12 @@ export class Environment {
         this.origine = origine;
     }
 
-    update(){
+    update(LG: boolean = true){
         for (const layer of this.layers) {
             if(!layer) continue;
             for (const object of layer) {
+                if (!LG && object.name === "blood")
+                    continue;
                 if (!object.hidden)
                     object.update();
             }
