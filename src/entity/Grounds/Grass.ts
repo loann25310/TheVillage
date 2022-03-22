@@ -10,7 +10,7 @@ export class Grass extends Displayable{
         super(ctx, cord, size, null);
 
         this.image = document.createElement("img");
-        this.image.src = "/img/grass.jpg";
+        this.image.src = "/img/herbe.png";
     }
 
     draw() {
