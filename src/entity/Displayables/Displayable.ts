@@ -125,6 +125,7 @@ export class Displayable {
             if (reussi) {
                 this.player.environment.possibleInteractions.push(this.player.environment.interactions.splice(this.player.environment.interactions.indexOf(this), 1)[0]);
                 this.player.objectInteract = null;
+                this.player.environment.doneInteractions.push(this);
             }
             return;
         }

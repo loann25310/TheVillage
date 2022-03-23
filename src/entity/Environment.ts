@@ -27,6 +27,7 @@ export class Environment {
     size: { w: number, h: number };
     ctx: CanvasRenderingContext2D;
     interactions: Displayable[];
+    doneInteractions: Displayable[];
     possibleInteractions: Displayable[];
     hitBoxes: Displayable[][][];
     static readonly NB_TASK_PER_DAY = 2;
@@ -36,6 +37,7 @@ export class Environment {
         this.interactions = [];
         this.hitBoxes = [];
         this.possibleInteractions = [];
+        this.doneInteractions = [];
         this.setOrigine({x:0,y:0});
     }
 
