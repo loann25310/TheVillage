@@ -94,6 +94,13 @@ export class Environment {
             this.size = map.size;
 
             this.setOrigine({x: Player.defaultSize.w / 2, y:Player.defaultSize.h / 2});
+
+            for (let i = 0; i < this.size.w / 1000; i++) {
+                for (let j = 0; j < this.size.h / 1000; j++) {
+                    let terre = new Dirt(ctx, { x: i * 1000, y: j * 1000 }, { w: 1000, h: 1000 });
+                    this.addToLayer(0, terre);
+                }
+            }
             for (const object of map.objects) {
                 const o = this.createObject(object);
                 o.name = object.type;
@@ -105,13 +112,6 @@ export class Environment {
                 o.name = object.type;
                 this.possibleInteractions.push(o);
                 this.addHitBox(o);
-            }
-
-            for (let i = 0; i < this.size.w / 1000; i++) {
-                for (let j = 0; j < this.size.h / 1000; j++) {
-                    let terre = new Dirt(ctx, { x: i * 1000, y: j * 1000 }, { w: 1000, h: 1000 });
-                    this.addToLayer(0, terre);
-                }
             }
         } catch (error) {
             console.error(error);
@@ -252,10 +252,9 @@ export class Environment {
     getObjects() {
         const objects = [];
         for (const layer of this.layers) {
-            if (layer === this.layers[0]) continue;
             if (!layer) continue;
             for (const o of layer){
-                if (!o.name || this.possibleInteractions.includes(o)) continue;
+                if (!o.name || this.possibleInteractions.includes(o) || o.name === "terre") continue;
                 objects.push(o);
             }
         }
