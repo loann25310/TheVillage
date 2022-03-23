@@ -15,6 +15,7 @@ import {Sorciere} from "../entity/roles/Sorciere";
 import {Voyante} from "../entity/roles/Voyante";
 import {LoupGarou} from "../entity/roles/LoupGarou";
 import {Tools} from "../entity/Tools";
+import {HUD} from "../entity/Displayables/HUD";
 
 // @ts-ignore
 const partie = _partie as Partie;
@@ -116,6 +117,7 @@ player.setCord({
     x : -(canvas.width-Player.defaultSize.w) / 2,
     y : -(canvas.height-Player.defaultSize.h) / 2
 });
+const player_hud = new HUD({ctx, player});
 
 let lock_key_u = false;
 let miniJeu = false;
@@ -139,6 +141,9 @@ async function init(){
 
     environment.initNight();
     socket.emit("new_night", player.pid, player.role === Roles.LoupGarou ? 0 : environment.interactions.length);
+
+    // Init HUD in environment
+    environment.addToLayer(150, player_hud);
 
     function addRemotePlayer(data: {id: number, position: Coordinate, index: number}): Player {
         let remotePlayer = new Villageois(ctx, environment, data.position, Player.defaultSize, map, data.index);
@@ -296,7 +301,6 @@ function draw() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     environment.update();
     ctx.drawImage(player.image, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
-    player.drawInfo();
     if (!player.alive) {
         ctx.textAlign = "center";
         ctx.font = "30px sans-serif";
@@ -320,11 +324,6 @@ function draw() {
     if (miniJeu) {
         requestAnimationFrame(() => {player.objectInteract?.drawJeu()});
     }
-
-    ctx.textAlign = "left";
-    ctx.font = "15px sans-serif";
-    ctx.fillStyle = player.role === Roles.LoupGarou ? "red" : "blue";
-    ctx.fillText(Tools.getRoleName(player.role), 10, window.innerHeight-30);
 }
 draw();
 
