@@ -15,7 +15,6 @@ import {Chasseur} from "../entity/roles/Chasseur";
 import {Sorciere} from "../entity/roles/Sorciere";
 import {Voyante} from "../entity/roles/Voyante";
 import {LoupGarou} from "../entity/roles/LoupGarou";
-import {Tools} from "../entity/Tools";
 import {HUD} from "../entity/Displayables/HUD";
 
 // @ts-ignore
@@ -32,7 +31,7 @@ const numeroJoueur = _numeroJoueur as number;
 const LG = _LG as number[];
 
 // @ts-ignore
-let uid = user.id, game = _game, players = _players;
+let game = _game, players = _players;
 
 let roomName = `${game.id}`,
     messages = $('#messages'),
@@ -131,11 +130,6 @@ player.setCord({
     y : -(canvas.height-Player.defaultSize.h) / 2
 });
 const player_hud = new HUD({canvas, player});
-
-let lock_key_u = false;
-let miniJeu = false;
-let actionPossible = false;
-let playerCount = 1;
 
 let night = true;
 let voteDisponible = false;
