@@ -22,6 +22,8 @@ export abstract class Player extends Displayable {
     public static deadimgL2: HTMLImageElement;
     public static deadimgL3: HTMLImageElement;
     public static deadimgL4: HTMLImageElement;
+    public static ghostimg: HTMLImageElement;
+
     private readonly decalage: number;
     public static readonly defaultSize = { w: 80, h: 186 };
     image: HTMLImageElement;
@@ -82,7 +84,7 @@ export abstract class Player extends Displayable {
     }
 
     move(type: PlayerMove, sprint: boolean, check=true) {
-        if (!this.alive) return;
+        // if (!this.alive) return;
         let antiMovement;
         this.image = this.getImg.next().value as HTMLImageElement;
         let pixelSprint = 4;
@@ -140,7 +142,7 @@ export abstract class Player extends Displayable {
                 this.environment.move({x:Math.round(condition * 0.707),y:Math.round(condition * 0.707)});
                 break;
         }
-        if (check) {
+        if (check && this.alive) {
             let hits = this.environment.getHitBox(this.getPosition(), this.size);
             for (const o of hits) {
                 if (this.hit(o)) {
@@ -239,13 +241,13 @@ export abstract class Player extends Displayable {
                     yield this.goesRight ? Player.imgR3 : Player.imgL3;  // Bonhomme3
             } else {
                 if (millis < 250)
-                    yield this.goesRight ? Player.deadimgR2 : Player.deadimgL2;
+                    yield this.goesRight ? Player.ghostimg : Player.ghostimg;
                 else if (millis < 500)
-                    yield this.goesRight ? Player.deadimgR1 : Player.deadimgL1;
+                    yield this.goesRight ? Player.ghostimg : Player.ghostimg;
                 else if (millis < 750)
-                    yield this.goesRight ? Player.deadimgR3 : Player.deadimgL3;
+                    yield this.goesRight ? Player.ghostimg : Player.ghostimg;
                 else
-                    yield this.goesRight ? Player.deadimgR4 : Player.deadimgL4;
+                    yield this.goesRight ? Player.ghostimg : Player.ghostimg;
             }
         }
     }
