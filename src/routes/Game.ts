@@ -27,12 +27,35 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         partie.roles = [];
         let numeroJoueur = partie.players.indexOf(user.id);
         if (numeroJoueur < 0) return res.redirect("/?err=wrong_game");
+
+        console.log(partie);
+
+        let roomId = req.params.id;
+        let game = await getRepository(Partie).findOne(roomId);
+        let players = await game.getPlayers();
+        let users = [];
+        for (let p of players) {
+            users.push({
+                id: p.id,
+                pseudo: p.pseudo,
+                nbPartiesJouees: p.nbPartiesJouees,
+                nbPartiesGagnees: p.nbPartiesGagnees,
+                niveau: p.niveau,
+                avatar: p.avatar
+            });
+        }
+        io.to(roomId).emit("players", users);
+        console.log(await getRepository(Partie).findOne(req.params.id))
+        console.log(users);
         res.render("game/main", {
+
             partie,
             map: partie.getMap(fs, path),
             role,
             numeroJoueur,
-            LoupsGarous: JSON.stringify(LG)
+            LoupsGarous: JSON.stringify(LG),
+            user,
+            players
         });
     });
 
@@ -74,6 +97,9 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
     }
 
     io.on("connection", (socket) => {
+        let votes;
+        let compteurVotes;
+
         let partie: Partie,
             user: User = socket.request["user"];
 
@@ -85,7 +111,12 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             socket.disconnect();
         }
 
+        socket.on("chat_message", (user, msg, room) =>{
+            io.to(room).emit("message", user, msg);
+        });
+
         socket.on("joinPartie", async (data) => {
+            console.log(user, data);
             partie = monitorPartie(await getRepository(Partie).findOne(data.gameId));
             if(!partie) return sendError("Game not found");
             if(partie.isInGame(user)) return sendError("Is already in this game");
@@ -168,6 +199,41 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 }
             }
             partie.idTasks.push({id, nb});
+        });
+
+
+        socket.on("resetVotes", () => {
+            compteurVotes = 0;
+            votes = [];
+            if(typeof partie !== 'undefined') {
+                for (let i=0; i<partie.players.length;i++) {
+                    votes[i] = 0;
+                }
+            }
+            console.log("RESET VOTES");
+            return;
+        });
+
+        socket.on("aVote", (id) => {
+            compteurVotes ++;
+            votes[id] ++;
+            let max = 0;
+            let index;
+            console.log(compteurVotes);
+            console.log(votes);
+            if (compteurVotes == partie.players.length) {
+                for (let i=0; i<votes.length; i++) {
+                    console.log(votes[i]);
+                    if (votes[i] > max) {
+                        max = votes[i];
+                        index = i+1;
+                    }
+                }
+                console.log("RIP " + index);
+                io.to(partie.id).emit("kill", index);
+                io.to(partie.id).emit("fin_jour");
+            }
+            return
         });
     });
 }
