@@ -152,7 +152,7 @@ createConnection().then(async connection => {
     });
 
     for (const file of readdirSync(resolvePath(__dirname, 'routes/'))) {
-        if(extname(file) !== '.ts') continue;
+        if(extname(file) !== ((config.env === 'debug')?'.ts':'.js')) continue;
         logger.debug(` - Loading : ${file}`);
         require(resolvePath(__dirname, 'routes/', file)).Route(router, io, sessionMiddleware);
     }
