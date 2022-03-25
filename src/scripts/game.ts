@@ -16,6 +16,7 @@ import {Sorciere} from "../entity/roles/Sorciere";
 import {Voyante} from "../entity/roles/Voyante";
 import {LoupGarou} from "../entity/roles/LoupGarou";
 import {Tools} from "../entity/Tools";
+import {HUD} from "../entity/Displayables/HUD";
 
 // @ts-ignore
 const partie = _partie as Partie;
@@ -410,13 +411,6 @@ window.addEventListener("resize", () => {
     environment.setCord({x: environment.origine.x - diff.w / 2, y: environment.origine.y - diff.h / 2});
 });
 setInterval(() => {
-    if (night) {
-        let shift = keys["KEY_SHIFT"] === true;
-        http://0.0.0.0:8080/lobby/ZdQpD6
-        if (keys["KEY_E"] && !miniJeu && player.objectInteract !== null) {
-            miniJeu = true;
-            player.objectInteract.miniJeu(player);
-        }
     let shift = keys["KEY_SHIFT"] === true;
 
     if (keys["KEY_E"] && !HUD.miniJeu && player.objectInteract !== null) {
@@ -427,50 +421,32 @@ setInterval(() => {
     if (keys["KEY_F"] && HUD.actionPossible) {
         player.action(player.playerForAction);
         HUD.actionPossible = false;
-    }
-        if (keys["KEY_F"] && actionPossible) {
-            player.action(player.playerForAction);
-            actionPossible = false;
         }
 
     const up = keys["KEY_Z"] || keys["KEY_ARROWUP"];
     const left = keys["KEY_Q"] || keys["KEY_ARROWLEFT"];
     const down = keys["KEY_S"] || keys["KEY_ARROWDOWN"];
     const right = keys["KEY_D"] || keys["KEY_ARROWRIGHT"];
-        if (keys["KEY_U"] && !lock_key_u) {
-            lock_key_u = true;
-            let p2 = new Villageois(ctx, environment, player.getPosition(), Player.defaultSize, map, 0);
-            p2.pid = playerCount++;
-            environment.addToLayer(100, p2);
-            console.log(player.getPosition());
-            setTimeout(() => lock_key_u = false, 400);
-        }
-        const up = keys["KEY_Z"] || keys["KEY_ARROWUP"];
-        const left = keys["KEY_Q"] || keys["KEY_ARROWLEFT"];
-        const down = keys["KEY_S"] || keys["KEY_ARROWDOWN"];
-        const right = keys["KEY_D"] || keys["KEY_ARROWRIGHT"];
 
-        if ((up && !right && !down && !left) || (up && right && !down && left))
-            player.move(PlayerMove.moveN, shift);
-        if (up && right && !down && !left)
-            player.move(PlayerMove.moveNE, shift);
-        if ((!up && right && !down && !left) || (up && right && down && !left))
-            player.move(PlayerMove.moveE, shift);
-        if (!up && right && down && !left)
-            player.move(PlayerMove.moveSE, shift);
-        if ((!up && !right && down && !left) || (!up && right && down && left))
-            player.move(PlayerMove.moveS, shift);
-        if (!up && !right && down && left)
-            player.move(PlayerMove.moveSW, shift);
-        if ((!up && !right && !down && left) || (up && !right && down && left))
-            player.move(PlayerMove.moveW, shift);
-        if (up && !right && !down && left)
-            player.move(PlayerMove.moveNW, shift);
-        $('.getPosition').text(`{ x: ${player.getPosition().x}, y: ${player.getPosition().y} }`);
-        $('.getDrawnPosition').text(`{ x: ${player.getDrawnPosition().x}, y: ${player.getDrawnPosition().y} }`);
-    }
-    }, 1)
-
+    if((up && !right && !down && !left) || (up && right && !down && left))
+        player.move(PlayerMove.moveN, shift);
+    if(up && right && !down && !left)
+        player.move(PlayerMove.moveNE, shift);
+    if((!up && right && !down && !left) || (up && right && down && !left))
+        player.move(PlayerMove.moveE, shift);
+    if(!up && right && down && !left)
+        player.move(PlayerMove.moveSE, shift);
+    if((!up && !right && down && !left) || (!up && right && down && left))
+        player.move(PlayerMove.moveS, shift);
+    if(!up && !right && down && left)
+        player.move(PlayerMove.moveSW, shift);
+    if((!up && !right && !down && left) || (up && !right && down && left))
+        player.move(PlayerMove.moveW, shift);
+    if(up && !right && !down && left)
+        player.move(PlayerMove.moveNW, shift);
+    $('.getPosition').text(`{ x: ${player.getPosition().x}, y: ${player.getPosition().y} }`);
+    $('.getDrawnPosition').text(`{ x: ${player.getDrawnPosition().x}, y: ${player.getDrawnPosition().y} }`);
+}, 1);
 
 
 $(document).on("keydown", function (e) {
