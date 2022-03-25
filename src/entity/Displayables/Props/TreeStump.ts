@@ -1,16 +1,16 @@
 import {Displayable} from "../Displayable";
-import {Coordinate} from "../types/Coordinate";
+import {Coordinate} from "../../types/Coordinate";
 
-export class Grass extends Displayable{
+export class TreeStump extends Displayable {
 
-    public static readonly defaultSize = { w: 970, h: 646 };
     private readonly image: HTMLImageElement;
 
     constructor(ctx, cord: Coordinate, size) {
         super(ctx, cord, size, null);
 
         this.image = document.createElement("img");
-        this.image.src = "/img/herbe.png";
+        this.image.src = "/img/tree_stump.png";
+        this.hittable = true;
     }
 
     draw() {

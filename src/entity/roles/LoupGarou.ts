@@ -1,6 +1,6 @@
-import {Player} from "../Props/Player";
+import {Player} from "../Displayables/Props/Player";
 import {Coordinate} from "../types/Coordinate";
-import {Blood} from "../Props/Blood";
+import {Blood} from "../Displayables/Props/Blood";
 import {Roles} from "./Roles";
 
 export class LoupGarou extends Player {
@@ -29,14 +29,5 @@ export class LoupGarou extends Player {
 
     checkAction(player): boolean {
         return this.pochesDeSang >= LoupGarou.NB_POCHE_KILL && this.alive && player.role !== Roles.LoupGarou;
-    }
-
-
-    drawInfo() {
-        super.drawInfo();
-        this.ctx.fillStyle = "red";
-        this.ctx.font = "30px sans-serif";
-        this.ctx.textAlign = "left";
-        this.ctx.fillText(`${this.pochesDeSang} / ${LoupGarou.NB_POCHE_KILL}`, 20, innerHeight - 80);
     }
 }

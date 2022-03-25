@@ -1,10 +1,10 @@
 import {Displayable} from "../Displayable";
-import {PlayerMove} from "../types/PlayerMove";
-import {Coordinate} from "../types/Coordinate";
-import {Map} from "../Map";
-import {Roles} from "../roles/Roles";
-import {Tools} from "../Tools";
-import {ObjectType} from "../types/ObjectType";
+import {PlayerMove} from "../../types/PlayerMove";
+import {Coordinate} from "../../types/Coordinate";
+import {Map} from "../../Map";
+import {Roles} from "../../roles/Roles";
+import {Tools} from "../../Tools";
+import {ObjectType} from "../../types/ObjectType";
 
 export abstract class Player extends Displayable {
 
@@ -188,7 +188,6 @@ export abstract class Player extends Displayable {
         this.ctx.fillRect(this.getDrawnPosition().x, this.getDrawnPosition().y + this.size.h - 5, this.size.w, 40 );
         this.ctx.textAlign = "center";
         if(this.isLocal) {
-            this.drawInfo();
             this.ctx.fillStyle = "#0080ff";
         }
         else
@@ -201,7 +200,6 @@ export abstract class Player extends Displayable {
             this.ctx.fillText(Tools.getRoleName(this.role), this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y - 15);
         }
     }
-    drawInfo() {}
 
     checkInteractions() {
         let seen = false;

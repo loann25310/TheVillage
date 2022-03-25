@@ -1,5 +1,5 @@
 import {Displayable} from "../Displayable";
-import {Coordinate} from "../types/Coordinate";
+import {Coordinate} from "../../types/Coordinate";
 import {PineCone} from "./PineCone";
 
 export class PineTree extends Displayable {

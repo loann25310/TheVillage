@@ -1,4 +1,4 @@
-import {Player} from "../Props/Player";
+import {Player} from "../Displayables/Props/Player";
 import {Coordinate} from "../types/Coordinate";
 import {Roles} from "./Roles";
 
@@ -32,14 +32,5 @@ export class Chasseur extends Player {
 
     checkAction(player): boolean {
         return !this.alive && !this.hasShot && player.alive;
-    }
-
-    drawInfo() {
-        super.drawInfo();
-        this.ctx.fillStyle = "#CD913C";
-        this.ctx.textAlign = "left";
-        this.ctx.font = "30px sans-serif";
-        this.ctx.fillText(`${this.hasShot ? 0 : 1}`, 20, window.innerHeight - 80);
-        this.ctx.drawImage(this.bulletImg, 40, innerHeight - 100, 23, 23);
     }
 }

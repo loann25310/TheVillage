@@ -1,24 +1,24 @@
-import {Displayable} from "./Displayable";
+import {Displayable} from "./Displayables/Displayable";
 import {Coordinate} from "./types/Coordinate";
 import axios from 'axios';
-import {Bush} from "./Props/Bush";
+import {Bush} from "./Displayables/Props/Bush";
 import {ObjectType} from "./types/ObjectType";
 import {Size} from "./types/Size";
-import {Box} from "./Props/Box";
-import {TreeStump} from "./Props/TreeStump";
-import {Grass} from "./Grounds/Grass";
-import {Flower} from "./Grounds/Flower";
-import {Tree} from "./Props/Tree";
-import {House} from "./Props/House";
-import {PineTree} from "./Props/PineTree";
-import {Fork} from "./Props/Fork";
-import {Wood} from "./Grounds/Wood";
-import {Cobblestone} from "./Grounds/Cobblestone";
-import {Dirt} from "./Grounds/Dirt";
-import {HayBale} from "./Props/HayBale";
+import {Box} from "./Displayables/Props/Box";
+import {TreeStump} from "./Displayables/Props/TreeStump";
+import {Grass} from "./Displayables/Grounds/Grass";
+import {Flower} from "./Displayables/Grounds/Flower";
+import {Tree} from "./Displayables/Props/Tree";
+import {House} from "./Displayables/Props/House";
+import {PineTree} from "./Displayables/Props/PineTree";
+import {Fork} from "./Displayables/Props/Fork";
+import {Wood} from "./Displayables/Grounds/Wood";
+import {Cobblestone} from "./Displayables/Grounds/Cobblestone";
+import {Dirt} from "./Displayables/Grounds/Dirt";
+import {HayBale} from "./Displayables/Props/HayBale";
 import {Map} from "./Map";
-import {Player} from "./Props/Player";
-import {Blood} from "./Props/Blood";
+import {Player} from "./Displayables/Props/Player";
+import {Blood} from "./Displayables/Props/Blood";
 
 export class Environment {
 
@@ -27,6 +27,7 @@ export class Environment {
     size: { w: number, h: number };
     ctx: CanvasRenderingContext2D;
     interactions: Displayable[];
+    doneInteractions: Displayable[];
     possibleInteractions: Displayable[];
     hitBoxes: Displayable[][][];
     static readonly NB_TASK_PER_DAY = 2;
@@ -36,6 +37,7 @@ export class Environment {
         this.interactions = [];
         this.hitBoxes = [];
         this.possibleInteractions = [];
+        this.doneInteractions = [];
         this.setOrigine({x:0,y:0});
     }
 

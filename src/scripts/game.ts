@@ -1,6 +1,6 @@
 import * as $ from 'jquery';
 import "../styles/task.css";
-import {Player} from "../entity/Props/Player";
+import {Player} from "../entity/Displayables/Props/Player";
 import {Environment} from "../entity/Environment";
 import {PlayerMove} from "../entity/types/PlayerMove";
 import {io} from "socket.io-client";
@@ -15,6 +15,7 @@ import {Sorciere} from "../entity/roles/Sorciere";
 import {Voyante} from "../entity/roles/Voyante";
 import {LoupGarou} from "../entity/roles/LoupGarou";
 import {Tools} from "../entity/Tools";
+import {HUD} from "../entity/Displayables/HUD";
 
 // @ts-ignore
 const partie = _partie as Partie;
@@ -116,10 +117,9 @@ player.setCord({
     x : -(canvas.width-Player.defaultSize.w) / 2,
     y : -(canvas.height-Player.defaultSize.h) / 2
 });
+const player_hud = new HUD({canvas, player});
 
 let lock_key_u = false;
-let miniJeu = false;
-let actionPossible = false;
 let playerCount = 1;
 
 async function init(){
@@ -140,6 +140,9 @@ async function init(){
     environment.initNight();
     socket.emit("new_night", player.pid, player.role === Roles.LoupGarou ? 0 : environment.interactions.length);
 
+    // Init HUD in environment
+    environment.addToLayer(150, player_hud);
+
     function addRemotePlayer(data: {id: number, position: Coordinate, index: number}): Player {
         let remotePlayer = new Villageois(ctx, environment, data.position, Player.defaultSize, map, data.index);
         remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
@@ -158,7 +161,6 @@ async function init(){
         index: numeroJoueur
     });
     socket.on("playerJoin", (data) => {
-        console.log(data);
         if(data.id === user.id) return;
         addRemotePlayer(data);
     });
@@ -246,14 +248,14 @@ async function init(){
     for (const o of player.environment.interactions) {
         o.on("end_game", (completed) => {
             o.endJeu(completed);
-            miniJeu = false;
+            HUD.miniJeu = false;
         });
     }
 
     for (const o of player.environment.possibleInteractions) {
         o.on("end_game", (completed) => {
             o.endJeu(completed);
-            miniJeu = false;
+            HUD.miniJeu = false;
             if (completed)
                 socket.emit("task_completed", environment.interactions.length);
         });
@@ -261,7 +263,7 @@ async function init(){
 
     player.on("no_task", () => {
         player.objectInteract?.endJeu(false, false);
-        miniJeu = false;
+        HUD.miniJeu = false;
     });
 
     player.on("action", (data) => {
@@ -270,12 +272,12 @@ async function init(){
 
     player.on("action_available", p => {
         player.playerForAction = p;
-        actionPossible = true;
+        HUD.actionPossible = true;
     });
 
     player.on("action_unavailable", () => {
         player.playerForAction = null;
-        actionPossible = false;
+        HUD.actionPossible = false;
     });
 
     player.on("drink", poche => {
@@ -291,40 +293,16 @@ init().then();
 function draw() {
     requestAnimationFrame(draw);
     if (!player.alive) player.image = player.getImg.next().value as HTMLImageElement;
+    player.getImg
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     environment.update(player.role === Roles.LoupGarou);
     ctx.drawImage(player.image, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
-    player.drawInfo();
-    if (!player.alive) {
-        ctx.textAlign = "center";
-        ctx.font = "30px sans-serif";
-        ctx.fillStyle = "red";
-        ctx.fillText(`U R DED lol what a noob`, window.innerWidth / 2, window.innerHeight - 300);
-    }
-    else if (player.objectInteract !== null && !miniJeu) {
-        ctx.textAlign = "center";
-        ctx.font = "30px sans-serif";
-        ctx.fillStyle = "red";
-        ctx.fillText(`[E] pour interagir avec ${player.objectInteract.name}`, window.innerWidth / 2, window.innerHeight - 300);
-    }
 
-    if (actionPossible) {
-        ctx.textAlign = "center";
-        ctx.font = "30px sans-serif";
-        ctx.fillStyle = "blue";
-        ctx.fillText(`[F] pour ACTION sur ${player.playerForAction.pid}`, window.innerWidth / 2, window.innerHeight - 500);
-    }
-
-    if (miniJeu) {
+    if (HUD.miniJeu) {
         requestAnimationFrame(() => {player.objectInteract?.drawJeu()});
     }
-
-    ctx.textAlign = "left";
-    ctx.font = "15px sans-serif";
-    ctx.fillStyle = player.role === Roles.LoupGarou ? "red" : "blue";
-    ctx.fillText(Tools.getRoleName(player.role), 10, window.innerHeight-30);
 }
 draw();
 
@@ -344,24 +322,16 @@ window.addEventListener("resize", () => {
 setInterval(() => {
     let shift = keys["KEY_SHIFT"] === true;
 
-    if (keys["KEY_E"] && !miniJeu && player.objectInteract !== null) {
-        miniJeu = true;
+    if (keys["KEY_E"] && !HUD.miniJeu && player.objectInteract !== null) {
+        HUD.miniJeu = true;
         player.objectInteract.miniJeu(player);
     }
 
-    if (keys["KEY_F"] && actionPossible) {
+    if (keys["KEY_F"] && HUD.actionPossible) {
         player.action(player.playerForAction);
-        actionPossible = false;
+        HUD.actionPossible = false;
     }
 
-    if(keys["KEY_U"] && !lock_key_u){
-        lock_key_u = true;
-        let p2 = new Villageois(ctx, environment, player.getPosition(), Player.defaultSize, map, 0);
-        p2.pid = playerCount++;
-        environment.addToLayer(100, p2);
-        console.log(player.getPosition());
-        setTimeout(() => lock_key_u = false, 400);
-    }
     const up = keys["KEY_Z"] || keys["KEY_ARROWUP"];
     const left = keys["KEY_Q"] || keys["KEY_ARROWLEFT"];
     const down = keys["KEY_S"] || keys["KEY_ARROWDOWN"];
