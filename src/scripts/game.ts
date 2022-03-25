@@ -348,23 +348,6 @@ init().then();
 
 function draw() {
     requestAnimationFrame(draw);
-        if (night) {
-        if (!player.alive) player.image = player.getImg.next().value as HTMLImageElement;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        environment.update();
-        ctx.drawImage(player.image, canvas.width / 2 - (80 / 2), canvas.height / 2 - (186 / 2));
-        player.drawInfo();
-        if (!player.alive) {
-            ctx.textAlign = "center";
-            ctx.font = "30px sans-serif";
-            ctx.fillStyle = "red";
-            ctx.fillText(`U R DED lol what a noob`, window.innerWidth / 2, window.innerHeight - 300);
-        } else if (player.objectInteract !== null && !miniJeu) {
-            ctx.textAlign = "center";
-            ctx.font = "30px sans-serif";
-            ctx.fillStyle = "red";
-            ctx.fillText(`[E] pour interagir avec ${player.objectInteract.name}`, window.innerWidth / 2, window.innerHeight - 300);
-        }
     if (!player.alive) player.image = player.getImg.next().value as HTMLImageElement;
     player.getImg
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -376,26 +359,9 @@ function draw() {
     if (HUD.miniJeu) {
         requestAnimationFrame(() => {player.objectInteract?.drawJeu()});
     }
-        if (actionPossible) {
-            ctx.textAlign = "center";
-            ctx.font = "30px sans-serif";
-            ctx.fillStyle = "blue";
-            ctx.fillText(`[F] pour ACTION sur ${player.playerForAction.pid}`, window.innerWidth / 2, window.innerHeight - 500);
-        }
-
-        if (miniJeu) {
-            requestAnimationFrame(() => {
-                player.objectInteract?.drawJeu()
-            });
-        }
-
-        ctx.textAlign = "left";
-        ctx.font = "15px sans-serif";
-        ctx.fillStyle = player.role === Roles.LoupGarou ? "red" : "blue";
-        ctx.fillText(Tools.getRoleName(player.role), 10, window.innerHeight - 30);
-    }
 }
 draw();
+
 
 const keys = [];
 window.addEventListener("keydown",function(e){ keys["KEY_" + e.key.toUpperCase()] = true },false);
