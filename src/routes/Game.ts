@@ -6,6 +6,7 @@ import {User} from "../entity/User";
 import * as fs from "fs";
 import * as path from "path";
 import {Roles} from "../entity/roles/Roles";
+import {ActionType} from "../entity/types/ActionType";
 
 const passport = require("passport");
 
@@ -116,18 +117,22 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             if (!partie) return;
             switch (data.role) {
                 case Roles.Sorciere:
+                    partie.addAction(data.data.maker, data.data.revive ? ActionType.REVIVE : ActionType.KILL, data.data.player);
                     return io.to(partie.id).emit(data.data.revive ? "revive" : "kill", data.data.player);
                 case Roles.Voyante:
+                    partie.addAction(data.data.maker,ActionType.REVEAL, data.data.player);
                     return socket.emit("see_role", {role: partie.roles.filter(p => p.uid === data.data.player)[0].role, id: data.data.player});
                 case Roles.Chasseur:
                 case Roles.LoupGarou:
+                    partie.addAction(data.data.maker, ActionType.KILL, data.data.player);
                     return io.to(partie.id).emit("kill", data.data.player);
             }
         });
 
-        socket.on("drink", pos => {
+        socket.on("drink", data => {
             if (!partie) return;
-            io.to(partie.id).emit("drink", pos);
+            partie.addAction(data.id, ActionType.DRINK, 0);
+            io.to(partie.id).emit("drink", data.pos);
         });
 
         socket.on("task_completed",  (id, nb) => {

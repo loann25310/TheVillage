@@ -3,6 +3,8 @@ import {Column, Entity, getRepository, PrimaryColumn} from "typeorm";
 import {User} from "./User";
 import {Map} from "./Map";
 import {Roles} from "./roles/Roles";
+import {Action} from "./Action";
+import {ActionType} from "./types/ActionType";
 
 export enum PartieStatus {
     CREATING,
@@ -77,6 +79,8 @@ export class Partie {
 
     idTasks: {id: number, nb: number}[];
 
+    actions: Action[];
+
     async getPlayers(): Promise<User[]> {
         return await getRepository(User).findByIds(this.players);
     }
@@ -140,5 +144,30 @@ export class Partie {
         for (let i = 5; this.roles.length < this.players.length; i++) {
             this.roles.push({uid: joueurs[i], role: Roles.Villageois});
         }
+    }
+
+    /**
+     * Adds an action for the history of the game (displayed at the end)
+     * @param maker
+     * The player that did the action (0 if it is the village)
+     * @param type
+     * The type of the action
+     * @param victim
+     * The victim of the action (0 if there isn't)
+     */
+    addAction(maker: number, type: ActionType, victim: number) {
+        if (!this.actions) this.actions = [];
+        this.actions.push(new Action(maker, type, victim));
+    }
+
+    async getHistory(): Promise<string> {
+        if (!this.actions) return null;
+        let html = "<ul>";
+        for (const a of this.actions) {
+            let li = `<li style="color: ${a.color}">`;
+            li += (await a.toString());
+            html += li + `</li>`;
+        }
+        return html;
     }
 }

@@ -267,6 +267,7 @@ async function init(){
     });
 
     player.on("action", (data) => {
+        data.maker = player.pid;
         socket.emit("action", {role, data});
     });
 
@@ -285,7 +286,10 @@ async function init(){
         if (environment.interactions.includes(poche)) {
             environment.possibleInteractions.push(environment.interactions.splice(environment.interactions.indexOf(poche), 1)[0]);
         }
-        socket.emit("drink", {x: poche.cord.x, y: poche.cord.y});
+        socket.emit("drink", {
+            pos: {x: poche.cord.x, y: poche.cord.y},
+            id: player.pid
+        });
     });
 }
 init().then();
