@@ -1,5 +1,5 @@
 import {Displayable} from "../Displayable";
-import {Coordinate} from "../types/Coordinate";
+import {Coordinate} from "../../types/Coordinate";
 
 export class HayBale extends Displayable {
     public static readonly NB_HAY_BALES = 15;

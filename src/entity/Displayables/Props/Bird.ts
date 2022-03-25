@@ -1,6 +1,6 @@
 import {Displayable} from "../Displayable";
-import {Coordinate} from "../types/Coordinate";
-import {Size} from "../types/Size";
+import {Coordinate} from "../../types/Coordinate";
+import {Size} from "../../types/Size";
 
 export class Bird extends Displayable {
 

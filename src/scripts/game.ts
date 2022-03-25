@@ -1,7 +1,7 @@
 import * as $ from 'jquery';
 import "../styles/vote.css";
 import "../styles/task.css";
-import {Player} from "../entity/Props/Player";
+import {Player} from "../entity/Displayables/Props/Player";
 import {Environment} from "../entity/Environment";
 import {PlayerMove} from "../entity/types/PlayerMove";
 import {io} from "socket.io-client";
@@ -129,6 +129,7 @@ player.setCord({
     x : -(canvas.width-Player.defaultSize.w) / 2,
     y : -(canvas.height-Player.defaultSize.h) / 2
 });
+const player_hud = new HUD({canvas, player});
 
 let lock_key_u = false;
 let miniJeu = false;
@@ -155,6 +156,9 @@ async function init(){
 
     environment.initNight();
     socket.emit("new_night", player.pid, player.role === Roles.LoupGarou ? 0 : environment.interactions.length);
+
+    // Init HUD in environment
+    environment.addToLayer(150, player_hud);
 
     function addRemotePlayer(data: {id: number, position: Coordinate, index: number}): Player {
         let remotePlayer = new Villageois(ctx, environment, data.position, Player.defaultSize, map, data.index);
@@ -299,14 +303,14 @@ async function init(){
     for (const o of player.environment.interactions) {
         o.on("end_game", (completed) => {
             o.endJeu(completed);
-            miniJeu = false;
+            HUD.miniJeu = false;
         });
     }
 
     for (const o of player.environment.possibleInteractions) {
         o.on("end_game", (completed) => {
             o.endJeu(completed);
-            miniJeu = false;
+            HUD.miniJeu = false;
             if (completed)
                 socket.emit("task_completed", environment.interactions.length);
         });
@@ -314,7 +318,7 @@ async function init(){
 
     player.on("no_task", () => {
         player.objectInteract?.endJeu(false, false);
-        miniJeu = false;
+        HUD.miniJeu = false;
     });
 
     player.on("action", (data) => {
@@ -323,12 +327,12 @@ async function init(){
 
     player.on("action_available", p => {
         player.playerForAction = p;
-        actionPossible = true;
+        HUD.actionPossible = true;
     });
 
     player.on("action_unavailable", () => {
         player.playerForAction = null;
-        actionPossible = false;
+        HUD.actionPossible = false;
     });
 
     player.on("drink", poche => {
@@ -361,25 +365,16 @@ function draw() {
             ctx.fillText(`[E] pour interagir avec ${player.objectInteract.name}`, window.innerWidth / 2, window.innerHeight - 300);
         }
     if (!player.alive) player.image = player.getImg.next().value as HTMLImageElement;
+    player.getImg
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     environment.update();
     ctx.drawImage(player.image, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
-    player.drawInfo();
-    if (!player.alive) {
-        ctx.textAlign = "center";
-        ctx.font = "30px sans-serif";
-        ctx.fillStyle = "red";
-        ctx.fillText(`U R DED lol what a noob`, window.innerWidth / 2, window.innerHeight - 300);
-    }
-    else if (player.objectInteract !== null && !miniJeu) {
-        ctx.textAlign = "center";
-        ctx.font = "30px sans-serif";
-        ctx.fillStyle = "red";
-        ctx.fillText(`[E] pour interagir avec ${player.objectInteract.name}`, window.innerWidth / 2, window.innerHeight - 300);
-    }
 
+    if (HUD.miniJeu) {
+        requestAnimationFrame(() => {player.objectInteract?.drawJeu()});
+    }
         if (actionPossible) {
             ctx.textAlign = "center";
             ctx.font = "30px sans-serif";
@@ -422,12 +417,26 @@ setInterval(() => {
             miniJeu = true;
             player.objectInteract.miniJeu(player);
         }
+    let shift = keys["KEY_SHIFT"] === true;
 
+    if (keys["KEY_E"] && !HUD.miniJeu && player.objectInteract !== null) {
+        HUD.miniJeu = true;
+        player.objectInteract.miniJeu(player);
+    }
+
+    if (keys["KEY_F"] && HUD.actionPossible) {
+        player.action(player.playerForAction);
+        HUD.actionPossible = false;
+    }
         if (keys["KEY_F"] && actionPossible) {
             player.action(player.playerForAction);
             actionPossible = false;
         }
 
+    const up = keys["KEY_Z"] || keys["KEY_ARROWUP"];
+    const left = keys["KEY_Q"] || keys["KEY_ARROWLEFT"];
+    const down = keys["KEY_S"] || keys["KEY_ARROWDOWN"];
+    const right = keys["KEY_D"] || keys["KEY_ARROWRIGHT"];
         if (keys["KEY_U"] && !lock_key_u) {
             lock_key_u = true;
             let p2 = new Villageois(ctx, environment, player.getPosition(), Player.defaultSize, map, 0);

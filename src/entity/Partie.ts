@@ -82,7 +82,7 @@ export class Partie {
     }
 
     addPlayer(userId: number): boolean{
-        this.players ??= [];
+        this.players = [];
         if (this.players.length >= this.nbJoueursMax)
             return false;
         if (!this.players.includes(userId))
