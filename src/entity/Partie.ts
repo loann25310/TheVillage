@@ -18,6 +18,7 @@ export enum PartieStatus {
 export class Partie {
 
     public static readonly NB_JOUEURS_MIN = 7;
+    public static readonly NB_TASKS_PER_DAY = 2;
 
     @PrimaryColumn()
     id: string;
@@ -77,7 +78,9 @@ export class Partie {
     })
     roles: {uid: number, role: Roles}[];
 
-    idTasks: {id: number, nb: number}[];
+    idTasks: {id: number, tasks: string[]}[];
+
+    deadPlayers: number[];
 
     actions: Action[];
 
@@ -100,14 +103,14 @@ export class Partie {
         if(this.inGamePlayers.includes(user.id))
             return;
         this.inGamePlayers.push(user.id);
-        getRepository(Partie).save(this).then(r => {});
+        getRepository(Partie).save(this).then();
     }
 
     removeInGamePlayer(user: User) {
         if(!this.inGamePlayers.includes(user.id))
             return;
         this.inGamePlayers.splice(this.inGamePlayers.indexOf(user.id), 1);
-        getRepository(Partie).save(this).then(r => {});
+        getRepository(Partie).save(this).then();
     }
 
     isInGame(user: User): boolean {
@@ -128,6 +131,9 @@ export class Partie {
         return JSON.parse(fs.readFileSync(path.resolve(__dirname, `../../public/maps/The_village.json`), "utf-8")) as Map;
     }
 
+    /**
+     * Creates the roles for the players in the game
+     */
     init() {
         const j = [];
         this.players.forEach(p => j.push(p));
@@ -160,6 +166,9 @@ export class Partie {
         this.actions.push(new Action(maker, type, victim));
     }
 
+    /**
+     * Returns an HTML string containing every action done during the game as a list
+     */
     async getHistory(): Promise<string> {
         if (!this.actions) return null;
         let html = "<ul>";
@@ -169,5 +178,34 @@ export class Partie {
             html += li + `</li>`;
         }
         return html;
+    }
+
+    generateTasks() {
+        this.idTasks = [];
+        for (const id of this.deadPlayers.length === 0 ? this.players : this.inGamePlayers) {
+            if (this.deadPlayers.includes(id)) continue;
+            if (this.roles.find(p => p.uid === id).role === Roles.LoupGarou) this.idTasks.push({id, tasks: []});
+            else {
+                const possibleTasks = ["Box", "HayBayle", "House", "PineTree", "Tree"];
+                const tasks = [];
+                for (let i = 0; i < Partie.NB_TASKS_PER_DAY && possibleTasks.length > 0; i++) {
+                    tasks.push(possibleTasks.splice(Math.floor(Math.random() * possibleTasks.length), 1)[0]);
+                }
+                this.idTasks.push({id, tasks});
+                console.log(this.idTasks);
+            }
+        }
+    }
+
+    kill(id: number) {
+        if (!this.inGamePlayers.includes(id)) return;
+        if (this.deadPlayers.includes(id)) return;
+        this.deadPlayers.push(id);
+    }
+
+    revive(id: number) {
+        const index = this.deadPlayers.findIndex(pid => pid === id);
+        if (index === -1) return;
+        this.deadPlayers.splice(index, 1);
     }
 }

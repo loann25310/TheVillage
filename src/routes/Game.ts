@@ -28,8 +28,6 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         let numeroJoueur = partie.players.indexOf(user.id);
         if (numeroJoueur < 0) return res.redirect("/?err=wrong_game");
 
-        console.log(partie);
-
         let roomId = req.params.id;
         let game = await getRepository(Partie).findOne(roomId);
         let players = await game.getPlayers();
@@ -45,8 +43,6 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             });
         }
         io.to(roomId).emit("players", users);
-        console.log(await getRepository(Partie).findOne(req.params.id))
-        console.log(users);
         res.render("game/main", {
 
             partie,
@@ -81,8 +77,11 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
     const PARTIES: Partie[] = [];
 
     function monitorPartie(partie: Partie): Partie {
-        if(!isMonitoredPartie(partie))
+        if(!isMonitoredPartie(partie)) {
             PARTIES.push(partie);
+            partie.deadPlayers = [];
+            partie.generateTasks();
+        }
         return findPartie(partie.id);
     }
 
@@ -116,11 +115,11 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         });
 
         socket.on("joinPartie", async (data) => {
-            console.log(user, data);
             partie = monitorPartie(await getRepository(Partie).findOne(data.gameId));
             if(!partie) return sendError("Game not found");
             if(partie.isInGame(user)) return sendError("Is already in this game");
             partie.addInGamePlayer(user);
+            if (partie.inGamePlayers.length === partie.players.length) io.to(partie.id).emit("everyone_is_here");
             socket.join(partie.id);
             io.to(partie.id).emit("playerJoin", {
                 id: user.id,
@@ -149,6 +148,10 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             switch (data.role) {
                 case Roles.Sorciere:
                     partie.addAction(data.data.maker, data.data.revive ? ActionType.REVIVE : ActionType.KILL, data.data.player);
+                    if (data.data.revive)
+                        partie.revive(data.data.player);
+                    else
+                        partie.kill(data.data.player);
                     return io.to(partie.id).emit(data.data.revive ? "revive" : "kill", data.data.player);
                 case Roles.Voyante:
                     partie.addAction(data.data.maker,ActionType.REVEAL, data.data.player);
@@ -156,6 +159,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 case Roles.Chasseur:
                 case Roles.LoupGarou:
                     partie.addAction(data.data.maker, ActionType.KILL, data.data.player);
+                    partie.kill(data.data.player);
                     return io.to(partie.id).emit("kill", data.data.player);
             }
         });
@@ -166,41 +170,25 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             io.to(partie.id).emit("drink", data.pos);
         });
 
-        socket.on("task_completed",  (id, nb) => {
+        socket.on("task_completed",  (id, name) => {
             if (!partie) return;
-            let seen = false;
-            for (const couple of partie.idTasks) {
-                if (couple.id === id) {
-                    couple.nb = nb;
-                    seen = true;
-                    break;
-                }
-            }
-            if (!seen)
-                partie.idTasks.push({id, nb});
-            if (partie.idTasks.length !== partie.inGamePlayers.length) return;
+            const index = partie.idTasks[id].tasks.findIndex(p => p === name);
+            if (index === -1) return;
+            partie.idTasks[id].tasks.splice(index, 1);
+
             let compteur = 0;
-            for (const c of partie.idTasks) {
-                compteur += c.nb;
-            }
-            if (compteur > 0)
-                io.to(partie.id).emit("nb_tasks", compteur);
-            else
-                io.to(partie.id).emit("DAY");
+            partie.idTasks.forEach(t => compteur += t.tasks.length);
+            io.to(partie.id).emit(compteur > 0 ? "nb_tasks" : "DAY", compteur);
         });
 
-        socket.on("new_night", (id, nb) =>{
-            if (!partie) return;
-            if(!partie.idTasks) partie.idTasks = [];
-            for (const couple of partie.idTasks) {
-                if (couple.id === id) {
-                    couple.nb = nb;
-                    return;
-                }
+        socket.on("get_tasks", async (id) => {
+            if (!partie) {
+                partie = findPartie((await getRepository(User).findOne(id))?.partie);
+                if (!partie) return;
             }
-            partie.idTasks.push({id, nb});
+            //emit only to send to the player that requested it
+            socket.emit("tasks", partie.idTasks.find(p => p.id === id));
         });
-
 
         socket.on("resetVotes", () => {
             compteurVotes = 0;
@@ -211,7 +199,6 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 }
             }
             console.log("RESET VOTES");
-            return;
         });
 
         socket.on("aVote", (id) => {
@@ -221,8 +208,8 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             let index;
             console.log(compteurVotes);
             console.log(votes);
-            if (compteurVotes == partie.players.length) {
-                for (let i=0; i<votes.length; i++) {
+            if (compteurVotes === partie.players.length) {
+                for (let i = 0; i < votes.length; i++) {
                     console.log(votes[i]);
                     if (votes[i] > max) {
                         max = votes[i];
@@ -231,9 +218,15 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 }
                 console.log("RIP " + index);
                 io.to(partie.id).emit("kill", index);
+                //todo : add this player to partie.deadPlayers
+                partie.addAction(0, ActionType.EXPELLED, partie.players[index-1]); //todo verify victim
+                partie.generateTasks();
                 io.to(partie.id).emit("NIGHT");
             }
-            return
+        });
+
+        socket.on("history", async () => {
+            io.to(partie.id).emit("history", await partie?.getHistory());
         });
     });
 }

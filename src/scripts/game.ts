@@ -150,7 +150,7 @@ async function init(){
     }
 
     environment.initNight();
-    socket.emit("new_night", player.pid, player.role === Roles.LoupGarou ? 0 : environment.interactions.length);
+    socket.emit("get_tasks", player.pid);
 
     // Init HUD in environment
     environment.addToLayer(150, player_hud);
@@ -167,14 +167,20 @@ async function init(){
         return remotePlayer;
     }
 
+    socket.once("everyone_is_here", ()=>{
+        socket.emit("get_tasks", player.pid);
+    });
+
     socket.emit("joinPartie", {
         gameId: partie.id,
         position: player.getPosition(),
         index: numeroJoueur
     });
     socket.on("playerJoin", (data) => {
-        console.log(data);
-        if(data.id === user.id) return;
+        if(data.id === user.id) {
+            socket.emit("new_night", player.pid);
+            return;
+        }
         addRemotePlayer(data);
     });
 
@@ -251,7 +257,6 @@ async function init(){
         }
     });
 
-
     socket.on("DAY",() => {
         let anim = $("#anim_day");
         $("#play").hide();
@@ -281,13 +286,24 @@ async function init(){
         console.log(`nombre total de tâches restantes : ${nb}`);
     });
 
-    /* useless ? */
-    //player.on("task", (/* object */) => {});
+    socket.on("tasks", (tasks: {id: number, tasks: string[]}) => {
+        console.log(tasks);
+
+        environment.interactions = [];
+        tasks.tasks.forEach(t => {
+            let index;
+            index = environment.possibleInteractions.findIndex(p => p.name === t);
+            if (index === -1) return;
+            environment.interactions.push(environment.possibleInteractions.splice(index, 1)[0]);
+        });
+    });
 
     for (const o of player.environment.interactions) {
         o.on("end_game", (completed) => {
             o.endJeu(completed);
             HUD.miniJeu = false;
+            if (completed)
+                socket.emit("task_completed", player.pid, o.name);
         });
     }
 
@@ -296,7 +312,7 @@ async function init(){
             o.endJeu(completed);
             HUD.miniJeu = false;
             if (completed)
-                socket.emit("task_completed", environment.interactions.length);
+                socket.emit("task_completed", player.pid, o.name);
         });
     }
 
@@ -331,8 +347,9 @@ async function init(){
         });
     });
 }
-init().then();
-
+init().then(() => {
+    console.log(player.pid);
+});
 function draw() {
     requestAnimationFrame(draw);
     if (!player.alive) player.image = player.getImg.next().value as HTMLImageElement;
@@ -374,7 +391,7 @@ setInterval(() => {
     if (keys["KEY_F"] && HUD.actionPossible) {
         player.action(player.playerForAction);
         HUD.actionPossible = false;
-        }
+    }
 
     const up = keys["KEY_Z"] || keys["KEY_ARROWUP"];
     const left = keys["KEY_Q"] || keys["KEY_ARROWLEFT"];

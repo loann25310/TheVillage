@@ -40,7 +40,6 @@ export class House extends Displayable {
             this.jeu.ecran.push(Math.floor(Math.random() * 9))
         }
         this.jeu.date = new Date;
-        console.log(this.jeu.ecran);
     }
 
     drawJeu() {

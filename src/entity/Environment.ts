@@ -19,6 +19,7 @@ import {HayBale} from "./Displayables/Props/HayBale";
 import {Map} from "./Map";
 import {Player} from "./Displayables/Props/Player";
 import {Blood} from "./Displayables/Props/Blood";
+import {Partie} from "./Partie";
 
 export class Environment {
 
@@ -239,9 +240,11 @@ export class Environment {
 
     initNight() {
         if (this.possibleInteractions.length <= 0) return;
-        const nb = this.possibleInteractions[0].name === "blood" ? Environment.NB_TASK_PER_DAY * 3 : Environment.NB_TASK_PER_DAY;
-        for (let i = 0; i < nb && this.possibleInteractions.length > 0; i++) {
-            this.interactions.push(this.possibleInteractions.splice(Math.floor(Math.random() * this.possibleInteractions.length), 1)[0]);
+        if (this.possibleInteractions[0].name === "blood") {
+            const nb = Partie.NB_TASKS_PER_DAY * 3;
+            for (let i = 0; i < nb && this.possibleInteractions.length > 0; i++) {
+                this.interactions.push(this.possibleInteractions.splice(Math.floor(Math.random() * this.possibleInteractions.length), 1)[0]);
+            }
         }
         for (const o of this.interactions) {
             o.show();

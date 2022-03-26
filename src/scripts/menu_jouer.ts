@@ -38,7 +38,6 @@ socket.on("room_found", (roomId) => {
         window.location.href = `/lobby/${roomId}`;
 })
 socket.on("room_showing",(party)=>{
-    console.log(party);
     showParties.css({
         'display':'flex',
         'flex-direction':'column',
