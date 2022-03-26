@@ -2,7 +2,7 @@ import {Displayable} from "../Displayable";
 import {Coordinate} from "../../types/Coordinate";
 
 export class HayBale extends Displayable {
-    public static readonly NB_HAY_BALES = 15;
+    public static readonly NB_HAY_BALES = 10;
     public passed: boolean;
     public inside: boolean;
     public correct: boolean;
@@ -44,7 +44,7 @@ export class HayBale extends Displayable {
         };
         mainLoop: for (let i = 0; i < HayBale.NB_HAY_BALES; i++) {
             const cord = {x: Math.floor(Math.random() * (this.miniJeuCanvas.width - 70 - 2 * HayBale.rectWidth()) + HayBale.rectWidth()), y: Math.floor(Math.random() * (this.miniJeuCanvas.height - 50))} as Coordinate;
-            const h = new HayBale(this.miniJeuCanvas.getContext("2d"), cord, {w: 70, h: 50}, Math.random() < 0.5);
+            const h = new HayBale(this.miniJeuCanvas.getContext("2d"), cord, {w: 100, h: 70}, Math.random() < 0.5);
             for (const hay of this.jeu.hayBales)
                 if (h.hit(hay)) continue mainLoop;
             this.jeu.hayBales.push(h);
