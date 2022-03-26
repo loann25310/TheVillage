@@ -102,14 +102,14 @@ export abstract class Player extends Displayable {
                 antiMovement = PlayerMove.moveSW;
                 altMovement1 = PlayerMove.moveN;
                 altMovement2 = PlayerMove.moveE;
-                this.goesRight = true;
+                if (check) this.goesRight = true;
                 this.y -= Math.round(condition * 0.707);
                 this.x += Math.round(condition * 0.707);
                 this.environment.move({x:-Math.round(condition * 0.707),y:Math.round(condition * 0.707)});
                 break;
             case PlayerMove.moveE:
                 antiMovement = PlayerMove.moveW;
-                this.goesRight = true;
+                if (check) this.goesRight = true;
                 this.x += condition;
                 this.environment.move({x:-condition,y:0});
                 break;
@@ -117,7 +117,7 @@ export abstract class Player extends Displayable {
                 antiMovement = PlayerMove.moveNW;
                 altMovement1 = PlayerMove.moveS;
                 altMovement2 = PlayerMove.moveE;
-                this.goesRight = true;
+                if (check) this.goesRight = true;
                 this.x += Math.round(condition * 0.707);
                 this.y += Math.round(condition * 0.707);
                 this.environment.move({x:-Math.round(condition * 0.707),y:-Math.round(condition * 0.707)});
@@ -131,14 +131,14 @@ export abstract class Player extends Displayable {
                 antiMovement = PlayerMove.moveNE;
                 altMovement1 = PlayerMove.moveS;
                 altMovement2 = PlayerMove.moveW;
-                this.goesRight = false;
+                if (check) this.goesRight = false;
                 this.y += Math.round(condition * 0.707);
                 this.x -= Math.round(condition * 0.707);
                 this.environment.move({x:Math.round(condition * 0.707),y:-Math.round(condition * 0.707)});
                 break;
             case PlayerMove.moveW:
                 antiMovement = PlayerMove.moveE;
-                this.goesRight = false;
+                if (check) this.goesRight = false;
                 this.x -= condition;
                 this.environment.move({x:condition,y:0});
                 break;
@@ -146,7 +146,7 @@ export abstract class Player extends Displayable {
                 antiMovement = PlayerMove.moveSE;
                 altMovement1 = PlayerMove.moveN;
                 altMovement2 = PlayerMove.moveW;
-                this.goesRight = false;
+                if (check) this.goesRight = false;
                 this.x -= Math.round(condition * 0.707);
                 this.y -= Math.round(condition * 0.707);
                 this.environment.move({x:Math.round(condition * 0.707),y:Math.round(condition * 0.707)});
