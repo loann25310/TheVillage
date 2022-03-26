@@ -262,23 +262,25 @@ async function init(){
         let anim = $("#anim_day");
         $("#play").hide();
         anim.show();
-
-        anim.hide();
-        $("#vote").show();
-        if (player.alive) voteDisponible = true;
-        create_players(players);
-        socket.emit("reset_votes");
-        night = false;
+        setTimeout(()=>{
+            anim.hide();
+            $("#vote").show();
+            if (player.alive) voteDisponible = true;
+            create_players(players);
+            socket.emit("reset_votes");
+            night = false;
+        },4000);
     });
 
     socket.on("NIGHT", ()=>{
         let anim = $("#anim_night");
         $("#vote").hide();
         anim.show();
-
-        // anim.hide();
-        // $("#play").show();
-        night = true;
+        setTimeout(()=> {
+            anim.hide();
+            $("#play").show();
+            night = true;
+        }, 4000);
     });
 
     socket.on("nb_tasks", (nb) => {
