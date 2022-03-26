@@ -86,6 +86,8 @@ export abstract class Player extends Displayable {
     move(type: PlayerMove, sprint: boolean, check=true) {
         // if (!this.alive) return;
         let antiMovement;
+        let altMovement1;
+        let altMovement2;
         this.image = this.getImg.next().value as HTMLImageElement;
         let pixelSprint = 4;
         let pixelNoSprint = 1;
@@ -98,6 +100,8 @@ export abstract class Player extends Displayable {
                 break;
             case PlayerMove.moveNE:
                 antiMovement = PlayerMove.moveSW;
+                altMovement1 = PlayerMove.moveN;
+                altMovement2 = PlayerMove.moveE;
                 this.goesRight = true;
                 this.y -= Math.round(condition * 0.707);
                 this.x += Math.round(condition * 0.707);
@@ -111,6 +115,8 @@ export abstract class Player extends Displayable {
                 break;
             case PlayerMove.moveSE:
                 antiMovement = PlayerMove.moveNW;
+                altMovement1 = PlayerMove.moveS;
+                altMovement2 = PlayerMove.moveE;
                 this.goesRight = true;
                 this.x += Math.round(condition * 0.707);
                 this.y += Math.round(condition * 0.707);
@@ -123,6 +129,8 @@ export abstract class Player extends Displayable {
                 break;
             case PlayerMove.moveSW:
                 antiMovement = PlayerMove.moveNE;
+                altMovement1 = PlayerMove.moveS;
+                altMovement2 = PlayerMove.moveW;
                 this.goesRight = false;
                 this.y += Math.round(condition * 0.707);
                 this.x -= Math.round(condition * 0.707);
@@ -136,6 +144,8 @@ export abstract class Player extends Displayable {
                 break;
             case PlayerMove.moveNW:
                 antiMovement = PlayerMove.moveSE;
+                altMovement1 = PlayerMove.moveN;
+                altMovement2 = PlayerMove.moveW;
                 this.goesRight = false;
                 this.x -= Math.round(condition * 0.707);
                 this.y -= Math.round(condition * 0.707);
@@ -147,6 +157,8 @@ export abstract class Player extends Displayable {
             for (const o of hits) {
                 if (this.hit(o)) {
                     this.move(antiMovement, sprint, false);
+                    this.move(altMovement1, sprint, true);
+                    this.move(altMovement2, sprint, true);
                     break;
                 }
             }
