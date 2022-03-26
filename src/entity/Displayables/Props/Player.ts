@@ -86,6 +86,8 @@ export abstract class Player extends Displayable {
     move(type: PlayerMove, sprint: boolean, check=true) {
         // if (!this.alive) return;
         let antiMovement;
+        let altMovement1;
+        let altMovement2;
         this.image = this.getImg.next().value as HTMLImageElement;
         let pixelSprint = 4;
         let pixelNoSprint = 1;
@@ -98,20 +100,24 @@ export abstract class Player extends Displayable {
                 break;
             case PlayerMove.moveNE:
                 antiMovement = PlayerMove.moveSW;
-                this.goesRight = true;
+                altMovement1 = PlayerMove.moveN;
+                altMovement2 = PlayerMove.moveE;
+                if (check) this.goesRight = true;
                 this.y -= Math.round(condition * 0.707);
                 this.x += Math.round(condition * 0.707);
                 this.environment.move({x:-Math.round(condition * 0.707),y:Math.round(condition * 0.707)});
                 break;
             case PlayerMove.moveE:
                 antiMovement = PlayerMove.moveW;
-                this.goesRight = true;
+                if (check) this.goesRight = true;
                 this.x += condition;
                 this.environment.move({x:-condition,y:0});
                 break;
             case PlayerMove.moveSE:
                 antiMovement = PlayerMove.moveNW;
-                this.goesRight = true;
+                altMovement1 = PlayerMove.moveS;
+                altMovement2 = PlayerMove.moveE;
+                if (check) this.goesRight = true;
                 this.x += Math.round(condition * 0.707);
                 this.y += Math.round(condition * 0.707);
                 this.environment.move({x:-Math.round(condition * 0.707),y:-Math.round(condition * 0.707)});
@@ -123,20 +129,24 @@ export abstract class Player extends Displayable {
                 break;
             case PlayerMove.moveSW:
                 antiMovement = PlayerMove.moveNE;
-                this.goesRight = false;
+                altMovement1 = PlayerMove.moveS;
+                altMovement2 = PlayerMove.moveW;
+                if (check) this.goesRight = false;
                 this.y += Math.round(condition * 0.707);
                 this.x -= Math.round(condition * 0.707);
                 this.environment.move({x:Math.round(condition * 0.707),y:-Math.round(condition * 0.707)});
                 break;
             case PlayerMove.moveW:
                 antiMovement = PlayerMove.moveE;
-                this.goesRight = false;
+                if (check) this.goesRight = false;
                 this.x -= condition;
                 this.environment.move({x:condition,y:0});
                 break;
             case PlayerMove.moveNW:
                 antiMovement = PlayerMove.moveSE;
-                this.goesRight = false;
+                altMovement1 = PlayerMove.moveN;
+                altMovement2 = PlayerMove.moveW;
+                if (check) this.goesRight = false;
                 this.x -= Math.round(condition * 0.707);
                 this.y -= Math.round(condition * 0.707);
                 this.environment.move({x:Math.round(condition * 0.707),y:Math.round(condition * 0.707)});
@@ -147,6 +157,8 @@ export abstract class Player extends Displayable {
             for (const o of hits) {
                 if (this.hit(o)) {
                     this.move(antiMovement, sprint, false);
+                    this.move(altMovement1, sprint, true);
+                    this.move(altMovement2, sprint, true);
                     break;
                 }
             }
