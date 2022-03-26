@@ -252,40 +252,29 @@ async function init(){
     });
 
 
-    socket.on("debut_jour",() => {
-        let anim = $("#anim");
-        $("#vote").hide();
-        console.log("before anim");
-        anim.show();
-        console.log("Before");
-        console.log("After");
-        anim.hide();
-        $("#play").show();
-    });
-
-
-    socket.on("DAY", () => {
-        console.log("COCORICO");
+    socket.on("DAY",() => {
+        let anim = $("#anim_day");
         $("#play").hide();
-        $("#vote").show();
-        if (player.alive) voteDisponible = true;
-        create_players(players);
-        socket.emit("reset_votes");
-        night = false;
-    });
-
-    socket.on("fin_jour", () => {
-        let anim = $("#anim");
-        $("#vote").hide();
         anim.show();
-        // anim.hide();
-        // $("#play").show();
+        setTimeout(()=>{
+            anim.hide();
+            $("#vote").show();
+            if (player.alive) voteDisponible = true;
+            create_players(players);
+            socket.emit("reset_votes");
+            night = false;
+        },4000);
     });
 
     socket.on("NIGHT", ()=>{
-        console.log("BONUI");
-        $("#play").show();
-        night = true;
+        let anim = $("#anim_night");
+        $("#vote").hide();
+        anim.show();
+        setTimeout(()=> {
+            anim.hide();
+            $("#play").show();
+            night = true;
+        }, 4000);
     });
 
     socket.on("nb_tasks", (nb) => {

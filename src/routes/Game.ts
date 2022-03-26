@@ -231,7 +231,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 }
                 console.log("RIP " + index);
                 io.to(partie.id).emit("kill", index);
-                io.to(partie.id).emit("fin_jour");
+                io.to(partie.id).emit("NIGHT");
             }
             return
         });
