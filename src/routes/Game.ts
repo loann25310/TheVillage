@@ -218,8 +218,8 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 }
                 console.log("RIP " + index);
                 io.to(partie.id).emit("kill", index);
-                //todo : add this player to partie.deadPlayers
-                partie.addAction(0, ActionType.EXPELLED, partie.players[index-1]); //todo verify victim
+                partie.kill(partie.players[index-1]);
+                partie.addAction(0, ActionType.EXPELLED, partie.players[index-1]); //todo verify victim (thibaut si tu passes par là)
                 partie.generateTasks();
                 io.to(partie.id).emit("NIGHT");
             }
