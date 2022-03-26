@@ -289,10 +289,12 @@ async function init(){
     socket.on("tasks", (tasks: {id: number, tasks: string[]}) => {
         console.log(tasks);
 
+        environment.possibleInteractions.push(...environment.interactions);
         environment.interactions = [];
         tasks.tasks.forEach(t => {
             let index;
             index = environment.possibleInteractions.findIndex(p => p.name === t);
+            console.log(index, environment.possibleInteractions, t);
             if (index === -1) return;
             environment.interactions.push(environment.possibleInteractions.splice(index, 1)[0]);
         });

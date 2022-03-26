@@ -5,6 +5,7 @@ import {Map} from "./Map";
 import {Roles} from "./roles/Roles";
 import {Action} from "./Action";
 import {ActionType} from "./types/ActionType";
+import {ObjectType} from "./types/ObjectType";
 
 export enum PartieStatus {
     CREATING,
@@ -186,7 +187,7 @@ export class Partie {
             if (this.deadPlayers.includes(id)) continue;
             if (this.roles.find(p => p.uid === id).role === Roles.LoupGarou) this.idTasks.push({id, tasks: []});
             else {
-                const possibleTasks = ["Box", "HayBayle", "House", "PineTree", "Tree"];
+                const possibleTasks = [ObjectType.caisse, ObjectType.foin, ObjectType.maison, ObjectType.sapin, ObjectType.arbre];
                 const tasks = [];
                 for (let i = 0; i < Partie.NB_TASKS_PER_DAY && possibleTasks.length > 0; i++) {
                     tasks.push(possibleTasks.splice(Math.floor(Math.random() * possibleTasks.length), 1)[0]);
