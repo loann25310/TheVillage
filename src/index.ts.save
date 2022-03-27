@@ -9,7 +9,6 @@ import * as nunjucks from "nunjucks";
 import * as cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
 import * as http from "http";
-import { createServer } from "https";
 import {Server} from "socket.io";
 import {User} from "./entity/User";
 import logger = require("node-color-log");
@@ -48,10 +47,7 @@ createConnection().then(async connection => {
 
     logger.info("Creating Web Server...");
     const app: Express = express();
-    const httpServer = createServer({
-        key: readFileSync("/etc/letsencrypt/live/thevillage.lagardedev.fr/privkey.pem"),
-        cert: readFileSync("/etc/letsencrypt/live/thevillage.lagardedev.fr/fullchain.pem")
-    }, app);
+    const httpServer = http.createServer(app);
     app.use(express.json());
     app.use(express.static(__dirname + '/../public'));
     const env = nunjucks.configure(__dirname + '/templates/', {
@@ -63,15 +59,7 @@ createConnection().then(async connection => {
     app.set('view engine', 'twig');
     app.use(cookieParser());
     app.use(bodyParser.urlencoded({ extended: true, limit:"5mb" }));
-
-    //@ts-ignore
-    //const httpServerIO = createServer({
-    //    key: readFileSync("/etc/letsencrypt/live/thevillage.lagardedev.fr/privkey.pem"),
-    //    cert: readFileSync("/etc/letsencrypt/live/thevillage.lagardedev.fr/fullchain.pem")
-    //});
-    //@ts-ignore
     const io = new Server(httpServer);
-    // const io = new Server(httpServer);
     logger.info("Web Server created !");
 
     logger.info("Loading routes...");
@@ -121,7 +109,7 @@ createConnection().then(async connection => {
 
     passport.use(new RememberMeStrategy(
         async function(token, done){
-            let rememberToken = await getRepository(RememberMeToken).findOne({
+	            let rememberToken = await getRepository(RememberMeToken).findOne({
                 where: {
                     token: token
                 },
@@ -164,7 +152,7 @@ createConnection().then(async connection => {
     });
 
     for (const file of readdirSync(resolvePath(__dirname, 'routes/'))) {
-        if(extname(file) !== ((config.env === 'debug')?'.ts':'.js')) continue;
+        if(extname(file) !== '.ts') continue;
         logger.debug(` - Loading : ${file}`);
         require(resolvePath(__dirname, 'routes/', file)).Route(router, io, sessionMiddleware);
     }

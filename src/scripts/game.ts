@@ -30,7 +30,7 @@ const numeroJoueur = _numeroJoueur as number;
 //@ts-ignore
 const LG = _LG as number[];
 
-const socket = io("ws://thevillage.lagardedev.fr:9000");
+const socket = io("wss://thevillage.lagardedev.fr");
 // @ts-ignore
 let game = _game, players = _players;
 
@@ -40,7 +40,6 @@ let roomName = `${game.id}`,
     input = $("#input"),
     listeJoueurs = $("#players");
 
-const socket = io();
 const OTHER_PLAYERS: Player[] = [];
 
 function getPlayerById(id: number): Player {
