@@ -227,6 +227,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 }
                 console.log("RIP " + index);
                 io.to(partie.id).emit("kill", index);
+                io.to(partie.id).emit("final_kill");
                 partie.kill(partie.players[index-1]);
                 partie.addAction(0, ActionType.EXPELLED, partie.players[index-1]); //todo verify victim (thibaut si tu passes par là)
                 let gagnant = await partie.victoire();

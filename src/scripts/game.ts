@@ -88,8 +88,8 @@ Player.deadimgL4 = document.createElement("img");
 Player.deadimgL4.src = `/img/dead4L.png`;
 Player.deadimgR4 = document.createElement("img");
 Player.deadimgR4.src = `/img/dead4R.png`;
-Player.ghostimg = document.createElement("img");
-Player.ghostimg.src = `/img/fantome.png`;
+let ghostimg = document.createElement("img");
+ghostimg.src = `/img/fantome.png`;
 
 let player;
 switch (role) {
@@ -230,6 +230,12 @@ async function init(){
         }
     });
 
+    socket.on("final_kill", () => {
+       if (!player.alive) {
+           player.ghost = true;
+       }
+    });
+
     socket.on("see_role", (data) => {
         if (player.role !== Roles.Voyante) return console.warn("WHAAAT");
         for (const p of OTHER_PLAYERS) {
@@ -365,7 +371,8 @@ function draw() {
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     environment.update(player.role === Roles.LoupGarou);
-    ctx.drawImage(player.image, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
+    if (player.ghost) ctx.drawImage(ghostimg, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
+    else ctx.drawImage(player.image, canvas.width/2 - (80 / 2), canvas.height/2 - (186 / 2));
 
     if (HUD.miniJeu) {
         requestAnimationFrame(() => {player.objectInteract?.drawJeu()});

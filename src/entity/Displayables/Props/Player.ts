@@ -22,7 +22,6 @@ export abstract class Player extends Displayable {
     public static deadimgL2: HTMLImageElement;
     public static deadimgL3: HTMLImageElement;
     public static deadimgL4: HTMLImageElement;
-    public static ghostimg: HTMLImageElement;
 
     private readonly decalage: number;
     public static readonly defaultSize = { w: 80, h: 186 };
@@ -34,6 +33,7 @@ export abstract class Player extends Displayable {
     public goesRight: boolean;
     hasAction: boolean;
     alive: boolean;
+    ghost: boolean;
     role: Roles;
     distancePlayers: {player: Player, distance: number}[];
     abstract DISTANCE_FOR_ACTION: number;
@@ -54,6 +54,7 @@ export abstract class Player extends Displayable {
         this.decalage = Math.random() * 1000;
         this.hasAction = false;
         this.alive = true;
+        this.ghost = false;
         this.role = Roles.Villageois;
         this.distancePlayers = [];
         this.playerForAction = null;
@@ -84,7 +85,7 @@ export abstract class Player extends Displayable {
     }
 
     move(type: PlayerMove, sprint: boolean, check=true) {
-        // if (!this.alive) return;
+        if (!this.alive && !this.ghost) return;
         let antiMovement;
         let altMovement1;
         let altMovement2;
@@ -152,7 +153,7 @@ export abstract class Player extends Displayable {
                 this.environment.move({x:Math.round(condition * 0.707),y:Math.round(condition * 0.707)});
                 break;
         }
-        if (check && this.alive) {
+        if (check && !this.ghost) {
             let hits = this.environment.getHitBox(this.getPosition(), this.size);
             for (const o of hits) {
                 if (this.hit(o)) {
@@ -251,13 +252,13 @@ export abstract class Player extends Displayable {
                     yield this.goesRight ? Player.imgR3 : Player.imgL3;  // Bonhomme3
             } else {
                 if (millis < 250)
-                    yield this.goesRight ? Player.ghostimg : Player.ghostimg;
+                    yield this.goesRight ? Player.deadimgR1 : Player.deadimgL1;
                 else if (millis < 500)
-                    yield this.goesRight ? Player.ghostimg : Player.ghostimg;
+                    yield this.goesRight ? Player.deadimgR2 : Player.deadimgL2;
                 else if (millis < 750)
-                    yield this.goesRight ? Player.ghostimg : Player.ghostimg;
+                    yield this.goesRight ? Player.deadimgR3 : Player.deadimgL3;
                 else
-                    yield this.goesRight ? Player.ghostimg : Player.ghostimg;
+                    yield this.goesRight ? Player.deadimgR4 : Player.deadimgL4;
             }
         }
     }
