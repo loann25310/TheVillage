@@ -1,6 +1,5 @@
 import {ActionType} from "./types/ActionType";
 import {getRepository} from "typeorm";
-import {Player} from "./Displayables/Props/Player";
 import {User} from "./User";
 
 export class Action {
@@ -38,7 +37,7 @@ export class Action {
 
     async toString() {
         const victim = this.victim !== 0 ? (await getRepository(User).findOne(this.victim)) : {pseudo: ""};
-        const maker = this.maker === 0 ? {pseudo: ""} : (await getRepository(User).findOne(this.maker));
+        const maker = this.maker !== 0 ? (await getRepository(User).findOne(this.maker)) : {pseudo: ""};
         switch (this.type) {
             case ActionType.EXPELLED:
                 return `${this.getDate()} Le village a éliminé ${victim.pseudo}`;
