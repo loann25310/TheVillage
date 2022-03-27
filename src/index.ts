@@ -59,7 +59,9 @@ createConnection().then(async connection => {
     app.set('view engine', 'twig');
     app.use(cookieParser());
     app.use(bodyParser.urlencoded({ extended: true, limit:"5mb" }));
-    const io = new Server(httpServer);
+
+    const io = new Server({});
+    // const io = new Server(httpServer);
     logger.info("Web Server created !");
 
     logger.info("Loading routes...");
@@ -164,5 +166,6 @@ createConnection().then(async connection => {
     httpServer.listen(config.server.port, config.server.host, () => {
         logger.info(`Http server listen on http://${config.server.host}:${config.server.port}`);
     });
+    io.listen(9000);
 
 }).catch(error => console.log(error));

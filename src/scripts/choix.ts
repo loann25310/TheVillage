@@ -1,7 +1,7 @@
 import "../styles/choix.css"
 import * as $ from "jquery"
 import {io} from "socket.io-client";
-const socket = io();
+const socket = io("ws://thevillage.lagardedev.fr:9000");
 import {Partie} from "../entity/Partie";
 
 const join = $("#join")
