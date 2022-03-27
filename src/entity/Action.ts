@@ -1,6 +1,7 @@
 import {ActionType} from "./types/ActionType";
 import {getRepository} from "typeorm";
 import {Player} from "./Displayables/Props/Player";
+import {User} from "./User";
 
 export class Action {
     maker: number; //The id of the guy who did the action (0 if it is the village)
@@ -36,19 +37,19 @@ export class Action {
     }
 
     async toString() {
-        const victim = this.victim === 0 ? {name: ""} : (await getRepository(Player).findOne({pid: this.victim}));
-        const maker = this.maker === 0 ? {name: ""} : (await getRepository(Player).findOne({pid: this.maker}));
+        const victim = this.victim !== 0 ? (await getRepository(User).findOne(this.victim)) : {pseudo: ""};
+        const maker = this.maker === 0 ? {pseudo: ""} : (await getRepository(User).findOne(this.maker));
         switch (this.type) {
             case ActionType.EXPELLED:
-                return `${this.getDate()} Le village a éliminé ${victim.name}`;
+                return `${this.getDate()} Le village a éliminé ${victim.pseudo}`;
             case ActionType.DRINK:
-                return `${this.getDate()} ${maker.name} a bu une poche de sang`;
+                return `${this.getDate()} ${maker.pseudo} a bu une poche de sang`;
             case ActionType.KILL:
-                return `${this.getDate()} ${maker.name} a tué ${victim.name}`;
+                return `${this.getDate()} ${maker.pseudo} a tué ${victim.pseudo}`;
             case ActionType.REVEAL:
-                return `${this.getDate()} ${maker.name} a révélé le rôle de ${victim.name}`;
+                return `${this.getDate()} ${maker.pseudo} a révélé le rôle de ${victim.pseudo}`;
             case ActionType.REVIVE:
-                return `${this.getDate()} ${maker.name} a ressuscité ${victim.name}`;
+                return `${this.getDate()} ${maker.pseudo} a ressuscité ${victim.pseudo}`;
         }
     }
 }

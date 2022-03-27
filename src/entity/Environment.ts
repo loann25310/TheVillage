@@ -31,7 +31,6 @@ export class Environment {
     doneInteractions: Displayable[];
     possibleInteractions: Displayable[];
     hitBoxes: Displayable[][][];
-    static readonly NB_TASK_PER_DAY = 2;
 
     constructor() {
         this.layers = [];
@@ -239,6 +238,7 @@ export class Environment {
     }
 
     initNight() {
+        console.log(this.possibleInteractions);
         if (this.possibleInteractions.length <= 0) return;
         if (this.possibleInteractions[0].name === "blood") {
             const nb = Partie.NB_TASKS_PER_DAY * 3;

@@ -287,7 +287,7 @@ async function init(){
     });
 
     socket.on("tasks", (tasks: {id: number, tasks: string[]}) => {
-        console.log(tasks);
+        if (player.role === Roles.LoupGarou) return;
 
         environment.possibleInteractions.push(...environment.interactions);
         environment.interactions = [];
@@ -298,6 +298,14 @@ async function init(){
             if (index === -1) return;
             environment.interactions.push(environment.possibleInteractions.splice(index, 1)[0]);
         });
+    });
+
+    socket.on("victoire", camp => {
+        displayVictory(camp);
+    });
+
+    socket.on("history", (history) => {
+        $("history").html(history);
     });
 
     for (const o of player.environment.interactions) {
@@ -349,13 +357,10 @@ async function init(){
         });
     });
 }
-init().then(() => {
-    console.log(player.pid);
-});
+init().then();
 function draw() {
     requestAnimationFrame(draw);
     if (!player.alive) player.image = player.getImg.next().value as HTMLImageElement;
-    player.getImg
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -382,7 +387,7 @@ window.addEventListener("resize", () => {
     }
     environment.setCord({x: environment.origine.x - diff.w / 2, y: environment.origine.y - diff.h / 2});
 });
-setInterval(() => {
+const moveInterval = setInterval(() => {
     let shift = keys["KEY_SHIFT"] === true;
 
     if (keys["KEY_E"] && !HUD.miniJeu && player.objectInteract !== null) {
@@ -522,4 +527,22 @@ function create_players(players) {
         if (players[i].avatar.startsWith("#"))
             avatar.css("background-color", players[i].avatar);
     }
+}
+
+function endGame() {
+    clearInterval(moveInterval);
+    keys.fill(false);
+}
+
+/**
+ *
+ * @param camp
+ * true if the Villagers won
+ * false if the Werewolves won
+ */
+function displayVictory(camp) {
+    endGame();
+    $("#endGame").show(0.3);
+    $("#endGameTitle").text(`VICTOIRE : ${camp ? "VILLAGEOIS" : "LOUPS GAROUS"}`);
+    socket.emit("history");
 }

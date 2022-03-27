@@ -18,7 +18,7 @@ export enum PartieStatus {
 @Entity()
 export class Partie {
 
-    public static readonly NB_JOUEURS_MIN = 7;
+    public static readonly NB_JOUEURS_MIN = 5;
     public static readonly NB_TASKS_PER_DAY = 2;
 
     @PrimaryColumn()
@@ -201,12 +201,33 @@ export class Partie {
         if (!this.inGamePlayers.includes(id)) return;
         if (this.deadPlayers.includes(id)) return;
         this.deadPlayers.push(id);
-
     }
 
     revive(id: number) {
         const index = this.deadPlayers.findIndex(pid => pid === id);
         if (index === -1) return;
         this.deadPlayers.splice(index, 1);
+    }
+
+    /**
+     * Checks for a victory :
+     * @returns - `null` if no one wins (yet) |
+     * @returns - `true` if the Villagers win |
+     * @returns - `false` if the WereWolves win.
+     */
+    victoire(): null | boolean {
+        const alive = this.inGamePlayers.filter(p => !this.deadPlayers.includes(p));
+        let camp;
+        for (const player of alive) {
+            if (!camp) camp = this.roles.find(p => p.uid === player).role === Roles.LoupGarou;
+            else {
+                //Si au moins 2 personnes ne sont pas dans le même camp
+                if ((this.roles.find(p => p.uid === player).role === Roles.LoupGarou) !== camp) {
+                    return null;
+                }
+            }
+        }
+        // Tout le monde est dans le même camp, victoire d'un des camps
+        return !camp;
     }
 }

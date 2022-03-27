@@ -150,8 +150,13 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                     partie.addAction(data.data.maker, data.data.revive ? ActionType.REVIVE : ActionType.KILL, data.data.player);
                     if (data.data.revive)
                         partie.revive(data.data.player);
-                    else
+                    else {
                         partie.kill(data.data.player);
+                        let gagnant = partie.victoire();
+                        if (gagnant !== null) {
+                            return io.to(partie.id).emit("victoire", gagnant);
+                        }
+                    }
                     return io.to(partie.id).emit(data.data.revive ? "revive" : "kill", data.data.player);
                 case Roles.Voyante:
                     partie.addAction(data.data.maker,ActionType.REVEAL, data.data.player);
@@ -160,6 +165,10 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 case Roles.LoupGarou:
                     partie.addAction(data.data.maker, ActionType.KILL, data.data.player);
                     partie.kill(data.data.player);
+                    let gagnant = partie.victoire();
+                    if (gagnant !== null) {
+                        return io.to(partie.id).emit("victoire", gagnant);
+                    }
                     return io.to(partie.id).emit("kill", data.data.player);
             }
         });
@@ -172,9 +181,9 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
 
         socket.on("task_completed",  (id, name) => {
             if (!partie) return;
-            const index = partie.idTasks[id].tasks.findIndex(p => p === name);
+            const index = partie.idTasks.find(p => p.id === id).tasks.findIndex(p => p === name);
             if (index === -1) return;
-            partie.idTasks[id].tasks.splice(index, 1);
+            partie.idTasks.find(p => p.id === id).tasks.splice(index, 1);
 
             let compteur = 0;
             partie.idTasks.forEach(t => compteur += t.tasks.length);
@@ -220,13 +229,17 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 io.to(partie.id).emit("kill", index);
                 partie.kill(partie.players[index-1]);
                 partie.addAction(0, ActionType.EXPELLED, partie.players[index-1]); //todo verify victim (thibaut si tu passes par là)
+                let gagnant = partie.victoire();
+                if (gagnant !== null) {
+                    return io.to(partie.id).emit("victoire", gagnant);
+                }
                 partie.generateTasks();
                 io.to(partie.id).emit("NIGHT");
             }
         });
 
         socket.on("history", async () => {
-            io.to(partie.id).emit("history", await partie?.getHistory());
+            socket.emit("history", await partie?.getHistory());
         });
     });
 }
