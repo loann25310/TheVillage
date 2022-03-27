@@ -215,7 +215,7 @@ export class Partie {
      * @returns - `true` if the Villagers win |
      * @returns - `false` if the WereWolves win.
      */
-    victoire(): null | boolean {
+    async victoire(): Promise<null | boolean> {
         const alive = this.inGamePlayers.filter(p => !this.deadPlayers.includes(p));
         let camp;
         for (const player of alive) {
@@ -228,6 +228,8 @@ export class Partie {
             }
         }
         // Tout le monde est dans le même camp, victoire d'un des camps
+        this.status = PartieStatus.ENDED;
+        await getRepository(Partie).save(this);
         return !camp;
     }
 }

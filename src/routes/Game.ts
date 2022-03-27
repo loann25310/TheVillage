@@ -143,7 +143,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             });
         });
 
-        socket.on("action", (data) => {
+        socket.on("action", async (data) => {
             if (!partie) return;
             switch (data.role) {
                 case Roles.Sorciere:
@@ -152,7 +152,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                         partie.revive(data.data.player);
                     else {
                         partie.kill(data.data.player);
-                        let gagnant = partie.victoire();
+                        let gagnant = await partie.victoire();
                         if (gagnant !== null) {
                             return io.to(partie.id).emit("victoire", gagnant);
                         }
@@ -165,7 +165,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 case Roles.LoupGarou:
                     partie.addAction(data.data.maker, ActionType.KILL, data.data.player);
                     partie.kill(data.data.player);
-                    let gagnant = partie.victoire();
+                    let gagnant = await partie.victoire();
                     if (gagnant !== null) {
                         return io.to(partie.id).emit("victoire", gagnant);
                     }
@@ -210,7 +210,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             console.log("RESET VOTES");
         });
 
-        socket.on("aVote", (id) => {
+        socket.on("aVote", async (id) => {
             compteurVotes ++;
             votes[id] ++;
             let max = 0;
@@ -229,7 +229,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 io.to(partie.id).emit("kill", index);
                 partie.kill(partie.players[index-1]);
                 partie.addAction(0, ActionType.EXPELLED, partie.players[index-1]); //todo verify victim (thibaut si tu passes par là)
-                let gagnant = partie.victoire();
+                let gagnant = await partie.victoire();
                 if (gagnant !== null) {
                     return io.to(partie.id).emit("victoire", gagnant);
                 }
