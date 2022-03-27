@@ -1,10 +1,5 @@
 import {Displayable} from "./Displayable";
 import {Player} from "./Props/Player";
-import {Box} from "./Props/Box";
-import {PineTree} from "./Props/PineTree";
-import {HayBale} from "./Props/HayBale";
-import {Tree} from "./Props/Tree";
-import {House} from "./Props/House";
 import {Task} from "../Task";
 
 export class HUD extends Displayable {
@@ -42,9 +37,11 @@ export class HUD extends Displayable {
         const tasks: Task[] = [];
 
         for (const interaction of this.player.environment.interactions) {
+            if (!interaction) continue;
             tasks.push(Task.fromDisplayable(interaction));
         }
         for (const interaction of this.player.environment.doneInteractions) {
+            if (!interaction) continue;
             let task = Task.fromDisplayable(interaction);
             task.done = true;
             tasks.push(task);
@@ -102,6 +99,39 @@ export class HUD extends Displayable {
             ctx.fillText(`[F] pour ACTION sur ${this.player.playerForAction.pid}`, window.innerWidth / 2, window.innerHeight - 500);
         }
 
+        if (HUD.miniJeu) return;
+        for (const inter of this.environment.interactions) {
+            ctx.save();
+            ctx.beginPath();
+            let x = 0;
+            let y = 0;
+
+            //négatif si l'objet est à gauche
+            const grande_distance_x = inter.cord.x - this.player.getPosition().x;
+            //négatif si l'objet est au-dessus
+            const grande_distance_y = inter.cord.y - this.player.getPosition().y;
+
+            //L'objet est sur l'écran
+            if (Math.abs(grande_distance_x) < window.innerWidth / 2 && Math.abs(grande_distance_y) < window.innerHeight / 2) {
+                x = inter.getPosition().x + inter.size.w / 2 - 25;
+                y = inter.getPosition().y - 50;
+            } else {
+                //L'objet n'est pas sur l'écran
+                const angle = Math.atan(grande_distance_y / grande_distance_x);
+               //L'objet est soit à droite soit à gauche
+
+                x = Math.max(Math.min(inter.getPosition().x, this.player.getDrawnPosition().x + window.innerWidth / 2 - 70), this.player.getDrawnPosition().x - window.innerWidth / 2 + 70);
+                y = Math.max(Math.min(inter.getPosition().y, this.player.getDrawnPosition().y + window.innerHeight / 2 - 70), this.player.getDrawnPosition().y - window.innerHeight / 2 + 70);
+                ctx.translate(x, y);
+                x = 0;
+                y = 0;
+                ctx.rotate(angle);
+            }
+
+            ctx.fillStyle = "red";
+            ctx.fillRect(x, y, 50, 20);
+            ctx.restore();
+        }
     }
 
     private setupEventHandlers() {
