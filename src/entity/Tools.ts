@@ -1,4 +1,4 @@
-import {Roles} from "./roles/Roles";
+import {Roles} from "./types/Roles";
 
 export class Tools {
     static generateRandomString(length: number): string {

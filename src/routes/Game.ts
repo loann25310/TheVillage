@@ -5,7 +5,7 @@ import {Partie} from "../entity/Partie";
 import {User} from "../entity/User";
 import * as fs from "fs";
 import * as path from "path";
-import {Roles} from "../entity/roles/Roles";
+import {Roles} from "../entity/types/Roles";
 import {ActionType} from "../entity/types/ActionType";
 
 const passport = require("passport");

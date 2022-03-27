@@ -2,7 +2,7 @@ import {Column, Entity, getRepository, PrimaryColumn} from "typeorm";
 
 import {User} from "./User";
 import {Map} from "./Map";
-import {Roles} from "./roles/Roles";
+import {Roles} from "./types/Roles";
 import {Action} from "./Action";
 import {ActionType} from "./types/ActionType";
 import {ObjectType} from "./types/ObjectType";
@@ -183,7 +183,7 @@ export class Partie {
 
     generateTasks() {
         this.idTasks = [];
-        for (const id of this.deadPlayers.length === 0 ? this.players : this.inGamePlayers) {
+        for (const id of this.players) {
             if (this.deadPlayers.includes(id)) continue;
             if (this.roles.find(p => p.uid === id).role === Roles.LoupGarou) this.idTasks.push({id, tasks: []});
             else {
@@ -193,7 +193,6 @@ export class Partie {
                     tasks.push(possibleTasks.splice(Math.floor(Math.random() * possibleTasks.length), 1)[0]);
                 }
                 this.idTasks.push({id, tasks});
-                console.log(this.idTasks);
             }
         }
     }
@@ -202,6 +201,7 @@ export class Partie {
         if (!this.inGamePlayers.includes(id)) return;
         if (this.deadPlayers.includes(id)) return;
         this.deadPlayers.push(id);
+
     }
 
     revive(id: number) {

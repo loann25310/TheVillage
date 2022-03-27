@@ -1,7 +1,7 @@
 import {Player} from "../Displayables/Props/Player";
 import {Coordinate} from "../types/Coordinate";
 import {Blood} from "../Displayables/Props/Blood";
-import {Roles} from "./Roles";
+import {Roles} from "../types/Roles";
 
 export class LoupGarou extends Player {
     static readonly NB_POCHE_KILL = 1;

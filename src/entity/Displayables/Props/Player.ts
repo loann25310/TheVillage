@@ -2,7 +2,7 @@ import {Displayable} from "../Displayable";
 import {PlayerMove} from "../../types/PlayerMove";
 import {Coordinate} from "../../types/Coordinate";
 import {Map} from "../../Map";
-import {Roles} from "../../roles/Roles";
+import {Roles} from "../../types/Roles";
 import {Tools} from "../../Tools";
 import {ObjectType} from "../../types/ObjectType";
 

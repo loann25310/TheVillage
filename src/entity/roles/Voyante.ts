@@ -1,6 +1,6 @@
 import {Player} from "../Displayables/Props/Player";
 import {Coordinate} from "../types/Coordinate";
-import {Roles} from "./Roles";
+import {Roles} from "../types/Roles";
 
 export class Voyante extends Player {
     public static readonly NB_BOULES_CRISTAL = 50;

@@ -1,6 +1,6 @@
 import {Player} from "../Displayables/Props/Player";
 import {Coordinate} from "../types/Coordinate";
-import {Roles} from "./Roles";
+import {Roles} from "../types/Roles";
 
 export class Chasseur extends Player {
     public hasShot: boolean;

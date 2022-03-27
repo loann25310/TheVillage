@@ -10,7 +10,7 @@ import {User} from "../entity/User";
 import {Coordinate} from "../entity/types/Coordinate";
 import {Villageois} from "../entity/roles/Villageois";
 import {Map} from "../entity/Map";
-import {Roles} from "../entity/roles/Roles";
+import {Roles} from "../entity/types/Roles";
 import {Chasseur} from "../entity/roles/Chasseur";
 import {Sorciere} from "../entity/roles/Sorciere";
 import {Voyante} from "../entity/roles/Voyante";

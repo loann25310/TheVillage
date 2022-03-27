@@ -2,7 +2,7 @@ import {Displayable} from "../Displayable";
 import {Coordinate} from "../../types/Coordinate";
 import {Size} from "../../types/Size";
 import {Player} from "./Player";
-import {Roles} from "../../roles/Roles";
+import {Roles} from "../../types/Roles";
 import {LoupGarou} from "../../roles/LoupGarou";
 
 export class Blood extends Displayable {
