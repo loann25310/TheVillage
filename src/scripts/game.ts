@@ -432,7 +432,7 @@ const moveInterval = setInterval(() => {
     $('.getDrawnPosition').text(`{ x: ${player.getDrawnPosition().x}, y: ${player.getDrawnPosition().y} }`);
 }, 1);
 
-
+/*
 $(document).on("keydown", function (e) {
     if (e.code === "KeyN") {
         night = !night;
@@ -452,7 +452,7 @@ $(document).on("keydown", function (e) {
         player.alive = !player.alive;
         console.log(player.alive);
     }
-});
+});*/
 
 
 function sendMessage() {
