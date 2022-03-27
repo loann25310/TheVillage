@@ -8,7 +8,7 @@ import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
 import '../entity/Tools';
 import {Tools} from "../entity/Tools";
-const socket = io();
+const socket = io("ws://thevillage.lagardedev.fr:9000");
 Chart.register(...registerables);
 
 

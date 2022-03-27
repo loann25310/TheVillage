@@ -30,7 +30,7 @@ const numeroJoueur = _numeroJoueur as number;
 //@ts-ignore
 const LG = _LG as number[];
 
-const socket = io();
+const socket = io("ws://thevillage.lagardedev.fr:9000");
 const OTHER_PLAYERS: Player[] = [];
 
 function getPlayerById(id: number): Player {
