@@ -171,7 +171,7 @@ export class Partie {
      * Returns an HTML string containing every action done during the game as a list
      */
     async getHistory(): Promise<string> {
-        if (!this.actions) return null;
+        if (!this.actions) return "<div>Error : impossible to read the history</div>";
         let html = "<ul>";
         for (const a of this.actions) {
             let li = `<li style="color: ${a.color}">`;
