@@ -125,7 +125,7 @@ export class HUD extends Displayable {
                 let angle = Math.atan(grande_distance_y / grande_distance_x);
 
                 x = Math.max(Math.min(inter.getPosition().x, this.player.getDrawnPosition().x + window.innerWidth / 2 - 70), this.player.getDrawnPosition().x - window.innerWidth / 2 + 70);
-                y = Math.max(Math.min(inter.getPosition().y, this.player.getDrawnPosition().y + window.innerHeight / 2 - 70), this.player.getDrawnPosition().y - window.innerHeight / 2 + 70);
+                y = Math.max(Math.min(inter.getPosition().y, this.player.getDrawnPosition().y + window.innerHeight / 2 - 70), this.player.getDrawnPosition().y - window.innerHeight / 2 + 140);
 
                 if (x <= (window.innerWidth / 2)) angle += Math.PI;
                 ctx.translate(x, y);
