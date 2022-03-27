@@ -9,7 +9,7 @@ export class HUD extends Displayable {
     player: Player;
 
     actionImage: HTMLImageElement;
-
+    fleche: HTMLImageElement;
     static readonly actionButtonSize = 100;
 
     static miniJeu: boolean;
@@ -23,6 +23,9 @@ export class HUD extends Displayable {
 
         this.actionImage = document.createElement("img");
         this.actionImage.src = "/img/action.png";
+
+        this.fleche = document.createElement("img");
+        this.fleche.src = `/img/fleche.png`;
 
         this.setupEventHandlers();
     }
@@ -101,8 +104,6 @@ export class HUD extends Displayable {
 
         if (HUD.miniJeu) return;
         for (const inter of this.environment.interactions) {
-            ctx.save();
-            ctx.beginPath();
             let x = 0;
             let y = 0;
 
@@ -113,24 +114,28 @@ export class HUD extends Displayable {
 
             //L'objet est sur l'écran
             if (Math.abs(grande_distance_x) < window.innerWidth / 2 && Math.abs(grande_distance_y) < window.innerHeight / 2) {
-                x = inter.getPosition().x + inter.size.w / 2 - 25;
+                x = inter.getPosition().x + inter.size.w / 2 - 10;
                 y = inter.getPosition().y - 50;
+                ctx.drawImage(this.fleche, x, y, 50, 50);
+                return;
             } else {
+                ctx.save();
+                ctx.beginPath();
                 //L'objet n'est pas sur l'écran
-                const angle = Math.atan(grande_distance_y / grande_distance_x);
-               //L'objet est soit à droite soit à gauche
+                let angle = Math.atan(grande_distance_y / grande_distance_x);
 
                 x = Math.max(Math.min(inter.getPosition().x, this.player.getDrawnPosition().x + window.innerWidth / 2 - 70), this.player.getDrawnPosition().x - window.innerWidth / 2 + 70);
                 y = Math.max(Math.min(inter.getPosition().y, this.player.getDrawnPosition().y + window.innerHeight / 2 - 70), this.player.getDrawnPosition().y - window.innerHeight / 2 + 70);
+
+                if (x <= (window.innerWidth / 2)) angle += Math.PI;
                 ctx.translate(x, y);
                 x = 0;
                 y = 0;
-                ctx.rotate(angle);
-            }
+                ctx.rotate(angle - Math.PI / 2);
+                ctx.drawImage(this.fleche, x, y,50, 50);
 
-            ctx.fillStyle = "red";
-            ctx.fillRect(x, y, 50, 20);
-            ctx.restore();
+                ctx.restore();
+            }
         }
     }
 
