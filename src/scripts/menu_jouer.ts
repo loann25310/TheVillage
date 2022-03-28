@@ -1,8 +1,5 @@
-import * as $ from "jquery"
+import * as $ from "jquery";
 import { io } from "socket.io-client";
-import {color} from "chart.js/helpers";
-
-import {Partie} from "../entity/Partie";
 
 const socket = io();
 const play = $("#play");
@@ -18,8 +15,8 @@ play.on("click", function (){
     if (is_searching_room){
         socket.emit("ask_room", uid);
     }
+});
 
-})
 createGame.on("click", function (){
     is_searching_room = !is_searching_room;
     if (is_searching_room){
@@ -36,25 +33,23 @@ socket.on("room_found", (roomId) => {
 
     if (is_searching_room)
         window.location.href = `/lobby/${roomId}`;
-})
+});
 socket.on("room_showing",(party)=>{
     showParties.css({
         'display':'flex',
         'flex-direction':'column',
         'justify-content':'space-around'
-    })
+    });
     party.forEach(function (arrayItem) {
         const x = arrayItem.id;
-        const inPartyPlayers = arrayItem.players.length - 1;
+        const inPartyPlayers = arrayItem.players.length;
         const gameCapacity = arrayItem.nbJoueursMax;
-        let value = "";
-        value += x +  " " + inPartyPlayers;
-        value += "/" + gameCapacity;
+        const value = `${x} ${inPartyPlayers}/${gameCapacity}`;
         const button= $('<input type="button" value="" class="games_list" style="margin-top: 5px; display: block"/>');
-        button.attr("value",value)
+        button.attr("value",value);
         button.on("click", function (){
-            window.location.href=`/lobby/${x}`
+            window.location.href=`/lobby/${x}`;
         });
         showParties.append(button);
     });
-})
+});

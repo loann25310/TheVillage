@@ -90,6 +90,9 @@ export async function disconnect(uid, io) {
 }
 export async function show_Room(){
     return await gameRepo.find({
-        publique: true,
+        where: {
+            publique: true,
+            status: `${PartieStatus.WAIT_USERS}`
+        }
     });
 }
