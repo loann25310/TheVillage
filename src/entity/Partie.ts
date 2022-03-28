@@ -216,9 +216,9 @@ export class Partie {
      */
     async victoire(): Promise<null | boolean> {
         const alive = this.inGamePlayers.filter(p => !this.deadPlayers.includes(p));
-        let camp;
+        let camp = null;
         for (const player of alive) {
-            if (!camp) camp = this.roles.find(p => p.uid === player).role === Roles.LoupGarou;
+            if (camp === null) camp = this.roles.find(p => p.uid === player).role === Roles.LoupGarou;
             else {
                 //Si au moins 2 personnes ne sont pas dans le même camp
                 if ((this.roles.find(p => p.uid === player).role === Roles.LoupGarou) !== camp) {

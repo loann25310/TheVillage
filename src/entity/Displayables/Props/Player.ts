@@ -29,7 +29,7 @@ export abstract class Player extends Displayable {
     public isLocal;
     pid: number;
     public objectInteract: Displayable = null;
-    private getImg;
+    getImg;
     public goesRight: boolean;
     hasAction: boolean;
     alive: boolean;
@@ -354,7 +354,7 @@ export abstract class Player extends Displayable {
             clearTimeout(this.sliders[0]);
             this.sliders.splice(0, 1);
         }
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             let delta = {
                 x: (coordonnes.x - this.x) / duration,
                 y: (coordonnes.y - this.y) / duration

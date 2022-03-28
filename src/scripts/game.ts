@@ -93,7 +93,7 @@ Player.deadimgR4.src = `/img/dead4R.png`;
 let ghostimg = document.createElement("img");
 ghostimg.src = `/img/fantome.png`;
 
-let player;
+let player: Player;
 switch (role) {
     case Roles.Chasseur :
         player = new Chasseur(ctx, environment, {
@@ -247,7 +247,7 @@ async function init(){
             }
         }
 
-        player.nb_boules --;
+        (player as Voyante).nb_boules --;
     });
 
     socket.on("drink", pos => {
