@@ -143,6 +143,7 @@ document.body.onload = ()=>{
     (change_max_players[0] as HTMLInputElement).value = game.nbJoueursMax;
     addBans(game.bans);
     socket.emit("new_guy", uid, roomName);
+    create_players(players);
     $("#nbJoueursMin").text(Partie.NB_JOUEURS_MIN);
     socket.emit('get_game_master', roomName);
     dureeVote.find("option").each((index, element)=>{
