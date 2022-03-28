@@ -90,7 +90,6 @@ socket.on("players", function (p){
 socket.on("change_max_players", max_players => {
     maxPlayers.text(`${max_players}`);
     game.nbJoueursMax = max_players;
-    change_max_players.val(max_players);
 });
 
 socket.on("duree_vote", (duree) => {
@@ -115,26 +114,24 @@ socket.on("duree_nuit", (duree) => {
 
 socket.on("start_game", () => {
     window.location.replace("/play/" + game.id);
-})
+});
 
 socket.on("ban", (id, bans) => {
-    if (id === game.gameMaster) return;
     sendMessageBan(id);
     if (id === uid) return location.replace("/?banned=1");
     addBans(bans);
 });
 
 socket.on("unban", function(player, bans) {
-    if (uid !== game.gameMaster) return;
     sendUnbanMessage(player);
     addBans(bans);
-})
+});
 
 socket.on("game_master", (id) => {
     game.gameMaster = id;
     (fieldset[0] as HTMLFieldSetElement).disabled = uid !== id;
     create_players(players);
-})
+});
 
 document.body.onload = ()=>{
     document.title = `The Village - ${game.id}`;
@@ -146,7 +143,6 @@ document.body.onload = ()=>{
     (change_max_players[0] as HTMLInputElement).value = game.nbJoueursMax;
     addBans(game.bans);
     socket.emit("new_guy", uid, roomName);
-    create_players(players);
     $("#nbJoueursMin").text(Partie.NB_JOUEURS_MIN);
     socket.emit('get_game_master', roomName);
     dureeVote.find("option").each((index, element)=>{
@@ -154,7 +150,7 @@ document.body.onload = ()=>{
             (element as HTMLOptionElement).selected = true;
             return;
         }
-    })
+    });
     nuit.find("option").each((index, element) => {
         if (+(element.value) === +game.dureeNuit){
             (element as HTMLOptionElement).selected = true;
