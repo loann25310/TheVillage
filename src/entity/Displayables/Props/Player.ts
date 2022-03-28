@@ -86,14 +86,14 @@ export abstract class Player extends Displayable {
         super.update();
     }
 
-    move(type: PlayerMove, sprint: boolean, check=true) {
+    move(type: PlayerMove, sprint: boolean, diff, check=true) {
         if (!this.alive && !this.ghost) return;
         let antiMovement;
         let altMovement1;
         let altMovement2;
         this.image = this.getImg.next().value as HTMLImageElement;
-        let pixelSprint = 4;
-        let pixelNoSprint = 1;
+        let pixelSprint = Math.round(0.6 * diff);
+        let pixelNoSprint = Math.round(0.2 * diff);
         let condition = (sprint) ? pixelSprint : pixelNoSprint;
         switch (type) {
             case PlayerMove.moveN:
@@ -159,9 +159,9 @@ export abstract class Player extends Displayable {
             let hits = this.environment.getHitBox(this.getPosition(), this.size);
             for (const o of hits) {
                 if (this.hit(o)) {
-                    this.move(antiMovement, sprint, false);
-                    this.move(altMovement1, sprint, true);
-                    this.move(altMovement2, sprint, true);
+                    this.move(antiMovement, sprint, diff,false);
+                    this.move(altMovement1, sprint, diff,true);
+                    this.move(altMovement2, sprint, diff,true);
                     break;
                 }
             }

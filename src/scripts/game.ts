@@ -34,6 +34,7 @@ const socket = io(`${window.location.protocol === "https" ? "wss" : "ws"}://${wi
 
 // @ts-ignore
 let game = _game, players = _players;
+let last_ms;
 
 let roomName = `${game.id}`,
     messages = $('#messages'),
@@ -396,7 +397,11 @@ window.addEventListener("resize", () => {
     environment.setCord({x: environment.origine.x - diff.w / 2, y: environment.origine.y - diff.h / 2});
 });
 const moveInterval = setInterval(() => {
-    let shift = keys["KEY_SHIFT"] === true;
+    const ms = new Date().getMilliseconds();
+    let diff = ms - last_ms;
+    if (diff < 0) diff += 1000;
+    last_ms = ms;
+    const shift = keys["KEY_SHIFT"] === true;
 
     if (keys["KEY_E"] && !HUD.miniJeu && player.objectInteract !== null) {
         HUD.miniJeu = true;
@@ -414,23 +419,21 @@ const moveInterval = setInterval(() => {
     const right = keys["KEY_D"] || keys["KEY_ARROWRIGHT"];
 
     if((up && !right && !down && !left) || (up && right && !down && left))
-        player.move(PlayerMove.moveN, shift);
+        player.move(PlayerMove.moveN, shift, diff);
     if(up && right && !down && !left)
-        player.move(PlayerMove.moveNE, shift);
+        player.move(PlayerMove.moveNE, shift, diff);
     if((!up && right && !down && !left) || (up && right && down && !left))
-        player.move(PlayerMove.moveE, shift);
+        player.move(PlayerMove.moveE, shift, diff);
     if(!up && right && down && !left)
-        player.move(PlayerMove.moveSE, shift);
+        player.move(PlayerMove.moveSE, shift, diff);
     if((!up && !right && down && !left) || (!up && right && down && left))
-        player.move(PlayerMove.moveS, shift);
+        player.move(PlayerMove.moveS, shift, diff);
     if(!up && !right && down && left)
-        player.move(PlayerMove.moveSW, shift);
+        player.move(PlayerMove.moveSW, shift, diff);
     if((!up && !right && !down && left) || (up && !right && down && left))
-        player.move(PlayerMove.moveW, shift);
+        player.move(PlayerMove.moveW, shift, diff);
     if(up && !right && !down && left)
-        player.move(PlayerMove.moveNW, shift);
-    $('.getPosition').text(`{ x: ${player.getPosition().x}, y: ${player.getPosition().y} }`);
-    $('.getDrawnPosition').text(`{ x: ${player.getDrawnPosition().x}, y: ${player.getDrawnPosition().y} }`);
+        player.move(PlayerMove.moveNW, shift, diff);
 }, 1);
 
 /*
