@@ -208,7 +208,7 @@ async function init(){
         if(!remotePlayer) remotePlayer = addRemotePlayer(data);
         //remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
         //remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
-        remotePlayer.slideTo(data.position, MOVE_ANTISPAM_DURATION).then(() => {
+        remotePlayer.slideTo(data.position, player, MOVE_ANTISPAM_DURATION).then(() => {
             player.updateDistance(data.id);
         });
     });

@@ -38,6 +38,7 @@ export abstract class Player extends Displayable {
     distancePlayers: {player: Player, distance: number}[];
     abstract DISTANCE_FOR_ACTION: number;
     playerForAction: Player;
+    private readonly sliders: NodeJS.Timer[];
 
     public x;
     public y;
@@ -59,6 +60,7 @@ export abstract class Player extends Displayable {
         this.distancePlayers = [];
         this.playerForAction = null;
         this.initSpawn(map, index);
+        this.sliders = [];
     }
 
     initSpawn(map: Map, index) {
@@ -344,23 +346,30 @@ export abstract class Player extends Displayable {
             this.emit("action_unavailable");
     }
 
-    slideTo(coordonnes: Coordinate, duration: number = 50): Promise<Coordinate> {
+    slideTo(coordonnes: Coordinate, player: Player, duration: number = 50): Promise<Coordinate> {
+        if (this.sliders.length > 0) {
+            player.updateDistance(this.pid);
+        }
+        while (this.sliders.length > 0) {
+            clearTimeout(this.sliders[0]);
+            this.sliders.splice(0, 1);
+        }
         return new Promise((resolve, reject) => {
             let delta = {
                 x: (coordonnes.x - this.x) / duration,
                 y: (coordonnes.y - this.y) / duration
             };
             for (let i = 1; i < duration; i++) {
-                setTimeout(() => {
+                this.sliders.push(setTimeout(() => {
                     this.x += delta.x;
                     this.y += delta.y;
-                }, i);
+                }, i));
             }
-            setTimeout(() => {
+            this.sliders.push(setTimeout(() => {
                 this.x = coordonnes.x;
                 this.y = coordonnes.y;
                 resolve(coordonnes);
-            }, duration);
+            }, duration));
         });
     }
 }
