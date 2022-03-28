@@ -369,6 +369,7 @@ export abstract class Player extends Displayable {
                 this.x = coordonnes.x;
                 this.y = coordonnes.y;
                 resolve(coordonnes);
+                this.sliders.splice(0, this.sliders.length);
             }, duration));
         });
     }
