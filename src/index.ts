@@ -48,10 +48,15 @@ createConnection().then(async connection => {
 
     logger.info("Creating Web Server...");
     const app: Express = express();
-    const httpServer = createServer({
-        key: readFileSync("/etc/letsencrypt/live/thevillage.lagardedev.fr/privkey.pem"),
-        cert: readFileSync("/etc/letsencrypt/live/thevillage.lagardedev.fr/fullchain.pem")
-    }, app);
+    let httpServer;
+    try {
+        const key = readFileSync("/etc/letsencrypt/live/thevillage.lagardedev.fr/privkey.pem");
+        const cert = readFileSync("/etc/letsencrypt/live/thevillage.lagardedev.fr/fullchain.pem");
+        httpServer = createServer({key, cert}, app);
+    } catch (e) {
+        httpServer = http.createServer(app);
+    }
+
     app.use(express.json());
     app.use(express.static(__dirname + '/../public'));
     const env = nunjucks.configure(__dirname + '/templates/', {
