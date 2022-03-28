@@ -8,7 +8,7 @@ import '@fortawesome/fontawesome-free/js/regular';
 import '@fortawesome/fontawesome-free/js/brands';
 import '../entity/Tools';
 import {Tools} from "../entity/Tools";
-const socket = io("wss://thevillage.lagardedev.fr");
+const socket = io(`${window.location.protocol === "https" ? "wss" : "ws"}://${window.location.host}`);
 Chart.register(...registerables);
 
 

@@ -1,8 +1,7 @@
 import "../styles/choix.css"
 import * as $ from "jquery"
 import {io} from "socket.io-client";
-const socket = io("wss://thevillage.lagardedev.fr");
-import {Partie} from "../entity/Partie";
+const socket = io(`${window.location.protocol === "https" ? "wss" : "ws"}://${window.location.host}`);
 
 const join = $("#join")
 const popup = $("#popup")
@@ -10,13 +9,9 @@ const joinbt = $("#popup.bt")
 const btCode = $("#btCode");
 const formCode = $("#formCode");
 let inputCode = $("#inputCode").val();
-
 const validate = $("#validate");
 
-
-
-
-join.click(function() {
+join.on("click", function() {
     popup.css({
         'display': 'grid',
         'color': 'white',
@@ -29,25 +24,18 @@ join.click(function() {
     joinbt.css({
         'height':'20%',
     });
-
-
 });
-btCode.click(function (){
+
+btCode.on("click", function (){
     btCode.css({
         'display':'none',
     });
     formCode.css({
         'display':'block',
-    })
-
-
-
+    });
 });
-validate.click(function (){
+
+validate.on("click",function (){
     inputCode = $("#inputCode").val();
     formCode.attr('action',`/lobby/${inputCode}`);
-})
-
-
-
-
+});
