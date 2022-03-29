@@ -313,7 +313,8 @@ async function init(){
     });
 
     socket.on("history", (history) => {
-        $("history").html(history);
+        $("#history").html(history);
+        canvas.hidden = true;
     });
 
     for (const o of player.environment.interactions) {
