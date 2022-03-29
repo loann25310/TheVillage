@@ -295,6 +295,7 @@ export abstract class Player extends Displayable {
 
     revive() {
         this.alive = true;
+        this.image = this.getImg.next().value as HTMLImageElement;
     }
 
     removeOtherPLayer(player: Player) {
@@ -338,7 +339,7 @@ export abstract class Player extends Displayable {
             }
             const p = this.distancePlayers.splice(indexMin, 1)[0];
             if (!p.player.ghost)
-                arr.push();
+                arr.push(p);
         }
         if (arr.length === 0) return;
         this.distancePlayers = arr;
@@ -362,15 +363,24 @@ export abstract class Player extends Displayable {
                 y: (coordonnes.y - this.y) / duration
             };
             for (let i = 1; i < duration; i++) {
-                this.sliders.push(setTimeout(() => {
-                    this.x += delta.x;
-                    this.y += delta.y;
-                }, i));
+                if (i % 10 === 0) {
+                    this.sliders.push(setTimeout(() => {
+                        this.x += delta.x;
+                        this.y += delta.y;
+                        this.image = this.getImg.next().value as HTMLImageElement;
+                    }, i));
+                } else {
+                    this.sliders.push(setTimeout(() => {
+                        this.x += delta.x;
+                        this.y += delta.y;
+                    }, i));
+                }
             }
             this.sliders.push(setTimeout(() => {
                 this.x = coordonnes.x;
                 this.y = coordonnes.y;
                 resolve(coordonnes);
+                this.image = this.getImg.next().value as HTMLImageElement;
                 this.sliders.splice(0, this.sliders.length);
             }, duration));
         });
