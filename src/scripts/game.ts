@@ -409,8 +409,8 @@ const moveInterval = setInterval(() => {
     }
 
     if (keys["KEY_F"] && HUD.actionPossible) {
-        player.action(player.playerForAction);
         HUD.actionPossible = false;
+        player.action(player.playerForAction);
     }
 
     const up = keys["KEY_Z"] || keys["KEY_ARROWUP"];
@@ -553,7 +553,7 @@ function endGame() {
  */
 function displayVictory(camp) {
     endGame();
-    $("#endGame").show(0.3);
+    $("#endGame")[0].hidden = false;
     $("#endGameTitle").text(`VICTOIRE : ${camp ? "VILLAGEOIS" : "LOUPS GAROUS"}`);
     socket.emit("history");
 }
