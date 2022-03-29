@@ -4,6 +4,7 @@ import {PineTree} from "./Displayables/Props/PineTree";
 import {HayBale} from "./Displayables/Props/HayBale";
 import {House} from "./Displayables/Props/House";
 import {Tree} from "./Displayables/Props/Tree";
+import {Blood} from "./Displayables/Props/Blood";
 
 export class Task {
 
@@ -34,6 +35,8 @@ export class Task {
             case (interaction instanceof Tree):
                 task.text = `Chasser les piafs bleu`;
                 break;
+            case (interaction instanceof Blood):
+                task.text = `Boire la poche de sang`;
         }
         return task;
     }

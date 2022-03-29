@@ -103,6 +103,7 @@ export class HUD extends Displayable {
         }
 
         if (HUD.miniJeu) return;
+        //Affichage des flèches vers les interactions
         for (const inter of this.environment.interactions) {
             let x = 0;
             let y = 0;
