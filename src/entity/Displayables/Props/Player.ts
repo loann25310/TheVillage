@@ -336,7 +336,9 @@ export abstract class Player extends Displayable {
             for (let i = 1; i < this.distancePlayers.length; i++) {
                 if (this.distancePlayers[i].distance < this.distancePlayers[indexMin].distance) indexMin = i;
             }
-            arr.push(this.distancePlayers.splice(indexMin, 1)[0]);
+            const p = this.distancePlayers.splice(indexMin, 1)[0];
+            if (!p.player.ghost)
+                arr.push();
         }
         if (arr.length === 0) return;
         this.distancePlayers = arr;
