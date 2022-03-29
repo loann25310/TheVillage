@@ -187,7 +187,11 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             partie.idTasks.find(p => p.id === id).tasks.splice(index, 1);
 
             let compteur = 0;
-            partie.idTasks.forEach(t => compteur += t.tasks.length);
+            partie.idTasks.forEach(t => {
+                //Ne prends pas en compte les tâches des joueurs morts
+                if (partie.deadPlayers.includes(t.id)) return;
+                compteur += t.tasks.length;
+            });
             io.to(partie.id).emit(compteur > 0 ? "nb_tasks" : "DAY", compteur);
             if (compteur == 0) {
                 compteurVotes = 0;
