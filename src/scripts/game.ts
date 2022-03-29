@@ -274,7 +274,6 @@ async function init(){
             $("#vote").show();
             if (player.alive) voteDisponible = true;
             create_players(players);
-            socket.emit("reset_votes");
             night = false;
         },4000);
     });
@@ -435,28 +434,6 @@ const moveInterval = setInterval(() => {
     if(up && !right && !down && left)
         player.move(PlayerMove.moveNW, shift, diff);
 }, 1);
-
-/*
-$(document).on("keydown", function (e) {
-    if (e.code === "KeyN") {
-        night = !night;
-        if (night) {
-            $("#play").show();
-            $("#vote").hide();
-        }
-        else {
-            $("#play").hide();
-            $("#vote").show();
-            if (player.alive) voteDisponible = true;
-            create_players(players);
-            socket.emit("resetVotes");
-        }
-    }
-    if (e.code === "KeyL") {
-        player.alive = !player.alive;
-        console.log(player.alive);
-    }
-});*/
 
 
 function sendMessage() {

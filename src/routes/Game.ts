@@ -12,6 +12,9 @@ const passport = require("passport");
 
 export function Route(router: Router, io: SocketIOServer, sessionMiddleware: RequestHandler) {
 
+    let votes;
+    let compteurVotes;
+
     router.get('/play/:id', async (req, res) => {
 
         let partie = await getRepository(Partie).findOne(req.params.id);
@@ -96,8 +99,6 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
     }
 
     io.on("connection", (socket) => {
-        let votes;
-        let compteurVotes;
 
         let partie: Partie,
             user: User = socket.request["user"];
@@ -188,6 +189,13 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             let compteur = 0;
             partie.idTasks.forEach(t => compteur += t.tasks.length);
             io.to(partie.id).emit(compteur > 0 ? "nb_tasks" : "DAY", compteur);
+            if (compteur == 0) {
+                compteurVotes = 0;
+                votes = [];
+                for (let i=0; i<partie.players.length;i++) {
+                    votes[i] = 0;
+                }
+            }
         });
 
         socket.on("get_tasks", async (id) => {
@@ -199,33 +207,18 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             socket.emit("tasks", partie.idTasks.find(p => p.id === id));
         });
 
-        socket.on("resetVotes", () => {
-            compteurVotes = 0;
-            votes = [];
-            if(typeof partie !== 'undefined') {
-                for (let i=0; i<partie.players.length;i++) {
-                    votes[i] = 0;
-                }
-            }
-            console.log("RESET VOTES");
-        });
-
         socket.on("aVote", async (id) => {
             compteurVotes ++;
             votes[id] ++;
             let max = 0;
             let index;
-            console.log(compteurVotes);
-            console.log(votes);
-            if (compteurVotes === partie.players.length) {
+            if (compteurVotes === (partie.players.length - partie.deadPlayers.length)) {
                 for (let i = 0; i < votes.length; i++) {
-                    console.log(votes[i]);
                     if (votes[i] > max) {
                         max = votes[i];
                         index = i+1;
                     }
                 }
-                console.log("RIP " + index);
                 io.to(partie.id).emit("kill", index);
                 io.to(partie.id).emit("final_kill");
                 partie.kill(partie.players[index-1]);
