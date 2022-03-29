@@ -362,6 +362,7 @@ export abstract class Player extends Displayable {
                 x: (coordonnes.x - this.x) / duration,
                 y: (coordonnes.y - this.y) / duration
             };
+            this.goesRight = delta.x > 0;
             for (let i = 1; i < duration; i++) {
                 if (i % 10 === 0) {
                     this.sliders.push(setTimeout(() => {
