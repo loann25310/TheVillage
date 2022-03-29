@@ -282,6 +282,7 @@ async function init(){
         let anim = $("#anim_night");
         $("#vote").hide();
         anim.show();
+        socket.emit("get_tasks", player.pid);
         setTimeout(()=> {
             anim.hide();
             $("#play").show();
