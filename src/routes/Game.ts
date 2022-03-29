@@ -15,11 +15,11 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
     let votes;
     let compteurVotes;
 
-    router.get('/play/:id', async (req, res) => {
+    router.get('/play/:id', async (req, res, next) => {
 
         let partie = await getRepository(Partie).findOne(req.params.id);
 
-        if(!partie) return res.sendStatus(404);
+        if(!partie) return next();
         const user = req.user as User;
         let role = (partie.roles.filter(p => p.uid === user.id))[0]?.role;
         if (!role) role = Roles.Villageois;
