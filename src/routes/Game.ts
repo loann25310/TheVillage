@@ -1,7 +1,7 @@
 import {RequestHandler, Router} from "express";
 import {Server as SocketIOServer} from "socket.io";
 import {getRepository} from "typeorm";
-import {Partie} from "../entity/Partie";
+import {Partie, PartieStatus} from "../entity/Partie";
 import {User} from "../entity/User";
 import * as fs from "fs";
 import * as path from "path";
@@ -20,6 +20,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         let partie = await getRepository(Partie).findOne(req.params.id);
 
         if(!partie) return next();
+        if (partie.status === PartieStatus.ENDED) return res.redirect("/");
         const user = req.user as User;
         let role = (partie.roles.filter(p => p.uid === user.id))[0]?.role;
         if (!role) role = Roles.Villageois;
