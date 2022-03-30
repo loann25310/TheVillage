@@ -1,7 +1,7 @@
 import * as $ from "jquery";
 import { io } from "socket.io-client";
 
-const socket = io();
+const socket = io(`${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}`);
 const play = $("#play");
 const createGame = $("#createGame");
 const uid = +($('#uid').text());
