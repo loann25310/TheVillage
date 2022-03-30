@@ -562,7 +562,7 @@ function set_player_vote(p) {
          ? `<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt=" "><div id="avatar_${p.pid}" class="avatar"></div>`
          : `<img src="/avatars/${p.avatar}" class="avatar" alt=" ">`;
 
-    let name = $(`<span class="pseudo">${p.id === player.pid ? "<strong>Vous</strong>" : p.pseudo}</span>`);
+    let name = $(`<span class="pseudo">${p.pid === player.pid ? "<strong>Vous</strong>" : p.pseudo}</span>`);
 
     let role;
     p.role = OTHER_PLAYERS.find(player => player.pid === p.pid)?.role;

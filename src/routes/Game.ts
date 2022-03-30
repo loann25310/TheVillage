@@ -21,15 +21,15 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         const user = req.user as User;
         if (partie.status > PartieStatus.STARTING) {
             const p = findPartie(partie.id);
-            partie.removeInGamePlayer(user);
             if (p) {
-                if (p.votes.length > 0) {
+                p.removeInGamePlayer(user);
+                if (p.votes?.length > 0) {
                     await p.checkVote(io);
                 }
                 p.kill(user.id);
                 const t = p.idTasks.find(p => p.id === user.id);
-                if (t.tasks.length !== 0) {
-                    if (t) t.tasks = [];
+                if (t && t.tasks.length !== 0) {
+                    t.tasks = [];
                     await p.checkTasks(io);
                 }
                 const winner = await p.victoire();
@@ -37,6 +37,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                     io.to(partie.id).emit("victoire", winner);
                 }
             }
+            else partie.removeInGamePlayer(user);
             return res.redirect("/?err=game_already_started");
         }
         let role = (partie.roles.filter(p => p.uid === user.id))[0]?.role;

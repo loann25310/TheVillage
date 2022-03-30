@@ -115,6 +115,7 @@ export class Partie {
         if(!this.inGamePlayers.includes(user.id))
             return;
         this.inGamePlayers.splice(this.inGamePlayers.indexOf(user.id), 1);
+        this.kill(user.id);
         getRepository(Partie).save(this).then();
     }
 
@@ -248,12 +249,13 @@ export class Partie {
         if (compteur > 0) {
             io.to(this.id).emit("nb_tasks", compteur);
         } else {
-            io.to(this.id).emit("DAY", (await this.getPlayers()).map(p => {return {pid: p.id, avatar: p.avatar, pseudo: p.pseudo}}));
+            io.to(this.id).emit("DAY", (await getRepository(User).findByIds(this.inGamePlayers)).map(p => {return {pid: p.id, avatar: p.avatar, pseudo: p.pseudo}}));
             this.votes = [];
         }
     }
 
     async checkVote(io) {
+        if (!this.votes || !this.players || !this.deadPlayers) return;
         let max = {id: -1, nb_votes: -1};
         let tie = false;
         let compteur = 0;
@@ -265,7 +267,7 @@ export class Partie {
             } else
                 tie = vote.nb_votes === max.nb_votes && vote.id !== max.id;
         }
-        if (compteur >= this.players.length - this.deadPlayers.length) {
+        if (compteur >= this.inGamePlayers.length - this.deadPlayers.length) {
             if (!tie) {
                 this.kill(max.id);
                 this.addAction(0, ActionType.EXPELLED, max.id);

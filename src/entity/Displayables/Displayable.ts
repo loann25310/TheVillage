@@ -88,6 +88,7 @@ export class Displayable {
      * utilisé pour avertir de la fin du mini-jeu
      */
     public miniJeu(player: Player): void {
+        if (!player.alive || player.ghost) return;
         this.player = player;
         this.miniJeuCanvas = document.createElement("canvas");
         this.miniJeuCanvas.width = window.innerWidth;
