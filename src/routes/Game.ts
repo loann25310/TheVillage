@@ -29,6 +29,10 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                     if (t) t.tasks = [];
                     p.checkTasks(io);
                 }
+                const winner = await p.victoire();
+                if (winner !== null) {
+                    io.to(partie.id).emit("victoire", winner);
+                }
             }
             return res.redirect("/?err=game_already_started");
         }
