@@ -89,7 +89,7 @@ export class HUD extends Displayable {
             case Roles.Sorciere:
                 break;
             case Roles.Voyante:
-                ctx.fillText(`Boule(s) de crystal restante(s) : ${(this.player as Voyante).nb_boules}`, 15, canvas.height - 50);
+                ctx.fillText(`Boule(s) de cristal restante(s) : ${(this.player as Voyante).nb_boules}`, 15, canvas.height - 50);
                 break;
         }
 
