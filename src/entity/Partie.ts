@@ -85,6 +85,10 @@ export class Partie {
 
     actions: Action[];
 
+    votes: number[];
+
+    compteurVotes: number;
+
     async getPlayers(): Promise<User[]> {
         return await getRepository(User).findByIds(this.players);
     }
