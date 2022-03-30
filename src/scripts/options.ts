@@ -139,6 +139,8 @@ $("#changeavatar").on("click", async function() {
     }
 });
 
+//$("#changecouleuringame").on("click", async function() {
+
 let avatar = $(`#avatar_pic`);
 let html = "";
 html += user.avatar.startsWith("#")
