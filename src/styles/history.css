@@ -21,6 +21,7 @@
 
 #endGame {
     display: flex;
+    visibility: hidden;
     flex-direction: column;
     justify-items: center;
     align-items: center;
