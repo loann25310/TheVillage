@@ -218,7 +218,7 @@ export abstract class Player extends Displayable {
         }
 
         // Escape if not in debug
-        if(Config.CONFIGURATION.env !== "debug") return;
+        if(Config.CONFIGURATION?.env !== "debug") return;
 
         if(this.isLocal) {
             this.ctx.fillStyle = "#0080ff";
