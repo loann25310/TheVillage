@@ -10,6 +10,5 @@ package-lock.json
 /public/avatars/*
 !/public/avatars/.gitkeep
 config.json
-/public/maps/*
 !/public/maps/The_village.json
 !/public/maps/mapTemplate.json
