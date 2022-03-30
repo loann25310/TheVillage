@@ -30,7 +30,7 @@ const numeroJoueur = _numeroJoueur as number;
 //@ts-ignore
 const LG = _LG as number[];
 
-const socket = io(`${window.location.protocol === "https" ? "wss" : "ws"}://${window.location.host}`);
+const socket = io(`${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}`);
 
 // @ts-ignore
 let game = _game, players = _players;
