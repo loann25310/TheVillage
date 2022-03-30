@@ -421,6 +421,11 @@ window.addEventListener("resize", () => {
     }
     environment.setCord({x: environment.origine.x - diff.w / 2, y: environment.origine.y - diff.h / 2});
 });
+window.onbeforeunload = (e) => {
+    e.preventDefault();
+    e.returnValue = "Vous serez redirigé vers l'écran d'accueil si vous actualisez votre page. Voulez vous continuer ?";
+    return e.returnValue;
+};
 const moveInterval = setInterval(() => {
     const ms = new Date().getMilliseconds();
     let diff = ms - last_ms;
