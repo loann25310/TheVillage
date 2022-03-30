@@ -562,12 +562,19 @@ function set_player_vote(p) {
          ? `<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt=" "><div id="avatar_${p.pid}" class="avatar"></div>`
          : `<img src="/avatars/${p.avatar}" class="avatar" alt=" ">`;
 
-    let name = $(`<span class="pseudo">${p.pseudo}</span>`);
+    let name = $(`<span class="pseudo">${p.id === player.pid ? "<strong>Vous</strong>" : p.pseudo}</span>`);
 
     let role;
     p.role = OTHER_PLAYERS.find(player => player.pid === p.pid)?.role;
     if (p.role !== undefined) {
-        role = $(`<span class="role">${p.toString()}</span>`);
+        //désolé '-_-
+        role = $(`<span class="role">${
+            p.role === Roles.LoupGarou ? "Loup-Garou" :
+                p.role === Roles.Voyante ? "Voyante" :
+                    p.role === Roles.Chasseur ? "Chasseur" :
+                        p.role === Roles.Chasseur ? "Chasseur" :
+                            p.role === Roles.Villageois ? "Villageois" : ""
+        }</span>`);
     }
 
     let button;
