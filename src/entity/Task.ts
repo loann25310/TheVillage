@@ -33,7 +33,7 @@ export class Task {
                 task.text = `Nettoyer les carreaux de la maison`;
                 break;
             case (interaction instanceof Tree):
-                task.text = `Chasser les piafs bleu`;
+                task.text = `Chasser les oiseaux bleus`;
                 break;
             case (interaction instanceof Blood):
                 task.text = `Boire la poche de sang`;
