@@ -1,5 +1,27 @@
+#get_role {
+    position: absolute;
+    top: 25vh;
+    width: 100vw;
+    font-size: 5em;
+    font-weight: bolder;
+    color: white;
+    background: linear-gradient(25deg, rgba(65,0,0,0.5) 0%, rgba(92,0,0,0.5) 51%, rgba(154,0,0,0.5) 100%) no-repeat top;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    z-index: 2;
+}
+
+#description_role {
+    font-size: 30px;
+    text-align: center;
+    width: 100%;
+}
+
 #endGame {
     display: flex;
+    visibility: hidden;
     flex-direction: column;
     justify-items: center;
     align-items: center;

@@ -18,7 +18,7 @@ export enum PartieStatus {
 @Entity()
 export class Partie {
 
-    public static readonly NB_JOUEURS_MIN = 1;
+    public static readonly NB_JOUEURS_MIN = 5;
     public static readonly NB_TASKS_PER_DAY = 2;
 
     @PrimaryColumn()
@@ -79,18 +79,13 @@ export class Partie {
     })
     roles: {uid: number, role: Roles}[];
 
-    @Column()
-    history: string = "";
-
     idTasks: {id: number, tasks: string[]}[];
 
     deadPlayers: number[];
 
     actions: Action[];
 
-    votes: number[];
-
-    compteurVotes: number;
+    votes: {id: number, nb_votes: number}[];
 
     async getPlayers(): Promise<User[]> {
         return await getRepository(User).findByIds(this.players);
@@ -117,6 +112,7 @@ export class Partie {
         if(!this.inGamePlayers.includes(user.id))
             return;
         this.inGamePlayers.splice(this.inGamePlayers.indexOf(user.id), 1);
+        this.kill(user.id);
         getRepository(Partie).save(this).then();
     }
 
@@ -133,9 +129,9 @@ export class Partie {
     getMap(fs, path): Map {
         try {
             if(this.map !== "")
-                return JSON.parse(fs.readFileSync(path.resolve(__dirname, `../../public/maps/map_${this.map}.json`), "utf-8")) as Map;
+                return JSON.parse(fs.readFileSync(path.resolve(__dirname, `../../public/maps/officials/${this.map}.json`), "utf-8")) as Map;
         } catch (e) {}
-        return JSON.parse(fs.readFileSync(path.resolve(__dirname, `../../public/maps/The_village.json`), "utf-8")) as Map;
+        return JSON.parse(fs.readFileSync(path.resolve(__dirname, `../../public/maps/officials/The_village.json`), "utf-8")) as Map;
     }
 
     /**
@@ -236,10 +232,11 @@ export class Partie {
         // Tout le monde est dans le même camp, victoire d'un des camps
         this.status = PartieStatus.ENDED;
         await getRepository(Partie).save(this);
+        await this.assignXP(!camp);
         return !camp;
     }
 
-    checkTasks(io) {
+    async checkTasks(io) {
         let compteur = 0;
         if (!this.idTasks) return;
         this.idTasks.forEach(t => {
@@ -247,13 +244,67 @@ export class Partie {
             if (this.deadPlayers.includes(t.id)) return;
             compteur += t.tasks.length;
         });
-        io.to(this.id).emit(compteur > 0 ? "nb_tasks" : "DAY", compteur);
-        if (compteur == 0) {
-            this.compteurVotes = 0;
+        if (compteur > 0) {
+            io.to(this.id).emit("nb_tasks", compteur);
+        } else {
+            io.to(this.id).emit("DAY", (await getRepository(User).findByIds(this.inGamePlayers)).map(p => {return {pid: p.id, avatar: p.avatar, pseudo: p.pseudo}}));
             this.votes = [];
-            for (let i=0; i<this.players.length;i++) {
-                this.votes[i] = 0;
+        }
+    }
+
+    async checkVote(io) {
+        if (!this.votes || !this.players || !this.deadPlayers) return;
+        let max = {id: -1, nb_votes: -1};
+        let tie = false;
+        let compteur = 0;
+        for (const vote of this.votes) {
+            compteur += vote.nb_votes;
+            if (vote.nb_votes > max.nb_votes) {
+                max = vote;
+                tie = false;
+            } else
+                tie = vote.nb_votes === max.nb_votes && vote.id !== max.id;
+        }
+        if (compteur >= this.inGamePlayers.length - this.deadPlayers.length) {
+            if (!tie) {
+                this.kill(max.id);
+                this.addAction(0, ActionType.EXPELLED, max.id);
+                io.to(this.id).emit("final_kill", [...this.deadPlayers, max.id]);
+            } else {
+                io.to(this.id).emit("final_kill", this.deadPlayers);
             }
+            this.votes = [];
+            const gagnant = await this.victoire();
+            if (gagnant !== null) {
+                return io.to(this.id).emit("victoire", gagnant);
+            }
+            //Si tout le monde a voté (seulement)
+            this.generateTasks();
+            io.to(this.id).emit("NIGHT");
+        }
+    }
+
+    //true = villager win, false = werewolves win
+    async assignXP(winner) {
+        const uRepo = getRepository(User);
+        for (const p of this.inGamePlayers) {
+            const role = this.roles.find(r => r.uid === p);
+            const user = await uRepo.findOne(p);
+            if (!user) continue;
+            if (!role) {
+                user.xp += 50;
+            } else {
+                if (this.deadPlayers.includes(p)) {
+                    user.xp += ((role.role === Roles.LoupGarou) !== winner) ? 100 : 50;
+                } else {
+                    user.xp += ((role.role === Roles.LoupGarou) !== winner) ? 200 : 100;
+                }
+            }
+            if (user.xp >= (user.niveau + 1) * 10) {
+                user.niveau += 1;
+                user.xp -= (user.niveau) * 10;
+            }
+            await uRepo.save(user);
         }
     }
 }

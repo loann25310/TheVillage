@@ -7,8 +7,9 @@
 {% block body %}
     <button class="retour" id="retour" type="button"><i class="fas fa-long-arrow-alt-left"></i></button>
     <h1>{{ user.pseudo }}</h1>
-    <p>Niveau {{ user.niveau }}
-    <p>Argent : {{ user.argent }} €
+    <p>Niveau {{ user.niveau }}</p>
+    <p>Expérience : {{ user.xp }}</p>
+    <p>Argent : {{ user.argent }} €</p>
     <div class="succes">
         <h1>Succès</h1>
         <p>{{ user.succes }}

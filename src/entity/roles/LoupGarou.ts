@@ -35,6 +35,10 @@ export class LoupGarou extends Player {
         return "Loup Garou";
     }
 
+    getDescription(): string {
+        return `Vous faites partie du camp des Loups-Garous.<br>Vous devez ramasser ${LoupGarou.NB_POCHE_KILL} poche(s) de sang afin de tuer un villageois.`;
+    }
+
     toColor(): string {
         return "rgb(183,8,8)";
     }

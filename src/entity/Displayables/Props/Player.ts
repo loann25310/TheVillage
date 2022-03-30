@@ -398,12 +398,16 @@ export abstract class Player extends Displayable {
                 resolve(coordonnes);
                 this.image = this.getImg.next().value as HTMLImageElement;
                 this.sliders.splice(0, this.sliders.length);
-            }, 50));
+            }, duration));
         });
     }
 
     toString(): string {
         return "Rôle inconnu";
+    }
+
+    getDescription() {
+        return "Pas de description";
     }
 
     toColor(): string {

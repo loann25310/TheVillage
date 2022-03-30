@@ -89,7 +89,7 @@ export class Environment {
         try {
 
             if(!map)
-                map = (await axios.get(`/maps/The_village.json`)).data;
+                map = (await axios.get(`/maps/officials/The_village.json`)).data;
 
             this.ctx = ctx;
 

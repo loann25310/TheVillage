@@ -77,6 +77,14 @@ input[type="text"]{
     overflow: hidden;
 }
 
+#input_map_name {
+    outline: black;
+    border: 1px solid #A11000;
+    border-radius: 3px;
+    max-width: 150px;
+    margin-left: 3em;
+}
+
 input[type="text"]:focus {
     outline: none
 }

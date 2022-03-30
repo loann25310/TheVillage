@@ -23,19 +23,23 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         const user = req.user as User;
         if (partie.status > PartieStatus.STARTING) {
             const p = findPartie(partie.id);
-            partie.removeInGamePlayer(user);
             if (p) {
+                p.removeInGamePlayer(user);
+                if (p.votes?.length > 0) {
+                    await p.checkVote(io);
+                }
                 p.kill(user.id);
                 const t = p.idTasks.find(p => p.id === user.id);
-                if (t.tasks.length !== 0) {
-                    if (t) t.tasks = [];
-                    p.checkTasks(io);
+                if (t && t.tasks.length !== 0) {
+                    t.tasks = [];
+                    await p.checkTasks(io);
                 }
                 const winner = await p.victoire();
                 if (winner !== null) {
                     io.to(partie.id).emit("victoire", winner);
                 }
             }
+            else partie.removeInGamePlayer(user);
             return res.redirect("/?err=game_already_started");
         }
         let role = (partie.roles.filter(p => p.uid === user.id))[0]?.role;
@@ -177,7 +181,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                         partie.revive(data.data.player);
                     else {
                         partie.kill(data.data.player);
-                        partie.checkTasks(io);
+                        await partie.checkTasks(io);
                         let gagnant = await partie.victoire();
                         if (gagnant !== null) {
                             return io.to(partie.id).emit("victoire", gagnant);
@@ -195,7 +199,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                     if (gagnant !== null) {
                         return io.to(partie.id).emit("victoire", gagnant);
                     }
-                    partie.checkTasks(io);
+                    await partie.checkTasks(io);
                     return io.to(partie.id).emit("kill", data.data.player);
             }
         });
@@ -212,7 +216,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             if (index === -1) return;
             partie.idTasks.find(p => p.id === id).tasks.splice(index, 1);
 
-            partie.checkTasks(io);
+            partie.checkTasks(io).then();
         });
 
         socket.on("get_tasks", async (id) => {
@@ -225,35 +229,18 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         });
 
         socket.on("aVote", async (id) => {
-            partie.compteurVotes ++;
-            partie.votes[id] ++;
-            let max = 0;
-            let index;
-            if (partie.compteurVotes === (partie.players.length - partie.deadPlayers.length)) {
-                for (let i = 0; i < partie.votes.length; i++) {
-                    if (partie.votes[i] > max) {
-                        max = partie.votes[i];
-                        index = partie.players[i];
-                    }
-                }
-                io.to(partie.id).emit("kill", index);
-                io.to(partie.id).emit("final_kill");
-                partie.kill(partie.players[index-1]);
-                partie.addAction(0, ActionType.EXPELLED, partie.players[index-1]); //todo verify victim (thibaut si tu passes par là)
-                let gagnant = await partie.victoire();
-                if (gagnant !== null) {
-                    return io.to(partie.id).emit("victoire", gagnant);
-                }
-                partie.generateTasks();
-                io.to(partie.id).emit("NIGHT");
+            const couple = partie.votes.find(p => p.id === id);
+            if (couple === undefined) {
+                partie.votes.push({id, nb_votes: 1});
+            } else {
+                couple.nb_votes ++;
             }
+            await partie.checkVote(io);
         });
 
         socket.on("history", async () => {
             if (!partie) return;
             const history = await partie.getHistory();
-            partie.history = history;
-            await getRepository(Partie).save(partie);
             socket.emit("history", history);
         });
     });

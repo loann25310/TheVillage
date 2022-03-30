@@ -21,7 +21,6 @@ let roomName = `${game.id}`,
     share = $("#share"),
     nbPlayers = $("#nbPlayers"),
     maxPlayers = $("#maxPlayers"),
-    dureeVote = $("select[name='config_duree_vote']"),
     messages = $('#messages'),
     sendMsg = $("#sendMessage"),
     input = $("#input"),
@@ -29,8 +28,8 @@ let roomName = `${game.id}`,
     fieldset = $("#fieldset"),
     change_max_players = $("#change_max_players"),
     visibility = $("#visibility"),
-    bans = $("#joueursBan"),
-    nuit = $("select[name='config_duree_nuit']");
+    $maps = $("#nom_map"),
+    bans = $("#joueursBan");
 
 change_max_players.on("input", function () {
     if (uid === game.gameMaster || (fieldset[0] as HTMLFieldSetElement).disabled)
@@ -92,26 +91,6 @@ socket.on("change_max_players", max_players => {
     game.nbJoueursMax = max_players;
 });
 
-socket.on("duree_vote", (duree) => {
-    game.dureeVote = duree;
-    dureeVote.find("option").each((index, element)=>{
-        if (+($(element).val()) === +game.dureeVote){
-            (element as HTMLOptionElement).selected = true;
-            return;
-        }
-    });
-});
-
-socket.on("duree_nuit", (duree) => {
-    game.dureeNuit = duree;
-    nuit.find("option").each((index, element) => {
-        if (+($(element).val()) === +duree){
-            (element as HTMLOptionElement).selected = true;
-            return;
-        }
-    });
-});
-
 socket.on("start_game", () => {
     window.location.replace("/play/" + game.id);
 });
@@ -133,6 +112,24 @@ socket.on("game_master", (id) => {
     create_players(players);
 });
 
+socket.on("maps", maps => {
+    let html = "";
+    for (const m of maps) {
+        html += `<option value="${m}">${m}</option>`;
+    }
+    $maps.html(html);
+});
+
+socket.on("change_map", map => {
+    game.map = map;
+    $maps.find("option").each((index, elem) => {
+        if ($(elem).val() === game.map) {
+            (elem as HTMLOptionElement).selected = true;
+            return;
+        }
+    })
+});
+
 document.body.onload = ()=>{
     document.title = `The Village - ${game.id}`;
     input[0].focus();
@@ -146,18 +143,13 @@ document.body.onload = ()=>{
     create_players(players);
     $("#nbJoueursMin").text(Partie.NB_JOUEURS_MIN);
     socket.emit('get_game_master', roomName);
-    dureeVote.find("option").each((index, element)=>{
-        if (+($(element).val()) === +game.dureeVote){
+    $maps.find("option").each((index, element)=>{
+        if ($(element).val() === +game.map){
             (element as HTMLOptionElement).selected = true;
             return;
         }
     });
-    nuit.find("option").each((index, element) => {
-        if (+(element.value) === +game.dureeNuit){
-            (element as HTMLOptionElement).selected = true;
-            return;
-        }
-    });
+    socket.emit('get_maps', roomName);
 }
 
 share.on("click", () => {
@@ -181,16 +173,10 @@ visibility.on("change", function() {
     socket.emit("private", roomName, uid, (visibility[0] as HTMLInputElement).checked);
 });
 
-dureeVote.on("change", (element)=>{
-    let val = +($(element.target).val());
-    if ([30, 45, 60, 90, 120, 150].includes(val))
-        socket.emit("duree_vote", game.id, uid, val);
-})
-
-nuit.on("change", (element) => {
-    let val = +($(element.target).val());
-    if ([180, 210, 240, 300, 420, 600].includes(val))
-        socket.emit("duree_nuit", game.id, uid, val);
+$maps.on('change', function (e) {
+    if (game.gameMaster !== uid) return;
+    const map = $(e.target).val();
+    socket.emit("change_map", `${game.id}`, map);
 });
 
 $("#start").on("click", function () {
