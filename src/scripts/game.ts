@@ -376,7 +376,7 @@ async function init(){
         });
     });
 
-    socket.on("victoire", camp => {
+    socket.once("victoire", camp => {
         displayVictory(camp);
     });
 
