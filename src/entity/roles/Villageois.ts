@@ -13,4 +13,12 @@ export class Villageois extends Player {
     checkAction(): boolean {
         return false;
     }
+
+    toString(): string {
+        return "Villageois";
+    }
+
+    toColor(): string {
+        return "rgb(12,204,211)";
+    }
 }

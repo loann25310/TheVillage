@@ -39,6 +39,13 @@ export class HUD extends Displayable {
 
         const tasks: Task[] = [];
 
+        // Draw role
+        ctx.fillStyle = this.player.toColor();
+        ctx.textAlign = "left";
+        ctx.font = "25px sans-serif";
+        ctx.fillText(this.player.toString(), 15, canvas.height - 30);
+
+        // Draw tasks
         for (const interaction of this.player.environment.interactions) {
             if (!interaction) continue;
             tasks.push(Task.fromDisplayable(interaction));

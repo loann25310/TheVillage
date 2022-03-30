@@ -214,7 +214,7 @@ export abstract class Player extends Displayable {
         this.ctx.fillText(`{ x: ${this.getDrawnPosition().x}, y: ${this.getDrawnPosition().y} }`, this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y + this.size.h + 29);
         if (!this.isLocal && this.role !== null && this.role !== undefined) {
             this.ctx.fillStyle = this.role === Roles.LoupGarou ? "red" : "blue";
-            this.ctx.fillText(Tools.getRoleName(this.role), this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y - 15);
+            this.ctx.fillText(this.toString(), this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y - 15);
         }
     }
 
@@ -386,4 +386,13 @@ export abstract class Player extends Displayable {
             }, duration));
         });
     }
+
+    toString(): string {
+        return "Rôle inconnu";
+    }
+
+    toColor(): string {
+        return "rgb(0,0,0)";
+    }
+
 }

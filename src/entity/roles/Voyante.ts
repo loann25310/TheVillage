@@ -21,4 +21,12 @@ export class Voyante extends Player {
     checkAction(player): boolean {
         return this.alive && this.nb_boules > 0 && (player.role === null || player.role === undefined);
     }
+
+    toString(): string {
+        return "Voyante";
+    }
+
+    toColor(): string {
+        return "rgb(66,12,211)";
+    }
 }

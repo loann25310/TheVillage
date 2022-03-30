@@ -32,4 +32,12 @@ export class Sorciere extends Player {
     checkAction(player): boolean {
         return this.alive && (player.alive && !this.hasKilled || !player.alive && !this.hasRevived);
     }
+
+    toString(): string {
+        return "Sorcière";
+    }
+
+    toColor(): string {
+        return "rgb(12,211,82)";
+    }
 }

@@ -37,21 +37,4 @@ export class Tools {
     }
 
     static regex_pseudo = /([A-Za-z0-9\-_]*)/g;
-
-    static getRoleName(role: Roles) {
-        switch (role) {
-            case Roles.Voyante:
-                return "Voyante";
-            case Roles.Chasseur:
-                return "Chasseur";
-            case Roles.Villageois:
-                return "Villageois";
-            case Roles.LoupGarou:
-                return "Loup Garou";
-            case Roles.Sorciere:
-                return "Sorcière";
-            default:
-                return "Rôle inconnu";
-        }
-    }
 }
