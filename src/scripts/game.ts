@@ -26,6 +26,7 @@ import {PineTree} from "../entity/Displayables/Props/PineTree";
 import {Tree} from "../entity/Displayables/Props/Tree";
 import {TreeStump} from "../entity/Displayables/Props/TreeStump";
 import {serializeUser} from "passport";
+import {Config} from "../entity/Config";
 
 // @ts-ignore
 const partie = _partie as Partie;
@@ -36,9 +37,14 @@ const map = _map as Map;
 //@ts-ignore
 const role = _role as Roles;
 //@ts-ignore
+const DEBUG = _debug as boolean;
+//@ts-ignore
 const numeroJoueur = _numeroJoueur as number;
 //@ts-ignore
 const LG = _LG as number[];
+
+Config.CONFIGURATION = new Config();
+Config.CONFIGURATION.env = (DEBUG)?"debug":"release";
 
 const socket = io(`${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}`);
 
@@ -71,21 +77,6 @@ let ctx = canvas.getContext('2d');
 
 canvas.width  = window.innerWidth;
 canvas.height = window.innerHeight;
-
-for (let p of players) {
-    p.imgL1 = document.createElement("img");
-    p.imgL1.src = "/img/Bonhomme-2/Bonhomme2-"+p.color+"-L.png";
-    p.imgR1 = document.createElement("img");
-    p.imgR1.src = "/img/Bonhomme-2/Bonhomme2-"+p.color+".png";
-    p.imgL2 = document.createElement("img");
-    p.imgL2.src = "/img/Bonhomme-1/Bonhomme1-"+p.color+"-L.png";
-    p.imgR2 = document.createElement("img");
-    p.imgR2.src = "/img/Bonhomme-1/Bonhomme1-"+p.color+".png";
-    p.imgL3 = document.createElement("img");
-    p.imgL3.src = "/img/Bonhomme-3/Bonhomme3-"+p.color+"-L.png";
-    p.imgR3 = document.createElement("img");
-    p.imgR3.src = "/img/Bonhomme-3/Bonhomme3-"+p.color+".png";
-}
 
 Player.deadimgL1 = document.createElement("img");
 Player.deadimgL1.src = `/img/dead2L.png`;
@@ -202,8 +193,40 @@ async function init(){
     // Init HUD in environment
     environment.addToLayer(150, player_hud);
 
-    function addRemotePlayer(data: {id: number, position: Coordinate, index: number, color: UserColor}): Player {
-        let remotePlayer = new Villageois(ctx, environment, data.position, Player.defaultSize, map, data.index);
+    function sendCurrentPosition() {
+        socket.emit("playerMove", {
+            position: {
+                x: player.getPosition().x - Player.defaultSize.w / 2,
+                y: player.getPosition().y - Player.defaultSize.h / 2
+            },
+            index: numeroJoueur,
+            role
+        });
+    }
+
+    function addRemotePlayer(data: {id: number, position: Coordinate, index: number, color: UserColor, pseudo: string, role: Roles}): Player {
+        if(!data.role) return;
+        if(getPlayerById(data.id)) return;
+        let remotePlayer;
+
+        switch (data.role) {
+            case Roles.Chasseur:
+                remotePlayer = new Chasseur(ctx, environment, data.position, Player.defaultSize, map, data.index);
+                break;
+            case Roles.LoupGarou:
+                remotePlayer = new LoupGarou(ctx, environment, data.position, Player.defaultSize, map, data.index);
+                break;
+            case Roles.Sorciere:
+                remotePlayer = new Sorciere(ctx, environment, data.position, Player.defaultSize, map, data.index);
+                break;
+            case Roles.Voyante:
+                remotePlayer = new Voyante(ctx, environment, data.position, Player.defaultSize, map, data.index);
+                break;
+            default:
+                remotePlayer = new Villageois(ctx, environment, data.position, Player.defaultSize, map, data.index);
+                break;
+        }
+        remotePlayer.name = data.pseudo;
         remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
         remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
         remotePlayer.pid = data.id;
@@ -236,7 +259,8 @@ async function init(){
         gameId: partie.id,
         position: player.getPosition(),
         index: numeroJoueur,
-        color: player.color
+        color: player.color,
+        role
     });
     socket.on("playerJoin", (data) => {
         if(data.id === user.id) {
@@ -244,8 +268,10 @@ async function init(){
             return;
         }
         addRemotePlayer(data);
+        sendCurrentPosition();
     });
 
+    setTimeout(() => sendCurrentPosition(), 200);
 
     const MOVE_ANTISPAM_DURATION = 50;
     let moveAntiSpam = 0;
@@ -253,13 +279,7 @@ async function init(){
         if(moveAntiSpam > Date.now()) return;
         moveAntiSpam = Date.now() + MOVE_ANTISPAM_DURATION;
         if (player.alive) {
-            socket.emit("playerMove", {
-                position: {
-                    x: player.getPosition().x - Player.defaultSize.w / 2,
-                    y: player.getPosition().y - Player.defaultSize.h / 2
-                },
-                index: numeroJoueur
-            });
+            sendCurrentPosition();
         }
     });
 
@@ -267,6 +287,7 @@ async function init(){
         if(data.id === user.id) return;
         let remotePlayer = getPlayerById(data.id);
         if (!remotePlayer) remotePlayer = addRemotePlayer(data);
+        if (!remotePlayer) return;
         //remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
         //remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
         remotePlayer.slideTo(data.position, player, MOVE_ANTISPAM_DURATION).then(() => {

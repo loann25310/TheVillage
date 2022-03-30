@@ -39,7 +39,7 @@ export abstract class Player extends Displayable {
     distancePlayers: {player: Player, distance: number}[];
     abstract DISTANCE_FOR_ACTION: number;
     playerForAction: Player;
-    private readonly sliders: NodeJS.Timer[];
+    private readonly sliders: number[];
     color: UserColor;
 
     public x;
@@ -207,18 +207,21 @@ export abstract class Player extends Displayable {
         this.ctx.fillRect(this.getDrawnPosition().x, this.getDrawnPosition().y + this.size.h - 5, this.size.w, 40 );
         this.ctx.textAlign = "center";
 
-        this.ctx.font = "16px sans-serif";
         if (!this.isLocal && this.role) {
+            this.ctx.font = "15px sans-serif";
             this.ctx.fillStyle = this.role === Roles.LoupGarou ? "red" : "blue";
-            this.ctx.fillText(this.toString(), this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y - 15);
-        }else if(!this.isLocal){
+            this.ctx.fillText(this.toString(), this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y - 2);
+        }
+        if(!this.isLocal){
+            this.ctx.font = "22px sans-serif";
             this.ctx.fillStyle = "blue";
-            this.ctx.fillText(this.toString(), this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y - 15);
+            this.ctx.fillText(this.name, this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y - 20);
         }
 
         // Escape if not in debug
         if(Config.CONFIGURATION.env !== "debug") return;
 
+        this.ctx.font = "10px sans-serif";
         if(this.isLocal) {
             this.ctx.fillStyle = "#0080ff";
         }
@@ -376,25 +379,26 @@ export abstract class Player extends Displayable {
             this.goesRight = delta.x === 0 ? this.goesRight : delta.x > 0;
             for (let i = 1; i < duration; i++) {
                 if (i % 10 === 0) {
-                    this.sliders.push(setTimeout(() => {
+                    this.sliders.push(window.setTimeout(() => {
                         this.x += delta.x;
                         this.y += delta.y;
                         this.image = this.getImg.next().value as HTMLImageElement;
                     }, i));
                 } else {
-                    this.sliders.push(setTimeout(() => {
+                    this.sliders.push(window.setTimeout(() => {
                         this.x += delta.x;
                         this.y += delta.y;
                     }, i));
                 }
             }
-            this.sliders.push(setTimeout(() => {
+
+            this.sliders.push(window.setTimeout(() => {
                 this.x = coordonnes.x;
                 this.y = coordonnes.y;
                 resolve(coordonnes);
                 this.image = this.getImg.next().value as HTMLImageElement;
                 this.sliders.splice(0, this.sliders.length);
-            }, duration));
+            }, 50));
         });
     }
 
