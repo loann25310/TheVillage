@@ -16,6 +16,14 @@ import {Sorciere} from "../entity/roles/Sorciere";
 import {Voyante} from "../entity/roles/Voyante";
 import {LoupGarou} from "../entity/roles/LoupGarou";
 import {HUD} from "../entity/Displayables/HUD";
+import {Blood} from "../entity/Displayables/Props/Blood";
+import {Box} from "../entity/Displayables/Props/Box";
+import { Bush } from '../entity/Displayables/Props/Bush';
+import {Fork} from "../entity/Displayables/Props/Fork";
+import {House} from "../entity/Displayables/Props/House";
+import {PineTree} from "../entity/Displayables/Props/PineTree";
+import {Tree} from "../entity/Displayables/Props/Tree";
+import {TreeStump} from "../entity/Displayables/Props/TreeStump";
 
 // @ts-ignore
 const partie = _partie as Partie;
@@ -90,6 +98,22 @@ Player.deadimgL4 = document.createElement("img");
 Player.deadimgL4.src = `/img/dead4L.png`;
 Player.deadimgR4 = document.createElement("img");
 Player.deadimgR4.src = `/img/dead4R.png`;
+Blood.img = document.createElement("img");
+Blood.img.src = `/img/blood.png`;
+Box.image = document.createElement("img");
+Box.image.src = "/img/box.png";
+Bush.image = document.createElement("img");
+Bush.image.src = "/img/buisson.png";
+Fork.image = document.createElement("img");
+Fork.image.src = "/img/fourche.png";
+House.image = document.createElement("img");
+House.image.src = "/img/maison.png";
+PineTree.image = document.createElement("img");
+PineTree.image.src = "/img/sapin.png";
+Tree.image = document.createElement("img");
+Tree.image.src = "/img/arbre.png";
+TreeStump.image = document.createElement("img");
+TreeStump.image.src = "/img/tree_stump.png";
 let ghostimg = document.createElement("img");
 ghostimg.src = `/img/fantome.png`;
 
@@ -224,7 +248,7 @@ async function init(){
     });
 
     socket.on("kill", id => {
-        console.log("RIP");
+        console.log(id);
         if (id === player.pid)
             return player.die();
         for (const p of OTHER_PLAYERS) {

@@ -3,7 +3,6 @@ import {PlayerMove} from "../../types/PlayerMove";
 import {Coordinate} from "../../types/Coordinate";
 import {Map} from "../../Map";
 import {Roles} from "../../types/Roles";
-import {Tools} from "../../Tools";
 import {ObjectType} from "../../types/ObjectType";
 
 export abstract class Player extends Displayable {

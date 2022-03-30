@@ -3,21 +3,18 @@ import {Coordinate} from "../../types/Coordinate";
 import {Bird} from "./Bird";
 
 export class Tree extends Displayable {
-    private readonly image: HTMLImageElement;
+    public static image: HTMLImageElement;
     public static readonly NB_BIRDS = 5;
     public static readonly NB_BULLETS = 7;
     public static readonly TAILLE_CROSSHAIR = 80;
 
     constructor(ctx, cord: Coordinate, size) {
         super(ctx, cord, size, null);
-
-        this.image = document.createElement("img");
-        this.image.src = "/img/arbre.png";
         this.hittable = true;
     }
 
     draw() {
-        this.ctx.drawImage(this.image, this.getPosition().x, this.getPosition().y, this.size.w, this.size.h);
+        this.ctx.drawImage(Tree.image, this.getPosition().x, this.getPosition().y, this.size.w, this.size.h);
     }
 
     initJeu() {

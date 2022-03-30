@@ -7,6 +7,7 @@ import {LoupGarou} from "../../roles/LoupGarou";
 
 export class Blood extends Displayable {
     public isFull: boolean;
+    public static img: HTMLImageElement;
     constructor(ctx: CanvasRenderingContext2D, cord: Coordinate, size: Size, color="red") {
         super(ctx, cord, size, color);
         this.isFull = true;
@@ -14,8 +15,7 @@ export class Blood extends Displayable {
 
     draw() {
         if (!this.isFull) return;
-        this.ctx.fillStyle = this.color;
-        this.ctx.fillRect(this.getPosition().x, this.getPosition().y, this.size.w, this.size.h);
+        this.ctx.drawImage(Blood.img, this.getPosition().x, this.getPosition().y, this.size.w, this.size.h);
     }
 
     drink() {
