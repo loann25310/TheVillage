@@ -295,9 +295,15 @@ async function init(){
         }
     });
 
-    socket.on("final_kill", () => {
-       if (!player.alive) {
-           player.ghost = true;
+    socket.on("final_kill", (ids: number[]) => {
+       for (const i of ids) {
+           if (player.pid === i) {
+               player.die();
+               player.ghost = true;
+               continue;
+           }
+           const dead = OTHER_PLAYERS.find(p => p.pid === i);
+           dead.ghost = true;
        }
     });
 
@@ -328,14 +334,14 @@ async function init(){
         }
     });
 
-    socket.on("DAY",() => {
+    socket.on("DAY",(players) => {
         let anim = $("#anim_day");
         $("#play").hide();
         anim.show();
         setTimeout(()=>{
             anim.hide();
             $("#vote").show();
-            if (player.alive) voteDisponible = true;
+            voteDisponible = player.alive && !player.ghost;
             create_players(players);
             night = false;
         },4000);
@@ -549,34 +555,31 @@ $(document).on("keydown", function (e){
     }
 });
 
-function set_players(p, index :number) {
+function set_player_vote(p) {
      let item = $('<div class="player">');
 
      let html = p.avatar.startsWith("#")
-         ? `<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt=" "><div id="avatar_${index}" class="avatar"></div>`
+         ? `<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt=" "><div id="avatar_${p.pid}" class="avatar"></div>`
          : `<img src="/avatars/${p.avatar}" class="avatar" alt=" ">`;
 
     let name = $(`<span class="pseudo">${p.pseudo}</span>`);
 
     let role;
+    p.role = OTHER_PLAYERS.find(player => player.pid === p.pid)?.role;
     if (p.role !== undefined) {
-        role = $(`<span class="role">${p.role}</span>`);
+        role = $(`<span class="role">${p.toString()}</span>`);
     }
 
     let button;
     if (voteDisponible) {
         button = $('<button class="vote">Vote</button>');
-        button.id = index;
         button.on("click", function () {
             if (voteDisponible) {
                 button.hide();
                 voteDisponible = false;
-                socket.emit("aVote", button.id);
+                socket.emit("aVote", p.pid);
             }
         });
-        // else {
-        //     $('<img src="/public/img/grave.jpg" alt="dead">');
-        // }
     }
 
      item.append(html, name, role, button);
@@ -586,8 +589,8 @@ function set_players(p, index :number) {
 function create_players(players) {
     listeJoueurs.empty();
     for (let i = 0; i < players.length; i++) {
-        listeJoueurs.append(set_players(players[i], i));
-        let avatar = $(`#avatar_${i}`);
+        listeJoueurs.append(set_player_vote(players[i]));
+        let avatar = $(`#avatar_${players[i].pid}`);
         if (players[i].avatar.startsWith("#"))
             avatar.css("background-color", players[i].avatar);
     }
@@ -606,7 +609,9 @@ function endGame() {
  */
 function displayVictory(camp) {
     endGame();
-    $("#endGame")[0].hidden = false;
+    const $endgame = $("#endGame");
+    $endgame[0].hidden = false;
+    $endgame.css("visibility", "visible");
     $("#endGameTitle").text(`VICTOIRE : ${camp ? "VILLAGEOIS" : "LOUPS GAROUS"}`);
     socket.emit("history");
 }

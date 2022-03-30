@@ -27,7 +27,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 const t = p.idTasks.find(p => p.id === user.id);
                 if (t.tasks.length !== 0) {
                     if (t) t.tasks = [];
-                    p.checkTasks(io);
+                    await p.checkTasks(io);
                 }
                 const winner = await p.victoire();
                 if (winner !== null) {
@@ -167,7 +167,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                         partie.revive(data.data.player);
                     else {
                         partie.kill(data.data.player);
-                        partie.checkTasks(io);
+                        await partie.checkTasks(io);
                         let gagnant = await partie.victoire();
                         if (gagnant !== null) {
                             return io.to(partie.id).emit("victoire", gagnant);
@@ -185,7 +185,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                     if (gagnant !== null) {
                         return io.to(partie.id).emit("victoire", gagnant);
                     }
-                    partie.checkTasks(io);
+                    await partie.checkTasks(io);
                     return io.to(partie.id).emit("kill", data.data.player);
             }
         });
@@ -202,7 +202,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             if (index === -1) return;
             partie.idTasks.find(p => p.id === id).tasks.splice(index, 1);
 
-            partie.checkTasks(io);
+            partie.checkTasks(io).then();
         });
 
         socket.on("get_tasks", async (id) => {
@@ -215,25 +215,36 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         });
 
         socket.on("aVote", async (id) => {
-            partie.compteurVotes ++;
-            partie.votes[id] ++;
-            let max = 0;
-            let index;
-            if (partie.compteurVotes === (partie.players.length - partie.deadPlayers.length)) {
-                for (let i = 0; i < partie.votes.length; i++) {
-                    if (partie.votes[i] > max) {
-                        max = partie.votes[i];
-                        index = partie.players[i];
-                    }
+            const couple = partie.votes.find(p => p.id === id);
+            if (couple === undefined) {
+                partie.votes.push({id, nb_votes: 1});
+            } else {
+                couple.nb_votes ++;
+            }
+            let max = {id: -1, nb_votes: -1};
+            let tie = false;
+            let compteur = 0;
+            for (const vote of partie.votes) {
+                compteur += vote.nb_votes;
+                if (vote.nb_votes > max.nb_votes) {
+                    max = vote;
+                    tie = false;
+                } else
+                    tie = vote.nb_votes === max.nb_votes && vote.id !== max.id;
+            }
+            if (compteur >= partie.players.length - partie.deadPlayers.length) {
+                if (!tie) {
+                    partie.kill(max.id);
+                    partie.addAction(0, ActionType.EXPELLED, max.id);
+                    io.to(partie.id).emit("final_kill", [...partie.deadPlayers, max.id]);
+                } else {
+                    io.to(partie.id).emit("final_kill", partie.deadPlayers);
                 }
-                io.to(partie.id).emit("kill", index);
-                io.to(partie.id).emit("final_kill");
-                partie.kill(partie.players[index-1]);
-                partie.addAction(0, ActionType.EXPELLED, partie.players[index-1]); //todo verify victim (thibaut si tu passes par là)
-                let gagnant = await partie.victoire();
+                const gagnant = await partie.victoire();
                 if (gagnant !== null) {
                     return io.to(partie.id).emit("victoire", gagnant);
                 }
+                //Si tout le monde a voté (seulement)
                 partie.generateTasks();
                 io.to(partie.id).emit("NIGHT");
             }

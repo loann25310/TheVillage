@@ -88,9 +88,7 @@ export class Partie {
 
     actions: Action[];
 
-    votes: number[];
-
-    compteurVotes: number;
+    votes: {id: number, nb_votes: number}[];
 
     async getPlayers(): Promise<User[]> {
         return await getRepository(User).findByIds(this.players);
@@ -239,7 +237,7 @@ export class Partie {
         return !camp;
     }
 
-    checkTasks(io) {
+    async checkTasks(io) {
         let compteur = 0;
         if (!this.idTasks) return;
         this.idTasks.forEach(t => {
@@ -247,13 +245,11 @@ export class Partie {
             if (this.deadPlayers.includes(t.id)) return;
             compteur += t.tasks.length;
         });
-        io.to(this.id).emit(compteur > 0 ? "nb_tasks" : "DAY", compteur);
-        if (compteur == 0) {
-            this.compteurVotes = 0;
+        if (compteur > 0) {
+            io.to(this.id).emit("nb_tasks", compteur);
+        } else {
+            io.to(this.id).emit("DAY", (await this.getPlayers()).map(p => {return {pid: p.id, avatar: p.avatar, pseudo: p.pseudo}}));
             this.votes = [];
-            for (let i=0; i<this.players.length;i++) {
-                this.votes[i] = 0;
-            }
         }
     }
 }
