@@ -33,4 +33,12 @@ export class Chasseur extends Player {
     checkAction(player): boolean {
         return !this.alive && !this.hasShot && player.alive;
     }
+
+    toString(): string {
+        return "Chasseur";
+    }
+
+    toColor(): string {
+        return "rgb(204,211,12)";
+    }
 }
