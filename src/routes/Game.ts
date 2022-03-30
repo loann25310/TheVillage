@@ -174,6 +174,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                         await partie.checkTasks(io);
                         let gagnant = await partie.victoire();
                         if (gagnant !== null) {
+                            await partie.assignXP(gagnant);
                             return io.to(partie.id).emit("victoire", gagnant);
                         }
                     }
@@ -231,8 +232,6 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         socket.on("history", async () => {
             if (!partie) return;
             const history = await partie.getHistory();
-            partie.history = history;
-            await getRepository(Partie).save(partie);
             socket.emit("history", history);
         });
     });

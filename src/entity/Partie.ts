@@ -79,9 +79,6 @@ export class Partie {
     })
     roles: {uid: number, role: Roles}[];
 
-    @Column()
-    history: string = "";
-
     idTasks: {id: number, tasks: string[]}[];
 
     deadPlayers: number[];
@@ -283,6 +280,29 @@ export class Partie {
             //Si tout le monde a voté (seulement)
             this.generateTasks();
             io.to(this.id).emit("NIGHT");
+        }
+    }
+
+    //true = villager win, false = werewolves win
+    async assignXP(winner) {
+        const uRepo = getRepository(User);
+        for (const p of this.inGamePlayers) {
+            const role = this.roles.find(r => r.uid === p);
+            const user = await uRepo.findOne(p);
+            if (!user) continue;
+            if (!role) {
+                user.xp += 50;
+            }
+            if (this.deadPlayers.includes(p)) {
+                user.xp += ((role.role === Roles.LoupGarou) !== winner) ? 100 : 50;
+            } else {
+                user.xp += ((role.role === Roles.LoupGarou) !== winner) ? 200 : 100;
+            }
+            if (user.xp >= (user.niveau + 1) * 10) {
+                user.niveau ++;
+                user.xp -= (user.niveau + 1) * 10;
+            }
+            await uRepo.save(user);
         }
     }
 }
