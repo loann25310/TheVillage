@@ -18,7 +18,7 @@ export enum PartieStatus {
 @Entity()
 export class Partie {
 
-    public static readonly NB_JOUEURS_MIN = 2;
+    public static readonly NB_JOUEURS_MIN = 1;
     public static readonly NB_TASKS_PER_DAY = 2;
 
     @PrimaryColumn()
@@ -84,10 +84,6 @@ export class Partie {
     deadPlayers: number[];
 
     actions: Action[];
-
-    votes: number[];
-
-    compteurVotes: number;
 
     async getPlayers(): Promise<User[]> {
         return await getRepository(User).findByIds(this.players);

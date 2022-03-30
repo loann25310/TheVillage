@@ -1,6 +1,9 @@
 import {Displayable} from "./Displayable";
 import {Player} from "./Props/Player";
 import {Task} from "../Task";
+import {LoupGarou} from "../roles/LoupGarou";
+import {Sorciere} from "../roles/Sorciere";
+import {Voyante} from "../roles/Voyante";
 
 export class HUD extends Displayable {
 
@@ -9,6 +12,8 @@ export class HUD extends Displayable {
     player: Player;
 
     actionImage: HTMLImageElement;
+    interactionInactiveImage: HTMLImageElement;
+    interactionActiveImage: HTMLImageElement;
     fleche: HTMLImageElement;
     static readonly actionButtonSize = 100;
 
@@ -27,6 +32,29 @@ export class HUD extends Displayable {
         this.fleche = document.createElement("img");
         this.fleche.src = `/img/fleche.png`;
 
+        let interactionInactiveImageUrl;
+        let interactionActiveImageUrl;
+        if(this.player instanceof LoupGarou){
+            interactionInactiveImageUrl = "/img/kill_0.png";
+            interactionActiveImageUrl = "/img/kill_1.png";
+        }
+        if(this.player instanceof Sorciere){
+            interactionInactiveImageUrl = "/img/potion_0.png";
+            interactionActiveImageUrl = "/img/potion_1.png";
+        }
+        if(this.player instanceof Voyante){
+            interactionInactiveImageUrl = "/img/crystal_0.png";
+            interactionActiveImageUrl = "/img/crystal_1.png";
+        }
+        console.log(interactionActiveImageUrl);
+        if(interactionActiveImageUrl && interactionInactiveImageUrl){
+            this.interactionInactiveImage = document.createElement("img");
+            this.interactionInactiveImage.src = interactionInactiveImageUrl;
+            this.interactionActiveImage = document.createElement("img");
+            this.interactionActiveImage.src = interactionActiveImageUrl;
+        }
+
+
         this.setupEventHandlers();
     }
 
@@ -42,7 +70,7 @@ export class HUD extends Displayable {
         // Draw role
         ctx.fillStyle = this.player.toColor();
         ctx.textAlign = "left";
-        ctx.font = "25px sans-serif";
+        ctx.font = "38px sans-serif";
         ctx.fillText(this.player.toString(), 15, canvas.height - 30);
 
         // Draw tasks
@@ -102,11 +130,12 @@ export class HUD extends Displayable {
         ctx.drawImage(this.actionImage, canvas.width - HUD.actionButtonSize - 10, canvas.height - HUD.actionButtonSize - 10, HUD.actionButtonSize, HUD.actionButtonSize);
         ctx.globalAlpha = 1;
 
-        if (HUD.actionPossible) {
-            ctx.textAlign = "center";
-            ctx.font = "30px sans-serif";
-            ctx.fillStyle = "blue";
-            ctx.fillText(`[F] pour ACTION sur ${this.player.playerForAction.pid}`, window.innerWidth / 2, window.innerHeight - 500);
+        if (HUD.actionPossible && this.interactionActiveImage && this.interactionInactiveImage) {
+            ctx.drawImage(this.interactionActiveImage, canvas.width - HUD.actionButtonSize * 2 - 10, canvas.height - HUD.actionButtonSize - 10, HUD.actionButtonSize, HUD.actionButtonSize);
+        }else if(this.interactionActiveImage && this.interactionInactiveImage){
+            ctx.globalAlpha = 0.5;
+            ctx.drawImage(this.interactionInactiveImage, canvas.width - HUD.actionButtonSize * 2 - 10, canvas.height - HUD.actionButtonSize - 10, HUD.actionButtonSize, HUD.actionButtonSize);
+            ctx.globalAlpha = 1;
         }
 
         if (HUD.miniJeu) return;
