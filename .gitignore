@@ -12,3 +12,4 @@ package-lock.json
 config.json
 !/public/maps/officials/*
 !/public/maps/mapTemplate.json
+/public/maps/*.json
