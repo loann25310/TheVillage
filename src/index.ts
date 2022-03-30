@@ -8,8 +8,8 @@ import {Config} from "./entity/Config";
 import * as nunjucks from "nunjucks";
 import * as cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
-import * as http from "http";
-import { createServer } from "https";
+import { createServer as createServerHttp } from "http";
+import { createServer as createServerHttps } from "https";
 import {Server} from "socket.io";
 import {User} from "./entity/User";
 import logger = require("node-color-log");
@@ -49,12 +49,12 @@ createConnection().then(async connection => {
     logger.info("Creating Web Server...");
     const app: Express = express();
     let httpServer;
-    try {
-        const key = readFileSync("/etc/letsencrypt/live/thevillage.lagardedev.fr/privkey.pem");
-        const cert = readFileSync("/etc/letsencrypt/live/thevillage.lagardedev.fr/fullchain.pem");
-        httpServer = createServer({key, cert}, app);
-    } catch (e) {
-        httpServer = http.createServer(app);
+    if(config.server.useSSL){
+        const key = readFileSync(config.server.ssl_key_path);
+        const cert = readFileSync(config.server.ssl_cert_path);
+        httpServer = createServerHttps({key, cert}, app);
+    }else{
+        httpServer = createServerHttp(app);
     }
 
     app.use(express.json());
