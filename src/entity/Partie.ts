@@ -252,4 +252,35 @@ export class Partie {
             this.votes = [];
         }
     }
+
+    async checkVote(io) {
+        let max = {id: -1, nb_votes: -1};
+        let tie = false;
+        let compteur = 0;
+        for (const vote of this.votes) {
+            compteur += vote.nb_votes;
+            if (vote.nb_votes > max.nb_votes) {
+                max = vote;
+                tie = false;
+            } else
+                tie = vote.nb_votes === max.nb_votes && vote.id !== max.id;
+        }
+        if (compteur >= this.players.length - this.deadPlayers.length) {
+            if (!tie) {
+                this.kill(max.id);
+                this.addAction(0, ActionType.EXPELLED, max.id);
+                io.to(this.id).emit("final_kill", [...this.deadPlayers, max.id]);
+            } else {
+                io.to(this.id).emit("final_kill", this.deadPlayers);
+            }
+            this.votes = [];
+            const gagnant = await this.victoire();
+            if (gagnant !== null) {
+                return io.to(this.id).emit("victoire", gagnant);
+            }
+            //Si tout le monde a voté (seulement)
+            this.generateTasks();
+            io.to(this.id).emit("NIGHT");
+        }
+    }
 }
