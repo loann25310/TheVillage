@@ -174,7 +174,6 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                         await partie.checkTasks(io);
                         let gagnant = await partie.victoire();
                         if (gagnant !== null) {
-                            await partie.assignXP(gagnant);
                             return io.to(partie.id).emit("victoire", gagnant);
                         }
                     }

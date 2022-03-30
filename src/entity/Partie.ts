@@ -232,6 +232,7 @@ export class Partie {
         // Tout le monde est dans le même camp, victoire d'un des camps
         this.status = PartieStatus.ENDED;
         await getRepository(Partie).save(this);
+        await this.assignXP(!camp);
         return !camp;
     }
 
@@ -292,15 +293,16 @@ export class Partie {
             if (!user) continue;
             if (!role) {
                 user.xp += 50;
-            }
-            if (this.deadPlayers.includes(p)) {
-                user.xp += ((role.role === Roles.LoupGarou) !== winner) ? 100 : 50;
             } else {
-                user.xp += ((role.role === Roles.LoupGarou) !== winner) ? 200 : 100;
+                if (this.deadPlayers.includes(p)) {
+                    user.xp += ((role.role === Roles.LoupGarou) !== winner) ? 100 : 50;
+                } else {
+                    user.xp += ((role.role === Roles.LoupGarou) !== winner) ? 200 : 100;
+                }
             }
             if (user.xp >= (user.niveau + 1) * 10) {
-                user.niveau ++;
-                user.xp -= (user.niveau + 1) * 10;
+                user.niveau += 1;
+                user.xp -= (user.niveau) * 10;
             }
             await uRepo.save(user);
         }
