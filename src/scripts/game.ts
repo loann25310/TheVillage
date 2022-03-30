@@ -38,7 +38,7 @@ const numeroJoueur = _numeroJoueur as number;
 //@ts-ignore
 const LG = _LG as number[];
 
-const socket = io(`${window.location.protocol === "https" ? "wss" : "ws"}://${window.location.host}`);
+const socket = io(`${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}`);
 
 // @ts-ignore
 let game = _game, players = _players;
@@ -230,12 +230,12 @@ async function init(){
     socket.on("playerMove", (data) => {
         if(data.id === user.id) return;
         let remotePlayer = getPlayerById(data.id);
-        if(!remotePlayer) remotePlayer = addRemotePlayer(data);
-        //remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
-        //remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
-        remotePlayer.slideTo(data.position, player, MOVE_ANTISPAM_DURATION).then(() => {
-            player.updateDistance(data.id);
-        });
+            if (!remotePlayer) remotePlayer = addRemotePlayer(data);
+            //remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
+            //remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
+            remotePlayer.slideTo(data.position, player, MOVE_ANTISPAM_DURATION).then(() => {
+                player.updateDistance(data.id);
+            });
     });
 
     socket.on("revive", id => {
@@ -463,9 +463,14 @@ const moveInterval = setInterval(() => {
 
 
 function sendMessage() {
-    if (input.val() && `${input.val()}`.trim() !== "") {
-        socket.emit('chat_message', user, input.val(), roomName);
-        input.val("");
+    if (player.alive) {
+        if (input.val() && `${input.val()}`.trim() !== "") {
+            socket.emit('chat_message', user, input.val(), roomName);
+            input.val("");
+        }
+    }
+    else {
+        alert("Les morts ne parlent pas");
     }
 }
 
@@ -501,7 +506,6 @@ $(document).on("keydown", function (e){
 });
 
 function set_players(p, index :number) {
-
      let item = $('<div class="player">');
 
      let html = p.avatar.startsWith("#")
@@ -510,9 +514,13 @@ function set_players(p, index :number) {
 
     let name = $(`<span class="pseudo">${p.pseudo}</span>`);
 
+    let role;
+    if (p.role !== undefined) {
+        role = $(`<span class="role">${p.role}</span>`);
+    }
+
     let button;
     if (voteDisponible) {
-        // if (p.alive) {
         button = $('<button class="vote">Vote</button>');
         button.id = index;
         button.on("click", function () {
@@ -523,18 +531,16 @@ function set_players(p, index :number) {
                 socket.emit("aVote", button.id);
             }
         });
-        // }
         // else {
         //     $('<img src="/public/img/grave.jpg" alt="dead">');
         // }
     }
 
-     item.append(html, name, button);
+     item.append(html, name, role, button);
      return item;
 }
 
 function create_players(players) {
-    listeJoueurs.empty();
     for (let i = 0; i < players.length; i++) {
         listeJoueurs.append(set_players(players[i], i));
         let avatar = $(`#avatar_${i}`);

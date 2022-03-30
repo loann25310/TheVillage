@@ -12,9 +12,6 @@ const passport = require("passport");
 
 export function Route(router: Router, io: SocketIOServer, sessionMiddleware: RequestHandler) {
 
-    let votes;
-    let compteurVotes;
-
     router.get('/play/:id', async (req, res, next) => {
 
         let partie = await getRepository(Partie).findOne(req.params.id);
@@ -195,10 +192,10 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             });
             io.to(partie.id).emit(compteur > 0 ? "nb_tasks" : "DAY", compteur);
             if (compteur == 0) {
-                compteurVotes = 0;
-                votes = [];
+                partie.compteurVotes = 0;
+                partie.votes = [];
                 for (let i=0; i<partie.players.length;i++) {
-                    votes[i] = 0;
+                    partie.votes[i] = 0;
                 }
             }
         });
@@ -213,15 +210,15 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         });
 
         socket.on("aVote", async (id) => {
-            compteurVotes ++;
-            votes[id] ++;
+            partie.compteurVotes ++;
+            partie.votes[id] ++;
             let max = 0;
             let index;
-            if (compteurVotes === (partie.players.length - partie.deadPlayers.length)) {
-                for (let i = 0; i < votes.length; i++) {
-                    if (votes[i] > max) {
-                        max = votes[i];
-                        index = i+1;
+            if (partie.compteurVotes === (partie.players.length - partie.deadPlayers.length)) {
+                for (let i = 0; i < partie.votes.length; i++) {
+                    if (partie.votes[i] > max) {
+                        max = partie.votes[i];
+                        index = partie.players[i];
                     }
                 }
                 io.to(partie.id).emit("kill", index);

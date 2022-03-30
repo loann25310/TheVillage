@@ -1,7 +1,6 @@
 import "../styles/choix.css"
 import * as $ from "jquery"
 import {io} from "socket.io-client";
-const socket = io(`${window.location.protocol === "https" ? "wss" : "ws"}://${window.location.host}`);
 
 const join = $("#join")
 const popup = $("#popup")
