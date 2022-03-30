@@ -36,7 +36,7 @@ export class User {
     niveau :number;
 
     @Column({
-        default: 1
+        default: 0
     })
     xp: number;
 
