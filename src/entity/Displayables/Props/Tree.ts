@@ -22,12 +22,13 @@ export class Tree extends Displayable {
         bulletImg.src = `/img/bullet.png`;
         this.jeu = {
             birds: [],
-            mouseX: 0,
-            mouseY: 0,
+            mouseX: innerWidth / 2,
+            mouseY: innerHeight / 2,
             cx: this.miniJeuCanvas.width / 2 + 40,
             cy: this.miniJeuCanvas.height / 2 + 40,
             bullets: Tree.NB_BULLETS,
-            bulletImg
+            bulletImg,
+            lastMs: new Date().getMilliseconds()
         };
         if (!Bird.img1R) {
             Bird.img1R = document.createElement("img");
@@ -52,28 +53,31 @@ export class Tree extends Displayable {
     }
 
     drawJeu() {
+        const d = new Date().getMilliseconds();
+        const inter = (d - this.jeu.lastMs + 1000) % 1000;
+        this.jeu.lastMs = d;
         const ctx = this.miniJeuCanvas.getContext("2d");
         ctx.clearRect(0, 0, this.miniJeuCanvas.width, this.miniJeuCanvas.height);
         ctx.fillStyle = "#000000";
         ctx.fillRect(0, 0, this.miniJeuCanvas.width, this.miniJeuCanvas.height);
         for (const b of this.jeu.birds) {
-            b.move(this.miniJeuCanvas.width);
+            b.move(this.miniJeuCanvas.width, inter);
         }
-        this.moveCrosshair();
+        this.moveCrosshair(inter);
         this.drawCrosshair(ctx);
     }
 
-    moveCrosshair() {
+    moveCrosshair(inter: number) {
         const adjacent = Math.abs(this.jeu.mouseX - this.jeu.cx);
         const oppose = Math.abs(this.jeu.cy - this.jeu.mouseY);
         const angle = Math.atan(oppose / adjacent);
         const dx = Math.cos(angle);
         const dy = Math.sin(angle);
         if (adjacent > 7.07)
-            this.jeu.cx += 10 * (this.jeu.mouseX < this.jeu.cx ? -dx : dx);
+            this.jeu.cx += (inter / 1.8) * (this.jeu.mouseX < this.jeu.cx ? -dx : dx);
         else this.jeu.cx = this.jeu.mouseX;
         if (oppose > 7.07)
-            this.jeu.cy += 10 * (this.jeu.mouseY < this.jeu.cy ? -dy : dy);
+            this.jeu.cy += inter / 1.8 * (this.jeu.mouseY < this.jeu.cy ? -dy : dy);
         else
             this.jeu.cy = this.jeu.mouseY;
     }

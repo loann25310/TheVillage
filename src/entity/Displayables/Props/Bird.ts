@@ -18,7 +18,7 @@ export class Bird extends Displayable {
         this.goesRight = this.cord.x <= 0;
         this.getImg = this.imageGenerator();
         this.decalage = Math.random() * 1000;
-        this.vitesse = Math.random() * 8 + 2;
+        this.vitesse = Math.random() + 2;
     }
 
     getPosition() {
@@ -30,8 +30,8 @@ export class Bird extends Displayable {
         this.ctx.drawImage(this.getImg.next().value, this.getPosition().x, this.getPosition().y, this.size.w, this.size.h);
     }
 
-    move(width: number) {
-        this.cord.x += this.goesRight ? this.vitesse : - this.vitesse;
+    move(width: number, frames) {
+        this.cord.x += (this.goesRight ? this.vitesse : - this.vitesse) * frames / 5;
         this.draw();
         if (this.cord.x + this.size.w >= width && this.goesRight)
             this.goesRight = false;
