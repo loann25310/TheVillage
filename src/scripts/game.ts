@@ -580,6 +580,7 @@ function set_players(p, index :number) {
 }
 
 function create_players(players) {
+    listeJoueurs.empty();
     for (let i = 0; i < players.length; i++) {
         listeJoueurs.append(set_players(players[i], i));
         let avatar = $(`#avatar_${i}`);
