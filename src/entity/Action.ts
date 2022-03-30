@@ -32,7 +32,7 @@ export class Action {
     }
 
     getDate() {
-        return `[${this.time.getHours()} : ${this.time.getMinutes()}] :`;
+        return `[${this.time.getHours()}h${this.time.getMinutes()}] :`;
     }
 
     async toString() {

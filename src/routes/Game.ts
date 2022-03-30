@@ -243,7 +243,11 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         });
 
         socket.on("history", async () => {
-            socket.emit("history", await partie?.getHistory());
+            if (!partie) return;
+            const history = await partie.getHistory();
+            partie.history = history;
+            await getRepository(Partie).save(partie);
+            socket.emit("history", history);
         });
     });
 }

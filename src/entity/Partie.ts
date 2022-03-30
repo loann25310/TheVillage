@@ -79,6 +79,9 @@ export class Partie {
     })
     roles: {uid: number, role: Roles}[];
 
+    @Column()
+    history: string;
+
     idTasks: {id: number, tasks: string[]}[];
 
     deadPlayers: number[];

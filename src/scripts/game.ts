@@ -1,6 +1,7 @@
 import * as $ from 'jquery';
 import "../styles/vote.css";
 import "../styles/task.css";
+import "../styles/history.css";
 import {Player} from "../entity/Displayables/Props/Player";
 import {Environment} from "../entity/Environment";
 import {PlayerMove} from "../entity/types/PlayerMove";
