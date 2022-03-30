@@ -4,6 +4,8 @@ import {Server} from "socket.io";
 import {createRoom, disconnect, getAvailableRoom, joinRoom, show_Room} from "./lobby_server";
 import {getRepository} from "typeorm";
 import {Partie} from "../entity/Partie";
+import * as path from "path";
+import * as fs from "fs";
 
 export function Route(router: Router, io: Server) {
 
@@ -106,22 +108,6 @@ export function Route(router: Router, io: Server) {
             io.to(`${room.id}`).emit("change_max_players", nb);
         });
 
-        socket.on("duree_vote", async (roomId, playerId, val) => {
-            let room = await repo.findOne(roomId);
-            if (playerId !== room.gameMaster) return io.to(roomId).emit("game_master", room.gameMaster);
-            room.dureeVote = val;
-            await repo.save(room);
-            io.to(`${room.id}`).emit("duree_vote", val);
-        });
-
-        socket.on("duree_nuit", async (roomId, playerId, val) => {
-            let room = await repo.findOne(roomId);
-            if (playerId !== room.gameMaster) return io.to(roomId).emit("game_master", room.gameMaster);
-            room.dureeNuit = val;
-            await repo.save(room);
-            io.to(`${room.id}`).emit("duree_nuit", val);
-        });
-
         socket.on("start_game", async (roomId, uid) => {
             let room = await repo.findOne(roomId);
             if (uid !== room.gameMaster) return io.to(roomId).emit("game_master", room.gameMaster);
@@ -169,7 +155,26 @@ export function Route(router: Router, io: Server) {
 
         socket.on("get_game_master", room => {
             getRepository(Partie).findOne(room).then(r => {
+                if (!r) return;
                 io.to(room).emit("game_master", r.gameMaster);
+            });
+        });
+
+        socket.on("get_maps", room => {
+            const map_path = path.join(__dirname, "../../public/maps/officials/");
+            fs.readdir(map_path, (err, files) => {
+                if (err) return io.to(room).emit("maps", ["The_village"]);
+                const arr = files.map(f => f.split(".json")[0]);
+                io.to(room).emit("maps", arr);
+            });
+        });
+
+        socket.on("change_map", (room, map) => {
+            getRepository(Partie).findOne(room).then(r => {
+                if (!r) return;
+                r.map = map;
+                io.to(room).emit("change_map", map);
+                getRepository(Partie).save(r);
             });
         });
     });

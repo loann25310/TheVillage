@@ -132,9 +132,9 @@ export class Partie {
     getMap(fs, path): Map {
         try {
             if(this.map !== "")
-                return JSON.parse(fs.readFileSync(path.resolve(__dirname, `../../public/maps/map_${this.map}.json`), "utf-8")) as Map;
+                return JSON.parse(fs.readFileSync(path.resolve(__dirname, `../../public/maps/officials/${this.map}.json`), "utf-8")) as Map;
         } catch (e) {}
-        return JSON.parse(fs.readFileSync(path.resolve(__dirname, `../../public/maps/map_Soutenance.json`), "utf-8")) as Map;
+        return JSON.parse(fs.readFileSync(path.resolve(__dirname, `../../public/maps/officials/The_village.json`), "utf-8")) as Map;
     }
 
     /**
