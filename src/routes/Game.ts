@@ -25,8 +25,10 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             if (p) {
                 p.kill(user.id);
                 const t = p.idTasks.find(p => p.id === user.id);
-                if (t) t.tasks = [];
-                p.checkTasks(io);
+                if (t.tasks.length !== 0) {
+                    if (t) t.tasks = [];
+                    p.checkTasks(io);
+                }
             }
             return res.redirect("/?err=game_already_started");
         }
