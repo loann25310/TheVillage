@@ -79,6 +79,9 @@ export class Partie {
     })
     roles: {uid: number, role: Roles}[];
 
+    @Column()
+    history: string;
+
     idTasks: {id: number, tasks: string[]}[];
 
     deadPlayers: number[];
@@ -174,7 +177,7 @@ export class Partie {
      * Returns an HTML string containing every action done during the game as a list
      */
     async getHistory(): Promise<string> {
-        if (!this.actions) return "<div>Error : impossible to read the history</div>";
+        if (!this.actions) return "<div>Aucun historique n'est disponible pour cette partie.</div>";
         let html = "<ul>";
         for (const a of this.actions) {
             let li = `<li style="color: ${a.color}">`;
@@ -234,5 +237,23 @@ export class Partie {
         this.status = PartieStatus.ENDED;
         await getRepository(Partie).save(this);
         return !camp;
+    }
+
+    checkTasks(io) {
+        let compteur = 0;
+        if (!this.idTasks) return;
+        this.idTasks.forEach(t => {
+            //Ne prends pas en compte les tâches des joueurs morts
+            if (this.deadPlayers.includes(t.id)) return;
+            compteur += t.tasks.length;
+        });
+        io.to(this.id).emit(compteur > 0 ? "nb_tasks" : "DAY", compteur);
+        if (compteur == 0) {
+            this.compteurVotes = 0;
+            this.votes = [];
+            for (let i=0; i<this.players.length;i++) {
+                this.votes[i] = 0;
+            }
+        }
     }
 }

@@ -19,6 +19,23 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         if(!partie) return next();
         if (partie.status === PartieStatus.ENDED) return res.redirect("/");
         const user = req.user as User;
+        if (partie.status > PartieStatus.STARTING) {
+            const p = findPartie(partie.id);
+            partie.removeInGamePlayer(user);
+            if (p) {
+                p.kill(user.id);
+                const t = p.idTasks.find(p => p.id === user.id);
+                if (t.tasks.length !== 0) {
+                    if (t) t.tasks = [];
+                    p.checkTasks(io);
+                }
+                const winner = await p.victoire();
+                if (winner !== null) {
+                    io.to(partie.id).emit("victoire", winner);
+                }
+            }
+            return res.redirect("/?err=game_already_started");
+        }
         let role = (partie.roles.filter(p => p.uid === user.id))[0]?.role;
         if (!role) role = Roles.Villageois;
         const LG = role === Roles.LoupGarou ? (partie.roles.filter(p => p.role === Roles.LoupGarou)).map(p => {
@@ -126,6 +143,8 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 position: data.position,
                 index: data.index
             });
+            partie.status = PartieStatus.STARTED;
+            await getRepository(Partie).save(partie);
         });
 
         socket.on("disconnect", () => {
@@ -151,6 +170,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                         partie.revive(data.data.player);
                     else {
                         partie.kill(data.data.player);
+                        partie.checkTasks(io);
                         let gagnant = await partie.victoire();
                         if (gagnant !== null) {
                             return io.to(partie.id).emit("victoire", gagnant);
@@ -168,6 +188,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                     if (gagnant !== null) {
                         return io.to(partie.id).emit("victoire", gagnant);
                     }
+                    partie.checkTasks(io);
                     return io.to(partie.id).emit("kill", data.data.player);
             }
         });
@@ -184,20 +205,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             if (index === -1) return;
             partie.idTasks.find(p => p.id === id).tasks.splice(index, 1);
 
-            let compteur = 0;
-            partie.idTasks.forEach(t => {
-                //Ne prends pas en compte les tâches des joueurs morts
-                if (partie.deadPlayers.includes(t.id)) return;
-                compteur += t.tasks.length;
-            });
-            io.to(partie.id).emit(compteur > 0 ? "nb_tasks" : "DAY", compteur);
-            if (compteur == 0) {
-                partie.compteurVotes = 0;
-                partie.votes = [];
-                for (let i=0; i<partie.players.length;i++) {
-                    partie.votes[i] = 0;
-                }
-            }
+            partie.checkTasks(io);
         });
 
         socket.on("get_tasks", async (id) => {
@@ -235,7 +243,11 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         });
 
         socket.on("history", async () => {
-            socket.emit("history", await partie?.getHistory());
+            if (!partie) return;
+            const history = await partie.getHistory();
+            partie.history = history;
+            await getRepository(Partie).save(partie);
+            socket.emit("history", history);
         });
     });
 }

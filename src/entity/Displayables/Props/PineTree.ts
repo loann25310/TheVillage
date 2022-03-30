@@ -20,11 +20,12 @@ export class PineTree extends Displayable {
             this.handleMouseMove(e)
         });
         this.jeu = {
-            mouseX: null,
+            mouseX: innerWidth / 2,
             pommes : [] as PineCone[],
             compteur: 0,
             hauteur: -50,
-            gain: 10
+            gain: 10,
+            lastMs: new Date().getMilliseconds()
         };
         for (let i = 0; i < 10; i++) {
             this.jeu.pommes.push(new PineCone(this.miniJeuCanvas.getContext("2d"), {
@@ -36,6 +37,9 @@ export class PineTree extends Displayable {
     }
 
     drawJeu() {
+        const d = new Date().getMilliseconds();
+        const inter = (d - this.jeu.lastMs + 1000) % 1000;
+        this.jeu.lastMs = d;
         const ctx = this.miniJeuCanvas.getContext("2d");
         ctx.clearRect(0, 0, this.miniJeuCanvas.width, this.miniJeuCanvas.height);
         ctx.beginPath();
@@ -52,7 +56,7 @@ export class PineTree extends Displayable {
             pomme.draw();
             pomme.setCord({
                 x: pomme.cord.x,
-                y: pomme.cord.y+10
+                y: pomme.cord.y + inter / 1.5
             });
             if (pomme.cord.y >= this.miniJeuCanvas.height) {
                 this.initJeu();
