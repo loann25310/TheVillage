@@ -6,6 +6,7 @@ import {Roles} from "../../types/Roles";
 import {ObjectType} from "../../types/ObjectType";
 import {UserColor} from "../../User";
 import {Config} from "../../Config";
+import Timer = NodeJS.Timer;
 
 export abstract class Player extends Displayable {
 
@@ -380,12 +381,12 @@ export abstract class Player extends Displayable {
                         this.x += delta.x;
                         this.y += delta.y;
                         this.image = this.getImg.next().value as HTMLImageElement;
-                    }, i));
+                    }, i) as unknown as NodeJS.Timer);
                 } else {
                     this.sliders.push(setTimeout(() => {
                         this.x += delta.x;
                         this.y += delta.y;
-                    }, i));
+                    }, i) as unknown as NodeJS.Timer);
                 }
             }
             this.sliders.push(setTimeout(() => {
@@ -394,7 +395,7 @@ export abstract class Player extends Displayable {
                 resolve(coordonnes);
                 this.image = this.getImg.next().value as HTMLImageElement;
                 this.sliders.splice(0, this.sliders.length);
-            }, duration));
+            }, duration) as unknown as NodeJS.Timer);
         });
     }
 
