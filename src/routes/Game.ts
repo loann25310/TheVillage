@@ -51,18 +51,13 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
         let players = await game.getPlayers();
         let users = [];
         for (let p of players) {
-            users.push({
-                id: p.id,
-                pseudo: p.pseudo,
-                nbPartiesJouees: p.nbPartiesJouees,
-                nbPartiesGagnees: p.nbPartiesGagnees,
-                niveau: p.niveau,
-                avatar: p.avatar
-            });
+            let u = await getRepository(User).findOne(p.id);
+            p.color = u.color;
+            users.push(u);
         }
         io.to(roomId).emit("players", users);
-        res.render("game/main", {
 
+        res.render("game/main", {
             partie,
             map: partie.getMap(fs, path),
             role,
@@ -141,7 +136,8 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 id: user.id,
                 pseudo: user.pseudo,
                 position: data.position,
-                index: data.index
+                index: data.index,
+                color: data.color
             });
             partie.status = PartieStatus.STARTED;
             await getRepository(Partie).save(partie);
@@ -157,7 +153,8 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             io.to(partie.id).emit("playerMove", {
                 id: user.id,
                 position: data.position,
-                index: data.index
+                index: data.index,
+                color: user.color
             });
         });
 
