@@ -18,6 +18,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
 
         if(!partie) return next();
         if (partie.status === PartieStatus.ENDED) return res.redirect("/");
+        if (partie.status > PartieStatus.STARTING) return res.redirect("/?err=game_already_started");
         const user = req.user as User;
         let role = (partie.roles.filter(p => p.uid === user.id))[0]?.role;
         if (!role) role = Roles.Villageois;
@@ -126,6 +127,8 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 position: data.position,
                 index: data.index
             });
+            partie.status = PartieStatus.STARTED;
+            await getRepository(Partie).save(partie);
         });
 
         socket.on("disconnect", () => {
