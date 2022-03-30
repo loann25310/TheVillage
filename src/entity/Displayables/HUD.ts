@@ -4,6 +4,7 @@ import {Task} from "../Task";
 import {LoupGarou} from "../roles/LoupGarou";
 import {Sorciere} from "../roles/Sorciere";
 import {Voyante} from "../roles/Voyante";
+import {Roles} from "../types/Roles";
 
 export class HUD extends Displayable {
 
@@ -68,11 +69,32 @@ export class HUD extends Displayable {
         const tasks: Task[] = [];
 
         // Draw role
+        ctx.fillStyle = "rgba(255,255,255,0.8)";
+        ctx.fillRect(0, canvas.height - 120, 400, 120);
+        ctx.fillRect(canvas.width - HUD.actionButtonSize * 2 - 30, canvas.height - HUD.actionButtonSize - 30, HUD.actionButtonSize * 2 + 30, HUD.actionButtonSize + 30);
         ctx.fillStyle = this.player.toColor();
         ctx.textAlign = "left";
+        ctx.textBaseline = "top";
         ctx.font = "38px sans-serif";
-        ctx.fillText(this.player.toString(), 15, canvas.height - 30);
+        ctx.fillText(this.player.toString(), 15, canvas.height - 100);
 
+        ctx.font = "24px sans-serif";
+        switch (this.player.role) {
+            case Roles.Villageois:
+                break;
+            case Roles.Chasseur:
+                break;
+            case Roles.LoupGarou:
+                break;
+            case Roles.Sorciere:
+
+                break;
+            case Roles.Voyante:
+                ctx.fillText(`Boule(s) de crystal restante(s) : ${(this.player as Voyante).nb_boules}`, 15, canvas.height - 50);
+                break;
+        }
+
+        ctx.textBaseline = "alphabetic";
         // Draw tasks
         for (const interaction of this.player.environment.interactions) {
             if (!interaction) continue;
@@ -162,7 +184,7 @@ export class HUD extends Displayable {
                 let angle = Math.atan(grande_distance_y / grande_distance_x);
 
                 x = Math.max(Math.min(inter.getPosition().x, this.player.getDrawnPosition().x + window.innerWidth / 2 - 70), this.player.getDrawnPosition().x - window.innerWidth / 2 + 70);
-                y = Math.max(Math.min(inter.getPosition().y, this.player.getDrawnPosition().y + window.innerHeight / 2 - 70), this.player.getDrawnPosition().y - window.innerHeight / 2 + 140);
+                y = Math.max(Math.min(inter.getPosition().y, this.player.getDrawnPosition().y + window.innerHeight / 2 - 140), this.player.getDrawnPosition().y - window.innerHeight / 2 + 140);
 
                 if (x <= (window.innerWidth / 2)) angle += Math.PI;
                 ctx.translate(x, y);
@@ -182,6 +204,15 @@ export class HUD extends Displayable {
 
         canvas.addEventListener("click", (e) => {
             if(!e.isTrusted) return;
+
+            if(
+                (e.clientX >= canvas.width - HUD.actionButtonSize * 2 - 10 && e.clientX <= canvas.width - HUD.actionButtonSize - 10) &&
+                (e.clientY >= canvas.height - HUD.actionButtonSize - 10 && e.clientY <= canvas.height - 10) &&
+                (!HUD.actionPossible)
+            ){
+                HUD.actionPossible = false;
+                this.player.action(this.player.playerForAction);
+            }
 
             if(
                 (e.clientX >= canvas.width - HUD.actionButtonSize - 10 && e.clientX <= canvas.width - 10) &&
