@@ -25,6 +25,7 @@ import {House} from "../entity/Displayables/Props/House";
 import {PineTree} from "../entity/Displayables/Props/PineTree";
 import {Tree} from "../entity/Displayables/Props/Tree";
 import {TreeStump} from "../entity/Displayables/Props/TreeStump";
+import {serializeUser} from "passport";
 
 // @ts-ignore
 const partie = _partie as Partie;
@@ -408,6 +409,11 @@ function draw() {
 }
 draw();
 
+setTimeout(() => {
+    if (player.role === Roles.LoupGarou) return;
+    if (player.environment.interactions.length === 0)
+        socket.emit("get_tasks", player.pid);
+}, 3000);
 
 const keys = [];
 window.addEventListener("keydown",function(e){ keys["KEY_" + e.key.toUpperCase()] = true },false);
