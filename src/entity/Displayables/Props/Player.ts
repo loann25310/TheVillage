@@ -5,6 +5,7 @@ import {Map} from "../../Map";
 import {Roles} from "../../types/Roles";
 import {ObjectType} from "../../types/ObjectType";
 import {UserColor} from "../../User";
+import {Config} from "../../Config";
 
 export abstract class Player extends Displayable {
 
@@ -205,6 +206,19 @@ export abstract class Player extends Displayable {
         this.ctx.fillStyle = "#fff";
         this.ctx.fillRect(this.getDrawnPosition().x, this.getDrawnPosition().y + this.size.h - 5, this.size.w, 40 );
         this.ctx.textAlign = "center";
+
+        this.ctx.font = "16px sans-serif";
+        if (!this.isLocal && this.role) {
+            this.ctx.fillStyle = this.role === Roles.LoupGarou ? "red" : "blue";
+            this.ctx.fillText(this.toString(), this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y - 15);
+        }else if(!this.isLocal){
+            this.ctx.fillStyle = "blue";
+            this.ctx.fillText(this.toString(), this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y - 15);
+        }
+
+        // Escape if not in debug
+        if(Config.CONFIGURATION.env !== "debug") return;
+
         if(this.isLocal) {
             this.ctx.fillStyle = "#0080ff";
         }
@@ -213,10 +227,6 @@ export abstract class Player extends Displayable {
         this.ctx.fillText(`[ PID : ${this.pid} ]`, this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y + this.size.h + 5);
         this.ctx.fillText(`{ x: ${this.cord.x}, y: ${this.cord.y} }`, this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y + this.size.h + 18);
         this.ctx.fillText(`{ x: ${this.getDrawnPosition().x}, y: ${this.getDrawnPosition().y} }`, this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y + this.size.h + 29);
-        if (!this.isLocal && this.role !== null && this.role !== undefined) {
-            this.ctx.fillStyle = this.role === Roles.LoupGarou ? "red" : "blue";
-            this.ctx.fillText(this.toString(), this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y - 15);
-        }
     }
 
     checkInteractions() {

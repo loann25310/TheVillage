@@ -10,4 +10,6 @@ export class Config {
         ssl_cert_path: string
     };
 
+    static CONFIGURATION: Config;
+
 }
