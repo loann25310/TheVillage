@@ -37,6 +37,10 @@ export class Sorciere extends Player {
         return "Sorcière";
     }
 
+    getDescription(): string {
+        return `Vous faites partie du camp des villageois.<br> Vous possédez 1 potion de vie pour ressusciter une personne, et une potion de mort pour en tuer une.`;
+    }
+
     toColor(): string {
         return "rgb(12,211,82)";
     }

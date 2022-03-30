@@ -390,6 +390,10 @@ export abstract class Player extends Displayable {
         return "Rôle inconnu";
     }
 
+    getDescription() {
+        return "Pas de description";
+    }
+
     toColor(): string {
         return "rgb(0,0,0)";
     }

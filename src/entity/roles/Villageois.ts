@@ -18,6 +18,10 @@ export class Villageois extends Player {
         return "Villageois";
     }
 
+    getDescription(): string {
+        return "Vous faites partie du camp des villageois.<br> Vous ne possédez pas de capacités spéciales, mais êtes très fort à la pétanque.";
+    }
+
     toColor(): string {
         return "rgb(12,204,211)";
     }

@@ -38,6 +38,10 @@ export class Chasseur extends Player {
         return "Chasseur";
     }
 
+    getDescription(): string {
+        return "Vous faites partie du camp des villageois. <br>Quand vous mourrez, vous aurez la possibilité de tuer la personne de votre choix lors du vote du village.";
+    }
+
     toColor(): string {
         return "rgb(204,211,12)";
     }

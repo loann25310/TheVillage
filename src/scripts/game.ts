@@ -25,7 +25,6 @@ import {House} from "../entity/Displayables/Props/House";
 import {PineTree} from "../entity/Displayables/Props/PineTree";
 import {Tree} from "../entity/Displayables/Props/Tree";
 import {TreeStump} from "../entity/Displayables/Props/TreeStump";
-import {serializeUser} from "passport";
 
 // @ts-ignore
 const partie = _partie as Partie;
@@ -158,7 +157,12 @@ player.setCord({
     y : -(canvas.height-Player.defaultSize.h) / 2
 });
 const player_hud = new HUD({canvas, player});
-
+const $get_role = $("#get_role");
+const $role = $("#role");
+$role.text(player.toString());
+$("#description_role").html(player.getDescription());
+$get_role.on("click", ()=> {$get_role.hide(1000);});
+setTimeout(()=> {$get_role.hide(1);}, 10_000);
 let night = true;
 let voteDisponible = false;
 

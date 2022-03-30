@@ -3,7 +3,7 @@ import {Coordinate} from "../types/Coordinate";
 import {Roles} from "../types/Roles";
 
 export class Voyante extends Player {
-    public static readonly NB_BOULES_CRISTAL = 50;
+    public static readonly NB_BOULES_CRISTAL = 3;
     public nb_boules: number;
     DISTANCE_FOR_ACTION = 300;
 
@@ -24,6 +24,10 @@ export class Voyante extends Player {
 
     toString(): string {
         return "Voyante";
+    }
+
+    getDescription(): string {
+        return `Vous faites partie du camp des villageois.<br>Vous possédez ${Voyante.NB_BOULES_CRISTAL} boule(s) de cristal qui vous permettent de connaître le rôle d'un autre joueur.`;
     }
 
     toColor(): string {
