@@ -45,6 +45,7 @@ async function save_game(game: Partie) {
         await gameRepo.save(game);
     }
     catch (e) {
+        console.error(e);
         await save_game(game);
     }
 }

@@ -40,6 +40,7 @@ logger.info("Starting The Village");
 
 logger.info("Loading configuration...");
 const config = JSON.parse(readFileSync(resolvePath(__dirname, '../config.json'), 'utf-8')) as Config;
+Config.CONFIGURATION = config;
 logger.info("Configuration loaded !");
 
 logger.info("Connecting to database...");

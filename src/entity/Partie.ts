@@ -80,7 +80,7 @@ export class Partie {
     roles: {uid: number, role: Roles}[];
 
     @Column()
-    history: string;
+    history: string = "";
 
     idTasks: {id: number, tasks: string[]}[];
 

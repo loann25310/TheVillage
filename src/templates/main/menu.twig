@@ -3,45 +3,31 @@
 {% block title %}Menu principal{% endblock %}
 
 {% block body %}
+    <div class="section">
 
-
-
-        <div class="header">
-            <div class="container">
-
-
+        <div class="gradient-div">
+            <div class="title">
+                <h1>The Village</h1>
             </div>
-        </div>
-        <div class="title">
-            <div class="container" id="title">
-                <h2>The Village Don't Trust Anyone</h2>
-            </div>
-        </div>
-        <div class="section">
-            <div class="container" id="middle">
+            <div class="btn-container">
                 {% if user is defined %}
-
-                <button class="bt"  onclick="location.href='/choice'">Jouer</button>
-                <button class="bt" onclick="location.href='/options'">Options</button>
-                <button class="bt"  onclick="location.href='/profil'">Profil</button>
-                    <button class="bt" onclick="location.href='/logout'">Se Déconnecter</button>
-                    <p id="uid" style="display: none">{{ user }}</p>
+                    <button class="playBtn" onclick="location.href='/choice'"><i class="icon fas fa-play"></i> Jouer</button>
+                    <button onclick="location.href='/profil'"><i class="icon fas fa-address-card"></i> Profil</button>
+                    <button onclick="location.href='/options'"><i class="icon fas fa-cogs"></i> Options</button>
                 {% else %}
-                    <button class="bt" id="play" onclick="location.href='/auth'">Jouer</button>
-                    <button class="bt" onclick="location.href='/auth'">Options</button>
-                    <button class="bt"  onclick="location.href='/auth'">Profil</button>
-                    <button class="bt" onclick="location.href='/auth'">Se Connecter</button>
-
+                    <button class="playBtn" onclick="location.href='/auth'"><i class="icon fas fa-sign-in-alt"></i> Se connecter</button>
                 {% endif %}
-                <button class="bt" onclick="location.href='/credits'">Crédits</button>
-
-
+                <button onclick="location.href='/credits'"><i class="icon fas fa-align-center"></i> Crédits</button>
+                {% if user is defined %}
+                    <button onclick="location.href='/logout'"><i class="icon fas fa-sign-out-alt"></i> Déconnexion</button>
+                {% endif %}
             </div>
         </div>
-        <div class="footer">
-            <img src="/img/iut.png">
-            <p>&copy; 2021 The Village</p>
-        </div>
+    </div>
+
+    <div class="copyrights">
+        <p><img src="/img/iut.png" id="logoIUT"> IUT Belfort-Montbéliard - © 2020-2021</p>
+    </div>
 
 {% endblock %}
 {% block javascripts %}

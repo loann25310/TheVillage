@@ -10,11 +10,21 @@
         <button id="son">
             <i class="fas fa-volume-up color-green"></i>
         </button>
-
-        <h1>Avatar</h1>
+        <div style="display: grid; height: 200px;grid-template-columns: 200px; grid-template-rows: repeat(6, 1fr);">
+            <div>
+            <h1>Avatar</h1>
             <span id="avatar"></span>
             <span id="avatar_pic"></span>
             <button id="changeavatar" class="changement_information" type="button">changer l'avatar</button>
+            </div>
+
+            <div style="grid-column: 2/4">
+            <h1>Personnage</h1>
+            <span id="perso"></span>
+            <span id="perso_pic"></span>
+            <button id="changeperso" class="changement_information" type="button">changer la couleur du perso</button>
+            </div>
+        </div>
 
         <h1>Pseudo</h1>
             <span id="pseudo">{{ user.pseudo }}</span>

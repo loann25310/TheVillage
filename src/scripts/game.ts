@@ -7,7 +7,7 @@ import {Environment} from "../entity/Environment";
 import {PlayerMove} from "../entity/types/PlayerMove";
 import {io} from "socket.io-client";
 import {Partie} from "../entity/Partie";
-import {User} from "../entity/User";
+import {User, UserColor} from "../entity/User";
 import {Coordinate} from "../entity/types/Coordinate";
 import {Villageois} from "../entity/roles/Villageois";
 import {Map} from "../entity/Map";
@@ -71,18 +71,21 @@ let ctx = canvas.getContext('2d');
 canvas.width  = window.innerWidth;
 canvas.height = window.innerHeight;
 
-Player.imgL1 = document.createElement("img");
-Player.imgL1.src = `/img/Bonhomme2L.png`;
-Player.imgR1 = document.createElement("img");
-Player.imgR1.src = `/img/Bonhomme2R.png`;
-Player.imgL2 = document.createElement("img");
-Player.imgL2.src = `/img/Bonhomme1L.png`;
-Player.imgR2 = document.createElement("img");
-Player.imgR2.src = `/img/Bonhomme1R.png`;
-Player.imgL3 = document.createElement("img");
-Player.imgL3.src = `/img/Bonhomme3L.png`;
-Player.imgR3 = document.createElement("img");
-Player.imgR3.src = `/img/Bonhomme3R.png`;
+for (let p of players) {
+    p.imgL1 = document.createElement("img");
+    p.imgL1.src = "/img/Bonhomme-2/Bonhomme2-"+p.color+"-L.png";
+    p.imgR1 = document.createElement("img");
+    p.imgR1.src = "/img/Bonhomme-2/Bonhomme2-"+p.color+".png";
+    p.imgL2 = document.createElement("img");
+    p.imgL2.src = "/img/Bonhomme-1/Bonhomme1-"+p.color+"-L.png";
+    p.imgR2 = document.createElement("img");
+    p.imgR2.src = "/img/Bonhomme-1/Bonhomme1-"+p.color+".png";
+    p.imgL3 = document.createElement("img");
+    p.imgL3.src = "/img/Bonhomme-3/Bonhomme3-"+p.color+"-L.png";
+    p.imgR3 = document.createElement("img");
+    p.imgR3.src = "/img/Bonhomme-3/Bonhomme3-"+p.color+".png";
+}
+
 Player.deadimgL1 = document.createElement("img");
 Player.deadimgL1.src = `/img/dead2L.png`;
 Player.deadimgR1 = document.createElement("img");
@@ -156,6 +159,22 @@ player.setCord({
     x : -(canvas.width-Player.defaultSize.w) / 2,
     y : -(canvas.height-Player.defaultSize.h) / 2
 });
+player.color = user.color;
+
+player.imgL1 = document.createElement("img");
+player.imgL1.src = "/img/Bonhomme-2/Bonhomme2-"+user.color+"-L.png";
+player.imgR1 = document.createElement("img");
+player.imgR1.src = "/img/Bonhomme-2/Bonhomme2-"+user.color+".png";
+player.imgL2 = document.createElement("img");
+player.imgL2.src = "/img/Bonhomme-1/Bonhomme1-"+user.color+"-L.png";
+player.imgR2 = document.createElement("img");
+player.imgR2.src = "/img/Bonhomme-1/Bonhomme1-"+user.color+".png";
+player.imgL3 = document.createElement("img");
+player.imgL3.src = "/img/Bonhomme-3/Bonhomme3-"+user.color+"-L.png";
+player.imgR3 = document.createElement("img");
+player.imgR3.src = "/img/Bonhomme-3/Bonhomme3-"+user.color+".png";
+player.image = player.getImg.next().value as HTMLImageElement;
+
 const player_hud = new HUD({canvas, player});
 const $get_role = $("#get_role");
 const $role = $("#role");
@@ -187,15 +206,29 @@ async function init(){
     // Init HUD in environment
     environment.addToLayer(150, player_hud);
 
-    function addRemotePlayer(data: {id: number, position: Coordinate, index: number}): Player {
+    function addRemotePlayer(data: {id: number, position: Coordinate, index: number, color: UserColor}): Player {
         let remotePlayer = new Villageois(ctx, environment, data.position, Player.defaultSize, map, data.index);
         remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
         remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
         remotePlayer.pid = data.id;
+        remotePlayer.color = data.color;
         OTHER_PLAYERS.push(remotePlayer);
         player.addOtherPlayer(remotePlayer);
         environment.addToLayer(100, remotePlayer);
         remotePlayer.role = LG.includes(remotePlayer.pid) ? Roles.LoupGarou : null;
+        remotePlayer.imgL1 = document.createElement("img");
+        remotePlayer.imgL1.src = "/img/Bonhomme-2/Bonhomme2-"+remotePlayer.color+"-L.png";
+        remotePlayer.imgR1 = document.createElement("img");
+        remotePlayer.imgR1.src = "/img/Bonhomme-2/Bonhomme2-"+remotePlayer.color+".png";
+        remotePlayer.imgL2 = document.createElement("img");
+        remotePlayer.imgL2.src = "/img/Bonhomme-1/Bonhomme1-"+remotePlayer.color+"-L.png";
+        remotePlayer.imgR2 = document.createElement("img");
+        remotePlayer.imgR2.src = "/img/Bonhomme-1/Bonhomme1-"+remotePlayer.color+".png";
+        remotePlayer.imgL3 = document.createElement("img");
+        remotePlayer.imgL3.src = "/img/Bonhomme-3/Bonhomme3-"+remotePlayer.color+"-L.png";
+        remotePlayer.imgR3 = document.createElement("img");
+        remotePlayer.imgR3.src = "/img/Bonhomme-3/Bonhomme3-"+remotePlayer.color+".png";
+        remotePlayer.image = remotePlayer.getImg.next().value as HTMLImageElement;
         return remotePlayer;
     }
 
@@ -206,7 +239,8 @@ async function init(){
     socket.emit("joinPartie", {
         gameId: partie.id,
         position: player.getPosition(),
-        index: numeroJoueur
+        index: numeroJoueur,
+        color: player.color
     });
     socket.on("playerJoin", (data) => {
         if(data.id === user.id) {
@@ -236,12 +270,12 @@ async function init(){
     socket.on("playerMove", (data) => {
         if(data.id === user.id) return;
         let remotePlayer = getPlayerById(data.id);
-            if (!remotePlayer) remotePlayer = addRemotePlayer(data);
-            //remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
-            //remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
-            remotePlayer.slideTo(data.position, player, MOVE_ANTISPAM_DURATION).then(() => {
-                player.updateDistance(data.id);
-            });
+        if (!remotePlayer) remotePlayer = addRemotePlayer(data);
+        //remotePlayer.x = data.position.x - Player.defaultSize.w / 2;
+        //remotePlayer.y = data.position.y - Player.defaultSize.h / 2;
+        remotePlayer.slideTo(data.position, player, MOVE_ANTISPAM_DURATION).then(() => {
+            player.updateDistance(data.id);
+        });
     });
 
     socket.on("revive", id => {
@@ -254,7 +288,6 @@ async function init(){
     });
 
     socket.on("kill", id => {
-        console.log(id);
         if (id === player.pid)
             return player.die();
         for (const p of OTHER_PLAYERS) {
@@ -332,7 +365,6 @@ async function init(){
         tasks.tasks.forEach(t => {
             let index;
             index = environment.possibleInteractions.findIndex(p => p.name === t);
-            console.log(index, environment.possibleInteractions, t);
             if (index === -1) return;
             environment.interactions.push(environment.possibleInteractions.splice(index, 1)[0]);
         });
@@ -539,7 +571,6 @@ function set_players(p, index :number) {
             if (voteDisponible) {
                 button.hide();
                 voteDisponible = false;
-                console.log(button.id);
                 socket.emit("aVote", button.id);
             }
         });
@@ -553,6 +584,7 @@ function set_players(p, index :number) {
 }
 
 function create_players(players) {
+    listeJoueurs.empty();
     for (let i = 0; i < players.length; i++) {
         listeJoueurs.append(set_players(players[i], i));
         let avatar = $(`#avatar_${i}`);

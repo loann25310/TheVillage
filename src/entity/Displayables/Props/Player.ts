@@ -4,15 +4,17 @@ import {Coordinate} from "../../types/Coordinate";
 import {Map} from "../../Map";
 import {Roles} from "../../types/Roles";
 import {ObjectType} from "../../types/ObjectType";
+import {UserColor} from "../../User";
+import {Config} from "../../Config";
 
 export abstract class Player extends Displayable {
 
-    public static imgR1: HTMLImageElement;
-    public static imgR2: HTMLImageElement;
-    public static imgR3: HTMLImageElement;
-    public static imgL1: HTMLImageElement;
-    public static imgL2: HTMLImageElement;
-    public static imgL3: HTMLImageElement;
+    public imgR1: HTMLImageElement;
+    public imgR2: HTMLImageElement;
+    public imgR3: HTMLImageElement;
+    public imgL1: HTMLImageElement;
+    public imgL2: HTMLImageElement;
+    public imgL3: HTMLImageElement;
     public static deadimgR1: HTMLImageElement;
     public static deadimgR2: HTMLImageElement;
     public static deadimgR3: HTMLImageElement;
@@ -38,6 +40,7 @@ export abstract class Player extends Displayable {
     abstract DISTANCE_FOR_ACTION: number;
     playerForAction: Player;
     private readonly sliders: NodeJS.Timer[];
+    color: UserColor;
 
     public x;
     public y;
@@ -203,6 +206,19 @@ export abstract class Player extends Displayable {
         this.ctx.fillStyle = "#fff";
         this.ctx.fillRect(this.getDrawnPosition().x, this.getDrawnPosition().y + this.size.h - 5, this.size.w, 40 );
         this.ctx.textAlign = "center";
+
+        this.ctx.font = "16px sans-serif";
+        if (!this.isLocal && this.role) {
+            this.ctx.fillStyle = this.role === Roles.LoupGarou ? "red" : "blue";
+            this.ctx.fillText(this.toString(), this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y - 15);
+        }else if(!this.isLocal){
+            this.ctx.fillStyle = "blue";
+            this.ctx.fillText(this.toString(), this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y - 15);
+        }
+
+        // Escape if not in debug
+        if(Config.CONFIGURATION.env !== "debug") return;
+
         if(this.isLocal) {
             this.ctx.fillStyle = "#0080ff";
         }
@@ -211,10 +227,6 @@ export abstract class Player extends Displayable {
         this.ctx.fillText(`[ PID : ${this.pid} ]`, this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y + this.size.h + 5);
         this.ctx.fillText(`{ x: ${this.cord.x}, y: ${this.cord.y} }`, this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y + this.size.h + 18);
         this.ctx.fillText(`{ x: ${this.getDrawnPosition().x}, y: ${this.getDrawnPosition().y} }`, this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y + this.size.h + 29);
-        if (!this.isLocal && this.role !== null && this.role !== undefined) {
-            this.ctx.fillStyle = this.role === Roles.LoupGarou ? "red" : "blue";
-            this.ctx.fillText(this.toString(), this.getDrawnPosition().x + (this.size.w / 2), this.getDrawnPosition().y - 15);
-        }
     }
 
     checkInteractions() {
@@ -244,13 +256,13 @@ export abstract class Player extends Displayable {
             //au démarrage, envoyait l'image du mort
             if (this.alive !== false) {
                 if (millis < 250)
-                    yield this.goesRight ? Player.imgR1 : Player.imgL1; //Bonhomme2
+                    yield this.goesRight ? this.imgR1 : this.imgL1; //Bonhomme2
                 else if (millis < 500)
-                    yield this.goesRight ? Player.imgR2 : Player.imgL2; // Bonhomme1
+                    yield this.goesRight ? this.imgR2 : this.imgL2; // Bonhomme1
                 else if (millis < 750)
-                    yield this.goesRight ? Player.imgR1 : Player.imgL1; // Bonhomme2
+                    yield this.goesRight ? this.imgR1 : this.imgL1; // Bonhomme2
                 else
-                    yield this.goesRight ? Player.imgR3 : Player.imgL3;  // Bonhomme3
+                    yield this.goesRight ? this.imgR3 : this.imgL3;  // Bonhomme3
             } else {
                 if (millis < 250)
                     yield this.goesRight ? Player.deadimgR1 : Player.deadimgL1;
