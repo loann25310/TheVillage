@@ -235,4 +235,22 @@ export class Partie {
         await getRepository(Partie).save(this);
         return !camp;
     }
+
+    checkTasks(io) {
+        let compteur = 0;
+        if (!this.idTasks) return;
+        this.idTasks.forEach(t => {
+            //Ne prends pas en compte les tâches des joueurs morts
+            if (this.deadPlayers.includes(t.id)) return;
+            compteur += t.tasks.length;
+        });
+        io.to(this.id).emit(compteur > 0 ? "nb_tasks" : "DAY", compteur);
+        if (compteur == 0) {
+            this.compteurVotes = 0;
+            this.votes = [];
+            for (let i=0; i<this.players.length;i++) {
+                this.votes[i] = 0;
+            }
+        }
+    }
 }

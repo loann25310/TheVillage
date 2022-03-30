@@ -26,6 +26,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 p.kill(user.id);
                 const t = p.idTasks.find(p => p.id === user.id);
                 if (t) t.tasks = [];
+                p.checkTasks(io);
             }
             return res.redirect("/?err=game_already_started");
         }
@@ -163,6 +164,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                         partie.revive(data.data.player);
                     else {
                         partie.kill(data.data.player);
+                        partie.checkTasks(io);
                         let gagnant = await partie.victoire();
                         if (gagnant !== null) {
                             return io.to(partie.id).emit("victoire", gagnant);
@@ -180,6 +182,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                     if (gagnant !== null) {
                         return io.to(partie.id).emit("victoire", gagnant);
                     }
+                    partie.checkTasks(io);
                     return io.to(partie.id).emit("kill", data.data.player);
             }
         });
@@ -196,20 +199,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             if (index === -1) return;
             partie.idTasks.find(p => p.id === id).tasks.splice(index, 1);
 
-            let compteur = 0;
-            partie.idTasks.forEach(t => {
-                //Ne prends pas en compte les tâches des joueurs morts
-                if (partie.deadPlayers.includes(t.id)) return;
-                compteur += t.tasks.length;
-            });
-            io.to(partie.id).emit(compteur > 0 ? "nb_tasks" : "DAY", compteur);
-            if (compteur == 0) {
-                partie.compteurVotes = 0;
-                partie.votes = [];
-                for (let i=0; i<partie.players.length;i++) {
-                    partie.votes[i] = 0;
-                }
-            }
+            partie.checkTasks(io);
         });
 
         socket.on("get_tasks", async (id) => {
