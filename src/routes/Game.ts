@@ -7,6 +7,8 @@ import * as fs from "fs";
 import * as path from "path";
 import {Roles} from "../entity/types/Roles";
 import {ActionType} from "../entity/types/ActionType";
+import {Config} from "../entity/Config";
+import {Coordinate} from "../entity/types/Coordinate";
 
 const passport = require("passport");
 
@@ -68,7 +70,8 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             numeroJoueur,
             LoupsGarous: JSON.stringify(LG),
             user,
-            players
+            players,
+            isDebug: Config.CONFIGURATION.env === "debug"
         });
     });
 
@@ -115,7 +118,9 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
     io.on("connection", (socket) => {
 
         let partie: Partie,
-            user: User = socket.request["user"];
+            user: User = socket.request["user"],
+            position: Coordinate,
+            role: Roles
 
         function sendError(msg: string) {
             socket.emit("error", {
@@ -131,6 +136,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
 
         socket.on("joinPartie", async (data) => {
             partie = monitorPartie(await getRepository(Partie).findOne(data.gameId));
+            role = data.role;
             if(!partie) return sendError("Game not found");
             if(partie.isInGame(user)) return sendError("Is already in this game");
             partie.addInGamePlayer(user);
@@ -141,7 +147,8 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
                 pseudo: user.pseudo,
                 position: data.position,
                 index: data.index,
-                color: data.color
+                color: data.color,
+                role
             });
             partie.status = PartieStatus.STARTED;
             await getRepository(Partie).save(partie);
@@ -154,11 +161,14 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
 
         socket.on("playerMove", async (data) => {
             if(!partie) return;
+            position = data.position as Coordinate;
             io.to(partie.id).emit("playerMove", {
                 id: user.id,
+                pseudo: user.pseudo,
                 position: data.position,
                 index: data.index,
-                color: user.color
+                color: user.color,
+                role
             });
         });
 

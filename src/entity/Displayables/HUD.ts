@@ -141,8 +141,6 @@ export class HUD extends Displayable {
             ctx.textAlign = "center";
             ctx.font = "30px sans-serif";
             ctx.fillStyle = "red";
-            //ctx.fillText(`[E] pour interagir avec ${this.player.objectInteract.name}`, window.innerWidth / 2, window.innerHeight - 300);
-
             ctx.globalAlpha = 1;
         } else {
             ctx.globalAlpha = 0.5;
@@ -203,11 +201,10 @@ export class HUD extends Displayable {
 
         canvas.addEventListener("click", (e) => {
             if(!e.isTrusted) return;
-
             if(
-                (e.clientX >= canvas.width - HUD.actionButtonSize * 2 - 10 && e.clientX <= canvas.width - HUD.actionButtonSize - 10) &&
-                (e.clientY >= canvas.height - HUD.actionButtonSize - 10 && e.clientY <= canvas.height - 10) &&
-                (!HUD.actionPossible)
+                (e.clientX >= canvas.width - HUD.actionButtonSize * 2 - 10 && e.clientX <= canvas.width - HUD.actionButtonSize) &&
+                (e.clientY >= canvas.height - HUD.actionButtonSize - 10 && e.clientY <= canvas.height) &&
+                (HUD.actionPossible)
             ){
                 HUD.actionPossible = false;
                 this.player.action(this.player.playerForAction);

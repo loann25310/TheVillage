@@ -10,32 +10,22 @@
         <button id="son">
             <i class="fas fa-volume-up color-green"></i>
         </button>
-        <div style="display: grid; height: 200px;grid-template-columns: 200px; grid-template-rows: repeat(6, 1fr);">
-            <div>
-            <h1>Avatar</h1>
-            <span id="avatar"></span>
-            <span id="avatar_pic"></span>
-            <button id="changeavatar" class="changement_information" type="button">changer l'avatar</button>
-            </div>
 
-            <div style="grid-column: 2/4">
-            <h1>Personnage</h1>
-            <span id="perso"></span>
-            <span id="perso_pic"></span>
-            <button id="changeperso" class="changement_information" type="button">changer la couleur du perso</button>
-            </div>
-        </div>
+        <h1>Avatar</h1>
+        <span id="avatar"></span>
+        <span id="avatar_pic"></span>
+        <button id="changeavatar" class="changement_information" type="button">changer l'avatar</button>
 
         <h1>Pseudo</h1>
-            <span id="pseudo">{{ user.pseudo }}</span>
-            <button id="changeusername" class="changement_information" type="button">changer le pseudo</button>
+        <span id="pseudo">{{ user.pseudo }}</span>
+        <button id="changeusername" class="changement_information" type="button">changer le pseudo</button>
 
         <h1>Adresse mail</h1>
-            <span id="email">{{ user.adresseMail }}</span>
-            <button id="changeemail" class="changement_information" type="button">changer l'adresse mail</button>
+        <span id="email">{{ user.adresseMail }}</span>
+        <button id="changeemail" class="changement_information" type="button">changer l'adresse mail</button>
 
         <h1>Mot de passe</h1>
-    <button id="changepassword" class="changement_information" type="button">changer le mot de passe</button>
+        <button id="changepassword" class="changement_information" type="button">changer le mot de passe</button>
     </div>
 {% endblock %}
 

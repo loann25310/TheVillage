@@ -91,6 +91,7 @@
     var _numeroJoueur = {% if numeroJoueur is defined %} {{ numeroJoueur }} {% else %}null{% endif %};
     const _players = {{ players | dump }};
     const _game = _partie;
+    const _debug = {{ isDebug }};
   </script>
   <script src="/dist/game.js"></script>
 {% endblock %}
