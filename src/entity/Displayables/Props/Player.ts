@@ -41,6 +41,7 @@ export abstract class Player extends Displayable {
     playerForAction: Player;
     private readonly sliders: number[];
     color: UserColor;
+    vote: boolean;
 
     public x;
     public y;
@@ -63,6 +64,7 @@ export abstract class Player extends Displayable {
         this.playerForAction = null;
         this.initSpawn(map, index);
         this.sliders = [];
+        this.vote = false;
     }
 
     initSpawn(map: Map, index) {

@@ -207,7 +207,8 @@ export class HUD extends Displayable {
                 (HUD.actionPossible)
             ){
                 HUD.actionPossible = false;
-                this.player.action(this.player.playerForAction);
+                if (this.player.checkAction(this.player.playerForAction))
+                    this.player.action(this.player.playerForAction);
             }
 
             if(

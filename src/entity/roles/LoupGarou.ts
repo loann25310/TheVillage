@@ -28,7 +28,7 @@ export class LoupGarou extends Player {
     }
 
     checkAction(player): boolean {
-        return this.pochesDeSang >= LoupGarou.NB_POCHE_KILL && this.alive && player.role !== Roles.LoupGarou;
+        return !this.vote && this.pochesDeSang >= LoupGarou.NB_POCHE_KILL && this.alive && player.role !== Roles.LoupGarou;
     }
 
     toString(): string {

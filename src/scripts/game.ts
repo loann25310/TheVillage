@@ -357,6 +357,7 @@ async function init(){
     });
 
     socket.on("DAY",(players) => {
+        player.vote = true;
         let anim = $("#anim_day");
         $("#play").hide();
         anim.show();
@@ -370,6 +371,7 @@ async function init(){
     });
 
     socket.on("NIGHT", ()=>{
+        player.vote = false;
         let anim = $("#anim_night");
         $("#vote").hide();
         anim.show();

@@ -30,7 +30,7 @@ export class Sorciere extends Player {
     }
 
     checkAction(player): boolean {
-        return this.alive && (player.alive && !this.hasKilled || !player.alive && !this.hasRevived);
+        return !this.vote && this.alive && (player.alive && !this.hasKilled || !player.alive && !this.hasRevived);
     }
 
     toString(): string {
