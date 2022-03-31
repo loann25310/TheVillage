@@ -197,6 +197,7 @@ export abstract class Player extends Displayable {
     }
 
     draw() {
+        if (!this.isLocal && this.ghost) return;
         if (!this.alive)
             this.image = this.getImg.next().value as HTMLImageElement;
         this.ctx.font = "10px sans-serif";
