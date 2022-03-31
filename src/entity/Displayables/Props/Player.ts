@@ -204,8 +204,6 @@ export abstract class Player extends Displayable {
         //this.ctx.fillStyle = "#f00";
         //this.ctx.fillRect( this.getDrawnPosition().x, this.getDrawnPosition().y, this.size.w, this.size.h);
         this.ctx.drawImage(this.image, this.getDrawnPosition().x, this.getDrawnPosition().y, this.size.w, this.size.h);
-        this.ctx.fillStyle = "#fff";
-        this.ctx.fillRect(this.getDrawnPosition().x, this.getDrawnPosition().y + this.size.h - 5, this.size.w, 40 );
         this.ctx.textAlign = "center";
 
         if (!this.isLocal && this.role) {
@@ -221,6 +219,9 @@ export abstract class Player extends Displayable {
 
         // Escape if not in debug
         if(Config.CONFIGURATION.env !== "debug") return;
+
+        this.ctx.fillStyle = "#fff";
+        this.ctx.fillRect(this.getDrawnPosition().x, this.getDrawnPosition().y + this.size.h - 5, this.size.w, 40 );
 
         this.ctx.font = "10px sans-serif";
         if(this.isLocal) {
