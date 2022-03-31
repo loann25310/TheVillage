@@ -377,6 +377,10 @@ async function init(){
     });
 
     socket.once("victoire", camp => {
+        $("#vote").hide();
+        $("#anim_day").hide();
+        $("#anim_night").hide();
+        $("#mainCanvas").hide();
         displayVictory(camp);
     });
 
