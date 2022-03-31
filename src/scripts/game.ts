@@ -399,6 +399,10 @@ async function init(){
     });
 
     socket.once("victoire", camp => {
+        $("#vote").hide();
+        $("#anim_day").hide();
+        $("#anim_night").hide();
+        $("#mainCanvas").hide();
         displayVictory(camp);
     });
 
@@ -601,14 +605,17 @@ function set_player_vote(p) {
 
     let button;
     if (voteDisponible) {
-        button = $('<button class="vote">Vote</button>');
-        button.on("click", function () {
-            if (voteDisponible) {
-                button.hide();
-                voteDisponible = false;
-                socket.emit("aVote", p.pid);
-            }
-        });
+        const play = OTHER_PLAYERS.find(index => index.pid === p.pid);
+        if ((play && play.alive && !play.ghost) || p.pid === player.pid) {
+            button = $('<button class="vote">Vote</button>');
+            button.on("click", function () {
+                if (voteDisponible) {
+                    button.hide();
+                    voteDisponible = false;
+                    socket.emit("aVote", p.pid);
+                }
+            });
+        }
     }
 
      item.append(html, name, role, button);
