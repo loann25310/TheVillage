@@ -25,7 +25,6 @@ import {House} from "../entity/Displayables/Props/House";
 import {PineTree} from "../entity/Displayables/Props/PineTree";
 import {Tree} from "../entity/Displayables/Props/Tree";
 import {TreeStump} from "../entity/Displayables/Props/TreeStump";
-import {serializeUser} from "passport";
 import {Config} from "../entity/Config";
 
 // @ts-ignore
@@ -49,7 +48,7 @@ Config.CONFIGURATION.env = (DEBUG)?"debug":"release";
 const socket = io(`${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}`);
 
 // @ts-ignore
-let game = _game, players = _players;
+let game = _game;
 let last_ms;
 
 let roomName = `${game.id}`,
@@ -305,7 +304,7 @@ async function init(){
             return player.revive();
 
         for (const p of OTHER_PLAYERS) {
-            if (p.pid === id) return player.revive();
+            if (p.pid === id) return p.revive();
         }
     });
 
