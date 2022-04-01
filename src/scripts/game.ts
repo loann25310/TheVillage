@@ -310,8 +310,10 @@ async function init(){
     });
 
     socket.on("kill", id => {
-        if (id === player.pid)
+        if (id === player.pid) {
+            player.objectInteract?.endJeu(false, false);
             return player.die();
+        }
         for (const p of OTHER_PLAYERS) {
             if (p.pid === id) return p.die();
         }
