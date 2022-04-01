@@ -20,7 +20,7 @@ export class Action {
                 this.color = "#F00";
                 break;
             case ActionType.REVIVE:
-                this.color = "#0F0";
+                this.color = "#2dd02d";
                 break;
             case ActionType.REVEAL:
                 this.color = "#00F";
