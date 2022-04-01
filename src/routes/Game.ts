@@ -215,7 +215,7 @@ export function Route(router: Router, io: SocketIOServer, sessionMiddleware: Req
             const index = partie.idTasks.find(p => p.id === id).tasks.findIndex(p => p === name);
             if (index === -1) return;
             partie.idTasks.find(p => p.id === id).tasks.splice(index, 1);
-
+            partie.addAction(id, ActionType.TASK, 0);
             partie.checkTasks(io).then();
         });
 

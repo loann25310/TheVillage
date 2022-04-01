@@ -3,5 +3,6 @@ export enum ActionType {
     REVIVE,
     REVEAL,
     DRINK,
-    EXPELLED //killed by a vote
+    EXPELLED, //killed by a vote
+    TASK
 }

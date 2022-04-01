@@ -417,24 +417,27 @@ async function init(){
     for (const o of player.environment.interactions) {
         o.on("end_game", (completed) => {
             o.endJeu(completed);
-            HUD.miniJeu = false;
             if (completed)
                 socket.emit("task_completed", player.pid, o.name);
+        });
+        o.on("miniJeuNull", () => {
+            HUD.miniJeu = false;
         });
     }
 
     for (const o of player.environment.possibleInteractions) {
         o.on("end_game", (completed) => {
             o.endJeu(completed);
-            HUD.miniJeu = false;
             if (completed)
                 socket.emit("task_completed", player.pid, o.name);
+        });
+        o.on("miniJeuNull", () => {
+            HUD.miniJeu = false;
         });
     }
 
     player.on("no_task", () => {
         player.objectInteract?.endJeu(false, false);
-        HUD.miniJeu = false;
     });
 
     player.on("action", (data) => {

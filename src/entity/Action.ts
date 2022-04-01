@@ -23,6 +23,7 @@ export class Action {
                 this.color = "#2dd02d";
                 break;
             case ActionType.REVEAL:
+            case ActionType.TASK:
                 this.color = "#00F";
                 break;
             case ActionType.DRINK:
@@ -40,15 +41,17 @@ export class Action {
         const maker = this.maker !== 0 ? (await getRepository(User).findOne(this.maker)) : {pseudo: ""};
         switch (this.type) {
             case ActionType.EXPELLED:
-                return `${this.getDate()} Le village a éliminé ${victim.pseudo}`;
+                return `${this.getDate()} Le village a éliminé <strong>${victim.pseudo}</strong>`;
             case ActionType.DRINK:
-                return `${this.getDate()} ${maker.pseudo} a bu une poche de sang`;
+                return `${this.getDate()} <strong>${maker.pseudo}</strong> a bu une poche de sang`;
             case ActionType.KILL:
-                return `${this.getDate()} ${maker.pseudo} a tué ${victim.pseudo}`;
+                return `${this.getDate()} <strong>${maker.pseudo}</strong> a tué <strong>${victim.pseudo}</strong>`;
             case ActionType.REVEAL:
-                return `${this.getDate()} ${maker.pseudo} a révélé le rôle de ${victim.pseudo}`;
+                return `${this.getDate()} <strong>${maker.pseudo}</strong> a révélé le rôle de <strong>${victim.pseudo}</strong>`;
             case ActionType.REVIVE:
-                return `${this.getDate()} ${maker.pseudo} a ressuscité ${victim.pseudo}`;
+                return `${this.getDate()} <strong>${maker.pseudo}</strong> a ressuscité <strong>${victim.pseudo}</strong>`;
+            case ActionType.TASK:
+                return `${this.getDate()} <strong>${maker.pseudo}</strong> a fini une tâche`;
         }
     }
 }

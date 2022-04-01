@@ -128,6 +128,7 @@ export class Displayable {
                 this.player.objectInteract = null;
                 this.player.environment.doneInteractions.push(this);
             }
+            this.emit("miniJeuNull");
             return;
         }
         const dj = this.drawJeu;

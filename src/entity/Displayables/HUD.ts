@@ -47,7 +47,6 @@ export class HUD extends Displayable {
             interactionInactiveImageUrl = "/img/crystal_0.png";
             interactionActiveImageUrl = "/img/crystal_1.png";
         }
-        console.log(interactionActiveImageUrl);
         if(interactionActiveImageUrl && interactionInactiveImageUrl){
             this.interactionInactiveImage = document.createElement("img");
             this.interactionInactiveImage.src = interactionInactiveImageUrl;
